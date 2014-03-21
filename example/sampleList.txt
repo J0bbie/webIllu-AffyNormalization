@@ -1,0 +1,7 @@
+sampleName	sampleType	Sample ID (TNO)	compoundCAS	CompoundName	time point incubation (h) (P.B.P)	organ	replicate #	concentration compound (P.B.P) M.M
+DMSO_1	Control	1	67-68-5	Dimethylsulfoxide	24	Liver	1	0
+DP_2	Sample	2	131-17-9	Diallyl phthalate	24	kidney	3	0,025
+DP_3	Sample	3	131-17-9	Diallyl phthalate	72	Liver	2	0,025
+T(PG)BE_4	Sample	4	55934-93-5	Tri(propylene glycol) butyl ether	72	Liver	2	4
+2,4-DCP_5	Sample	5	120-83-2	2,4-Dichlorophenol	72	Liver	2	0,35
+2,3 BF_6	Sample	6	271-89-6	2,3-Benzofuran	72	kidney	1	4,744
