@@ -45,6 +45,12 @@ All plots, files, jobs, samples and additional information from a specific study
 
 Example files are available in the /example/ folder.
 
+##Impression interface
+
+Shows only a few pages of the web-interface.
+
+![Flow Pipeline](Documentation/impressionInterface.png)
+
 #Flowcharts
 
 ##Flowchart of interface design
