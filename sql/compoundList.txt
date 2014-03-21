@@ -1,0 +1,22 @@
+10-51-13	1,4-Benzoquinone dioxime	1,4 BqQ
+271-89-6	2,3-Benzofuran	2,3 BF
+93-76-5	2,4,5-Trichlorophenoxyacetic acid	2,4,5-T
+120-83-2	2,4-Dichlorophenol	2,4-DCP
+136-77-6	4-Hexylresorcinol	4H
+ 836-30-6	4-Nitrodiphenylamine	4NDP
+18181-80-1	Acarol	A
+2835-39-4	Allyl isovalerate	AI
+123-30-8	4-Aminophenol	Aph
+80-07-9	Bis-(4-chlorophenyl)sulfone	B(4CP)S
+ 110-65-6	Butynediol	BD
+ 110-65-6	Butynediol	BD
+57-74-9	Chlordane	C
+1897-45-6	Chlorothalonil	Chlt
+0	Control (Nothing)	Con
+115-32-2	Dicofol	Dic
+67-68-5	Dimethylsulfoxide	DMSO
+131-17-9	Diallyl phthalate	DP
+87-68-3	Hexachlorobutadiene	Hex1,3B
+98-92-0	Nicotinamide	NA
+51-03-6	Piperonylbutoxide	PB
+55934-93-5	Tri(propylene glycol) butyl ether	T(PG)BE
