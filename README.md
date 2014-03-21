@@ -59,5 +59,5 @@ Shows only a few pages of the web-interface.
 ##Flowchart of pipeline
 ![Flow Pipeline](Documentation/flowPipeline.png)
 
-##ERD
+#ERD
 ![Flow Pipeline](Documentation/erdDatabase.png)
