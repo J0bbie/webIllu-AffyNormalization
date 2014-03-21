@@ -30,7 +30,7 @@ All plots, files, jobs, samples and additional information from a specific study
 
 ##Installation/Setup
 
-- Upload the scripts from the /diamondsNorm/ folder, using the same folder structure, on a web-server running:
+- Upload these scripts using the same folder structure on a web-server running:
   - Apache *(Version >= 2.4 + HTML5 support)*
   - PHP5
   - MySQL *(Version >= 5.0)*
