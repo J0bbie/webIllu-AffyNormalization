@@ -38,7 +38,7 @@ All plots, files, jobs, samples and additional information from a specific study
 - *(Optional) Set correct permissions on files and folders.*
 - Create the database using the SQL code provided in the /sql/ folder. (Change the username/password)
 - *(Optional) Use the provided sample data to fill the database with options from the /sql/sampleData.sql file.*
-- Change the security usernames/password and other logins and paths in the /logic/security.php file.
+- Change the security usernames/password and other logins and paths in the /logic/config.php file.
 - Change the MySQL user/password for the RMySQL functions in R in /R/functions_myDB.R file.
 
 ##Examples
