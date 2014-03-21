@@ -1,12 +1,12 @@
 <?php
 /*
-Author:					Job van Riet
-Date of  creation:		11-2-14
+Author:	Job van Riet
+Date of  creation:	11-2-14
 Date of modification:	11-2-14
-Version:				1.0
-Modifications:			Original version
-Known bugs:				None known
-Function:				This page is the page that gets called each time a form is submitted. It will then check which form it is and apply the subsequent functionality for this specific form e.g. uploading the data from the form into the DB.
+Version:	1.0
+Modifications:	Original version
+Known bugs:	None known
+Function:	This page is the page that gets called each time a form is submitted. It will then check which form it is and apply the subsequent functionality for this specific form e.g. uploading the data from the form into the DB.
 */
 ?>
 
