@@ -1,0 +1,31 @@
+@CHARSET "ISO-8859-1";
+/*************************************/
+	/* StyleSheet for Arrayanalysis.org  */
+	/*************************************/ /* Body */
+
+.sectionTitle {
+	font-weight: bold;
+	color: #4e4e79;
+}
+
+.alignRight {
+	align: right;	
+}
+
+.alignLeft {
+	align: left;	
+}
+
+/* Tables */
+table {
+	font-size: 9.0pt;
+}
+
+table.form {
+	width: 540px;
+	background-color: #F2F2F2;
+	padding: 5px;
+	border: solid 1px #BDBDBD;
+	align: center;
+	font-family: Arial;
+}

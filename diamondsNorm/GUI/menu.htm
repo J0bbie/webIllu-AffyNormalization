@@ -1,0 +1,82 @@
+<link rel="shortcut icon" href="../img/logo.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" type="text/css" href="../css/font-awesome.css">
+<link rel="stylesheet" type="text/css" href="../css/menu.css">
+
+<script type="text/javascript">
+	//Show submenu's on navigation bar
+	$(document).ready(
+		function(){
+
+		/* MAIN MENU */
+		$('#main-menu > li:has(ul.sub-menu)').addClass('parent');
+		$('ul.sub-menu > li:has(ul.sub-menu) > a').addClass('parent');
+
+		$('#menu-toggle').click(function() {
+			$('#main-menu').slideToggle(300);
+			return false;
+		});
+
+		$(window).resize(function() {
+			if ($(window).width() > 700) {
+				$('#main-menu').removeAttr('style');
+			}
+		});
+
+	});
+</script>
+
+<div id="menu">
+	<div style="background: white; font-size: 22px; text-align: center; color: orange; font-weight: bold; padding-bottom: 20px; padding-top: 20px;">
+		<img alt="DIAMONDS-Normalization" src="../img/logo.gif" width="50px"><br> Normalization of RNAseq data.
+		<?php 
+		if(isset($_SESSION['studyTitle'])){
+			echo "<br>Selected study: <font color= '#00BFFF'>". $_SESSION['studyTitle']."</font>";
+		}
+		
+		
+		?>
+
+	</div>
+	<div id="wrap">
+		<header>
+			<div class="inner relative">
+				<nav id="navigation">
+					<ul id="main-menu">
+						<li class="current-menu-item"><a href="chooseStudy">Choose study (Home)</a></li>
+						<li class="parent"><a href="dataOverview.php">Add/Alter DB Data</a>
+							<ul class="sub-menu">
+								<li><a href="dataOverview?crudType=studyType"><i class="icon-table"></i> Type of Studies </a></li>
+								<li><a href="dataOverview?crudType=sampleType"><i class="icon-table"></i> Type of Samples </a></li>
+								<li><a href="dataOverview?crudType=domains"><i class="icon-table"></i> Type of Domains </a></li>
+								<li><a href="dataOverview?crudType=fileType"><i class="icon-table"></i> Type of Files </a></li>
+								<li><a href="dataOverview?crudType=assayType"><i class="icon-table"></i> Type of Assays </a></li>
+								<li><a href="dataOverview?crudType=dataType"><i class="icon-table"></i> Type of Data </a></li>
+								<li><a href="dataOverview?crudType=compound"><i class="icon-table"></i> Compounds </a></li>
+							</ul></li>
+						<li class="parent"><a href="studyOverview">Overviews from study</a>
+							<ul class="sub-menu">
+								<li><a href="studyOverview"><i class="icon-list"></i> Study </a></li>
+								<li><a href="sampleOverview"><i class="icon-list"></i> Samples</a></li>
+								<li><a href="normOverview"><i class="icon-list"></i> Normalizations </a></li>
+								<li><a href="statOverview"><i class="icon-bar-chart "></i> Plots </a></li>
+								<li><a href="fileOverview"><i class="icon-file"></i> Files </a></li>
+								<li><a href="jobOverview"><i class="icon-coffee"></i> Jobs </a></li>
+							</ul></li>
+						<li class="parent"><a href="#">Functions</a>
+							<ul class="sub-menu">
+								<li><a class="parent" href="addFiles"><i class="icon-cogs"></i> Add files to study </a>
+									<ul class="sub-menu">
+										<li><a href="addFiles?fileType=sampleFile"><i class="icon-file"></i>Samples File</a></li>
+										<li><a href="addFiles?fileType=sxsFile"><i class="icon-file"></i>SXS Omics</a></li>
+									</ul></li>
+								<li><a href="doNormalization"><i class="icon-cogs"></i> Normalization </a></li>
+								<li><a href="doStatistics"><i class="icon-cogs"></i> Statistics </a></li>
+							</ul></li>
+					</ul>
+				</nav>
+				<div class="clear"></div>
+			</div>
+		</header>
+	</div>
+</div>
