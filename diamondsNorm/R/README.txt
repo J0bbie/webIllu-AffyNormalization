@@ -1,17 +1,17 @@
-Author(s):				Job van Riet (Original scripts provided by: Varshna Goelela + ArrayAnalysis.org)
-Date of  creation:		3-3-14
+Author(s):	Job van Riet (Original scripts provided by: Varshna Goelela + ArrayAnalysis.org)
+Date of  creation:	3-3-14
 Date of modification:	3-3-14 (Job van Riet)
-Version:				1.1
-Modifications:			(Job) Added parser, stand-alone functionality, logging, and cleaned up the code.
-Known bugs:				Covariance plotting of data-matrices does not work with low amount of samples/intensities. This function (cv.plot) is in a tryCatch as a solution.
-Package contains:		runIlluminaNormalization.R, getArguments.R, functions_qualityControl.R, functions_makeImages.R, functions_loadPackages.R
+Version:	1.1
+Modifications:	(Job) Added parser, stand-alone functionality, logging, and cleaned up the code.
+Known bugs:	Covariance plotting of data-matrices does not work with low amount of samples/intensities. This function (cv.plot) is in a tryCatch as a solution.
+Package contains:	runIlluminaNormalization.R, getArguments.R, functions_qualityControl.R, functions_makeImages.R, functions_loadPackages.R
 
 Description:
 Scripts for running background correction, normalization and quality assessment of Illumina Beadchip data using the methods found in the limma and lumi packages. If possible, missing packages are installed.
 
 #################################################################################################################################################
-#	These scripts are made for conjunction with the normDB/DIAMONDS as they also contain jobStatus updates and mySQL functionality				#
-#	For stand-alone functionality, use the stand-alone version (localNormalization)																#
+#	These scripts are made for conjunction with the normDB/DIAMONDS as they also contain jobStatus updates and mySQL functionality		#
+#	For stand-alone functionality, use the stand-alone version (localNormalization)								#
 #################################################################################################################################################
 
 The main files which are needed are:
