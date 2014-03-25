@@ -372,7 +372,7 @@ try
 		$statusMessage = $_POST['statusMessage'];
 	
 		//Update record in database
-		$result = mysql_query("UPDATE tJobStatus SET name = '$name', status = '$status', statusMessage = '$statusMessage' description= $description WHERE idJob = $idJob");
+		$result = mysql_query("UPDATE tJobStatus SET name = '$name', status = '$status', statusMessage = '$statusMessage', description= '$description' WHERE idJob = $idJob");
 	
 		//Return result to jTable
 		$jTableResult = array();
