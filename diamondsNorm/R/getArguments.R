@@ -54,19 +54,19 @@ getArguments <- function(commandArguments, con){
           }         
                     
           option_list <- list(
-                    make_option(c("-i", "--inputDir"), type="character", default="/var/www/normdb/data/",
+                    make_option(c("-i", "--inputDir"), type="character", default="../data/",
                                 help="Path to folder where the Control_Probe_Profile, Sample_Probe_Profile and Description file are found \ndefault = [%default] "),
                     
-                    make_option(c("-o","--outputDir"), type="character", default="/var/www/normdb/data/expressionData/",
+                    make_option(c("-o","--outputDir"), type="character", default="../data/expressionData/",
                                 help = "Path to folder where the output files will be stored \ndefault = [%default] "),
                     
-                    make_option(c("-O","--statisticsDir"), type="character", default="/var/www/normdb/data/statistics/",
+                    make_option(c("-O","--statisticsDir"), type="character", default="../data/statistics/",
                                 help = "Path to folder where the output statistics files will be stored \ndefault = [%default] "),
                     
-                    make_option(c("-a","--annoDir"), type="character", default="/var/www/normdb/anno/",
+                    make_option(c("-a","--annoDir"), type="character", default="../anno/",
                                 help="Path to folder where the annotation files for the arrays are stored. (Containing the Probes + Genes etc. on the array) \ndefault = [%default] "),
                     
-                    make_option("--scriptDir", type="character", default="/var/www/normdb/R/",
+                    make_option("--scriptDir", type="character", default="../R/",
                                 help="Path to folder where the scripts are stored. \ndefault = [%default] "),
                     
                     make_option("--species",  type="character", default="Human",

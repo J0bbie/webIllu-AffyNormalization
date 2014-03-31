@@ -22,7 +22,7 @@ ptm <- proc.time()
 
 #Path to folder where the R scripts are found for the normalization of Illumina expression data. (Ideally, where this script is located also)
 #Can also be given as parameters, but this is to load the getArguments script
-SCRIPT.DIR <- "/var/www/normdb/R"
+SCRIPT.DIR <- dirname(sys.frame(1)$ofile)
 
 #Functions to access the normDB/DIAMONDS
 source(paste(SCRIPT.DIR,"functions_myDB.R",sep="/"))
