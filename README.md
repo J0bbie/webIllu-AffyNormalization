@@ -34,7 +34,7 @@ All plots, files, jobs, samples and additional information from a specific study
   - Apache *(Version >= 2.4 + HTML5 support)*
   - PHP5
   - MySQL *(Version >= 5.0)*
-  - R *(Version >= 2.0)*
+  - R *(Version >= 2.0, install optparse and RMySQL manually)*
 - *(Optional) Set correct permissions on files and folders.*
 - Create the database using the SQL code provided in the /sql/ folder. (Change the username/password)
 - *(Optional) Use the provided sample data to fill the database with options from the /sql/sampleData.sql file.*
