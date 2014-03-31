@@ -80,16 +80,24 @@ addNormedExpressionPerGene <- function(con, idNorm, idVector, expressionData){
           #Get the probe ID, create if not yet exist
           probeData <- expressionData[c("nuIDs", "ILMN_GENE", "geneSymbol", "PROBE_ID", "ENTREZ_GENE_ID", "GENE_NAME", "ACCESSION")]
           idProbe <- getCreateProbe(con, probeData)
+           #############################
+          # Concatanate does not work!#
+          #############################
           
           #Vectorize the expression values
-          values <- c(t(expressionData[9:length(eset.anno.normData)]))
+          #values <- c(t(expressionData[9:length(eset.anno.normData)]))
           #Concatenate the sample Ids and expression values (sam1:exp1 sam2:exp2 sam3:exp3 etc.)
-          sampleValues <- paste(idVector, values, sep=";")
+          #sampleValues <- paste(idVector, values, sep=";")
           #Collapse into string (sam1:exp1|sam2:exp2|sam3:exp3 etc.)
-          expressionString <- paste(sampleValues, collapse="|")
-                  
-          #Save the string to the DB
-          dbSendQuery(con, paste("INSERT INTO tNormedExpression(expressionString, idProbe, idNormAnalysis) VALUES('",expressionString,"', '",idProbe,"', '",idNorm,"')", sep=""))
+          #expressionString <- paste(sampleValues, collapse="|")
+          
+          #Loop over all genes
+          for(i in 9:length(names(expressionData))){
+            intensity <- expressionData[,i]
+            idSample <- names(expressionData)[i]
+            #Save the intensity to the DB
+            dbSendQuery(con, paste("INSERT INTO tNormedExpression(expressionValue, idProbe, idSample, idNormAnalysis) VALUES('",intensity,"', '",idProbe,"', '",idSample,"', '",idNorm,"')", sep=""))
+          }          
 }
 
 #Find a probe if it already exist, else create
