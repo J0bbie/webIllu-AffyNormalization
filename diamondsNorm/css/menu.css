@@ -46,13 +46,11 @@ ol, ul {
 /* HEADER */
 #wrap > header {
 	background-color: orange;
-	padding-bottom: 20px;
+	padding-bottom: 10px;
 	box-shadow: 0px -5px 20px 0px rgba(50, 50, 50, 0.75);
 }
 
 #navigation {
-	position: absolute;
-	display: inline-block;
 	margin: 0 auto;
 }
 
@@ -63,9 +61,9 @@ ol, ul {
 
 /* HEADER > MENU */
 #main-menu {
-	padding-left: 50%;
 	font-size: 0;
 	margin: 0px 0;
+	text-align:center;
 }
 
 #main-menu > li {
