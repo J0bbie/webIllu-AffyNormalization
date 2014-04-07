@@ -59,5 +59,10 @@ Shows only a few pages of the web-interface.
 ##Flowchart of pipeline
 ![Flow Pipeline](Documentation/flowPipeline.png)
 
+##File structure
+This is the file structure which is used on the fileserver.
+
+![fileStructure](Documentation/fileStructure.png)
+
 #ERD
 ![Flow Pipeline](Documentation/erdDatabase.png)
