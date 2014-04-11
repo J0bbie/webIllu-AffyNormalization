@@ -2,23 +2,34 @@
 /*
 Author:					Job van Riet
 Date of  creation:		13-2-14
-Date of modification:	13-2-14
-Version:				1.0
-Modifications:			Original version
+Date of modification:	11-4-14
+Version:				1.1
+Modifications:			Added Affymetrix and comments
 Known bugs:				None known
 Function:				This file contains the functions to handle file upload and data insertions from these files.
 						This script could be included into a page which needs these functionality.
 */
 
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
-
-//Include the scripts containing the config variables
+// Include the scripts containing the config variables
+// Contains user setting such as the path of the main folder and how to connect to the DB and such
 require_once('../logic/config.php');
 
-//Include scripts with added functionality
+// Show PHP errors if config has this enabled
+ if(CONFIG_ERRORREPORTING){
+	error_reporting(E_ALL);
+	ini_set('display_errors', '1');
+ }
+
+// Include scripts with added functionality
+// This script contains the functions to connect to the DB
 require_once('../logic/functions_dataDB.php');
 
+///////////////////////////////////////////////////////////////////
+// 		Upload the samples + sample information to the DB		///
+///////////////////////////////////////////////////////////////////
+
+// This function will write the content of a file that contains the samples that were used on the assays.
+// The dataType for each column is defined by the user in the GUI and can be anything
 
 //Try to save a file to a temporary folder and return that path.
 function uploadSampleFileToDB($FILES,$POST, $idStudy, $studyTitle){
@@ -207,6 +218,15 @@ function uploadSampleFileToDB($FILES,$POST, $idStudy, $studyTitle){
 	}
 }
 
+///////////////////////////////////////////////////////////////////
+// 			Class to upload files based on fileTypes in DB		///
+///////////////////////////////////////////////////////////////////
+
+// This class tries to upload the files and categorise them based on the searchTerm (searchOn) defined for files in the database
+// If a file is uploaded that can not be determined, it will be placed in the /unknown/ folder.
+// To add new files to be recognized, simply add them to the database. 
+
+
 //Function to make an array of the multiple uploaded files
 function UpFilesTOObj($fileArr){
 	
@@ -285,8 +305,12 @@ class FileUploader{
 	}
 }
 
+///////////////////////////////////////////////////////////////////
+// 		Upload Affymetrix/Illumina expression files (from SXS)	///
+///////////////////////////////////////////////////////////////////
+
 //Try to open and save the different files submitted by the user.
-function uploadExpressionDataSXSToDB($FILES,$POST, $idStudy, $studyTitle){
+function uploadRawExpressionToDB($FILES,$POST, $idStudy, $studyTitle){
 	
 	//Check if the studyID id provided
 	if(!isset($idStudy)){
@@ -297,7 +321,7 @@ function uploadExpressionDataSXSToDB($FILES,$POST, $idStudy, $studyTitle){
 	$connection = makeConnectionToDIAMONDS();
 
 	//Make a jobStatus in the DB
-	$connection->query("INSERT INTO tJobStatus (`idStudy`, `name`, `description`, status) VALUES ($idStudy, 'Uploading /report/ folder', 'Uploading folder with the expression data from SXS', 0);");
+	$connection->query("INSERT INTO tJobStatus (`idStudy`, `name`, `description`, status) VALUES ($idStudy, 'Uploading (multiple) raw expression files', 'Uploading folder with the raw expressions from user upload', 0);");
 	$idJob = mysqli_insert_id($connection);
 
 	//Get the correct folder name
@@ -328,7 +352,7 @@ function uploadExpressionDataSXSToDB($FILES,$POST, $idStudy, $studyTitle){
 	
 	//Try to read all the supplied files
 	try{
-		$uploads = UpFilesTOObj($FILES['expressionSXSData']);
+		$uploads = UpFilesTOObj($FILES['expressionDataUpload']);
 		if (!isset($fileUploader))$fileUploader= new FileUploader($connection, $idStudy, $studyTitle, $idJob, $uploads, $expressionFolder, $fileTypes);
 	}
 	catch (Expection $e) {
@@ -338,12 +362,12 @@ function uploadExpressionDataSXSToDB($FILES,$POST, $idStudy, $studyTitle){
 	}
 
 	//Check if SXS#->sampleName file is given
-	if($FILES['sampleToSXSNumber']['name'] != null){
+	if($FILES['sampleToAssayname']['name'] != null){
 
 		//Add the SXS numbers to the samples
 		//Read file to set SXSnumber to the correct sample (using its name)		
 		try{
-			if($fileHandle = fopen($FILES['sampleToSXSNumber']['tmp_name'], "r")){
+			if($fileHandle = fopen($FILES['sampleToAssayname']['tmp_name'], "r")){
 				//If file had headers, skip that file
 				if($POST['headersInFile'] == 1){
 					$line = fgets($fileHandle);
@@ -378,7 +402,7 @@ function uploadExpressionDataSXSToDB($FILES,$POST, $idStudy, $studyTitle){
 				fclose($fileHandle);
 			}
 		}catch (Exception $e) {
-			echo 'Caught exception while reading file '.$FILES['sampleToSXSNumber']['tmp_name'].'. Exception: ',  $e->getMessage(), "\n";
+			echo 'Caught exception while reading file '.$FILES['sampleToAssayname']['tmp_name'].'. Exception: ',  $e->getMessage(), "\n";
 		}
 		//If everything succeeded, close the file and commit the data and close the connection
 		
@@ -390,10 +414,50 @@ function uploadExpressionDataSXSToDB($FILES,$POST, $idStudy, $studyTitle){
 	$connection->close();
 }
 
+///////////////////////////////////////////////////////////////////
+// 			Upload custom annotation file for assay				///
+///////////////////////////////////////////////////////////////////
+
+// If an assay is used that has a custom design, upload the description file of this assay to the server and link it in the database.
+function uploadCustomAnnotationFile($connection, $idStudy, $studyTitle, $folderName, $idJob){
+	
+	//Check if the studyID id provided
+	if(!isset($idStudy)){
+		exit("<p><font color=red>The study ID is not given! Cannot save the custom annotation file to the study</font></p>");
+	}
+	
+	//Make a connection to the DB
+	$connection = makeConnectionToDIAMONDS();
+	
+	//Make a jobStatus in the DB
+	$connection->query("INSERT INTO tJobStatus (`idStudy`, `name`, `description`, status) VALUES ($idStudy, 'Uploading custom annotation file', 'Uploading annotation file with custom design for the assay used in this study', 0);");
+	$idJob = mysqli_insert_id($connection);
+	
+	//Get the correct folder name (/sampleAnnotation/)
+	$query = ("SELECT folderName FROM tDirectory WHERE idDirectory = 2");
+	
+	if ($result =  mysqli_query($connection, $query)) {
+		while ($row = mysqli_fetch_assoc($result)) {
+			$directoryName = $row['folderName'];
+		}
+	}
+	if(!isset($directoryName)){
+		$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Could not retrieve the folder definition for custom annotation file. Probably not filled in the DB' WHERE idJob = '$idJob'");
+		exit("<p><font color=red>Could not retrieve the folder definition for raw expression data. Probably not filled in the DB.</font></p>");
+	}
+	
+	//Make the sampleAnnotation folder is none already
+	$expressionFolder = checkFolderStructure($connection, $idStudy, $studyTitle, $directoryName, $idJob);
+	
+}
+
+///////////////////////////////////////////////////////////////////
+// 			Functions to handle folder creation/handling		///
+///////////////////////////////////////////////////////////////////
 
 //Checks and creates folders for a given study
 function checkFolderStructure($connection, $idStudy, $studyTitle, $folderName, $idJob){
-	$dataFolder = configMainfolder."/data/";
+	$dataFolder = CONFIG_MAINFOLDER."/data/";
 	//Unique title of the main folder
 	$mainFolder = $dataFolder.$idStudy."_".$studyTitle;
 	//Concatenate the folder names, indicating the new directory.

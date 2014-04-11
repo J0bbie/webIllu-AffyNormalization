@@ -11,9 +11,14 @@ Function:				User will be redirected to this page if not logged in or selected a
 ?>
 
 <?php
+	//Include the scripts containing the config variables
+	require_once('../logic/config.php');
 	
-	error_reporting(E_ALL);
-	ini_set('display_errors', '1');
+	// Show PHP errors if config has this enabled
+	 if(CONFIG_ERRORREPORTING){
+		error_reporting(E_ALL);
+		ini_set('display_errors', '1');
+	 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>

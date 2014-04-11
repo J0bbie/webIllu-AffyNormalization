@@ -65,14 +65,29 @@
 							</ul></li>
 						<li class="parent"><a href="#">Functions</a>
 							<ul class="sub-menu">
-								<li><a class="parent" href="addFiles"><i class="icon-cogs"></i> Add files to study </a>
+								<li>
+								<a class="parent" href="addFiles"><i class="icon-cogs"></i> Add files to study </a>
 									<ul class="sub-menu">
 										<li><a href="addFiles?fileType=sampleFile"><i class="icon-file"></i>Samples File</a></li>
-										<li><a href="addFiles?fileType=sxsFile"><i class="icon-file"></i>SXS Omics</a></li>
-									</ul></li>
-								<li><a href="doNormalization"><i class="icon-cogs"></i> Normalization </a></li>
-								<li><a href="doStatistics"><i class="icon-cogs"></i> Statistics </a></li>
-							</ul></li>
+										<li><a href="addFiles?fileType=customAnnotation"><i class="icon-file"></i>Custom annotation</a></li>
+										<li><a href="addFiles?fileType=illuFile"><i class="icon-file"></i>Illumina Beadchip</a></li>
+										<li><a href="addFiles?fileType=affyFile"><i class="icon-file"></i>Affymetrix Omics</a></li>
+									</ul>
+								</li>								
+								<li><a class="parent" href="#"><i class="icon-cogs"></i> Normalizations </a>
+									<ul class="sub-menu">
+										<li><a href="illuNormalization"><i class="icon-cogs"></i>Illumina</a></li>
+										<li><a href="affyNormalization"><i class="icon-cogs"></i>Affymetrix</a></li>
+									</ul>
+								</li>
+								<li><a class="parent" href="#"><i class="icon-cogs"></i> Statistics </a>
+									<ul class="sub-menu">
+										<li><a href="doIlluStatistics"><i class="icon-cogs"></i>Illumina</a></li>
+										<li><a href="doAffyStatistics"><i class="icon-cogs"></i>Affymetrix</a></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
 					</ul>
 				</nav>
 				<div class="clear"></div>

@@ -12,14 +12,15 @@ Function:				This page houses all the CRUD functionality for the normDB, used by
 
 <?php
 
-//Include the scripts containing the config variables
+// Include the scripts containing the config variables
+// Contains user setting such as the path of the main folder and how to connect to the DB and such
 require_once('../logic/config.php');
 
 try
 {
 	//Open database connection
-	$con = mysql_connect(host, databaseUser, databaseUserPassword);
-	mysql_select_db(databaseSchema, $con);
+	$con = mysql_connect(CONFIG_HOST, CONFIG_DATABASEUSER, CONFIG_DATABASEUSERPASSWORD);
+	mysql_select_db(CONFIG_DATABASESCHEMA, $con);
 	/*
 	 ######################
 	#### CRUD tStudy ###
@@ -1001,7 +1002,7 @@ try
 			$title = $row['title'];
 		}
 		
-		$dataFolder = configMainfolder."/data/";
+		$dataFolder = CONFIG_MAINFOLDER."/data/";
 		$studyMap = $idStudy."_".$title;
 		//Unique title of the main folder
 		$mainFolder = $dataFolder.$studyMap;
@@ -1046,7 +1047,7 @@ try
 			$title = $row['title'];
 		}
 		
-		$dataFolder = configMainfolder."/data/";
+		$dataFolder = CONFIG_MAINFOLDER."/data/";
 		$studyMap = $idStudy."_".$title;
 		//Unique title of the main folder
 		$mainFolder = $dataFolder.$studyMap;

@@ -11,19 +11,26 @@ Function:				This page will present an overview of files uploaded to a study. It
 ?>
 
 <?php
-// Get the idStudy from the session, if no session is made, let the user select a study.
-session_start ();
+	//Include the scripts containing the config variables
+	require_once('../logic/config.php');
+	
+	// Show PHP errors if config has this enabled
+	if(CONFIG_ERRORREPORTING){
+		error_reporting(E_ALL);
+		ini_set('display_errors', '1');
+	}
 
-if (isset ( $_SESSION ['idStudy'] )) {
-	$idStudy = $_SESSION ['idStudy'];
-	$studyTitle = $_SESSION ['studyTitle'];
-} else {
-	// Redirect to studyOverview of this study
-	header('Location: chooseStudy');
-}
+	// Get the idStudy from the session, if no session is made, let the user select a study.
+	session_start ();
+	
+	if (isset ( $_SESSION ['idStudy'] )) {
+		$idStudy = $_SESSION ['idStudy'];
+		$studyTitle = $_SESSION ['studyTitle'];
+	} else {
+		// Redirect to studyOverview of this study
+		header('Location: chooseStudy');
+	}
 
-error_reporting ( E_ALL );
-ini_set ( 'display_errors', '1' );
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

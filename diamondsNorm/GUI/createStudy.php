@@ -15,6 +15,15 @@
 
 <!--Include the scripts that contain the functions -->
 <?php
+	//Include the scripts containing the config variables
+	require_once('../logic/config.php');
+
+	// Show PHP errors if config has this enabled
+	if(CONFIG_ERRORREPORTING){
+		error_reporting(E_ALL);
+		ini_set('display_errors', '1');
+	}
+	
 	 require_once('../logic/functions_dataDB.php');
 	 //Initialize DIAMONDSDBClass
 	 $connection = makeConnectionToDIAMONDS();

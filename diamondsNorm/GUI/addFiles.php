@@ -11,6 +11,15 @@ Function:				this page will allow the user to upload files.
 ?>
 
 <?php
+//Include the scripts containing the config variables
+require_once('../logic/config.php');
+
+// Show PHP errors if config has this enabled
+if(CONFIG_ERRORREPORTING){
+	error_reporting(E_ALL);
+	ini_set('display_errors', '1');
+}
+
 // Get the idStudy from the session, if no session is made, let the user select a study.
 session_start ();
 
@@ -22,10 +31,6 @@ if (isset ( $_SESSION ['idStudy'] )) {
 }
 ?>
 
-<?php
-error_reporting ( E_ALL );
-ini_set ( 'display_errors', '1' );
-?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
@@ -64,15 +69,33 @@ function showFileForm(){
 		switch(selection){ 
 			case "sampleFile":
 				$('#sampleFileForm').show();
-				$('#sxsFile').hide();
+				$('#illuFile').hide();
+				$('#customAnnotation').hide();
+				$('#affyFile').hide();
 				break;
-			case "sxsFile":
+			case "illuFile":
 				$('#sampleFileForm').hide();
-				$('#sxsFile').show();
+				$('#illuFile').show();
+				$('#customAnnotation').hide();
+				$('#affyFile').hide();
+				break;
+			case "customAnnotation":
+				$('#sampleFileForm').hide();
+				$('#illuFile').hide();
+				$('#customAnnotation').show();
+				$('#affyFile').hide();
+				break;
+			case "affyFile":
+				$('#sampleFileForm').hide();
+				$('#illuFile').hide();
+				$('#customAnnotation').hide();
+				$('#affyFile').show();
 				break;
 			default:
 				$('#sampleFileForm').hide();
-				$('#sxsFile').hide();
+				$('#illuFile').hide();
+				$('#customAnnotation').hide();
+				$('#affyFile').hide();
 				break;
 		}
 	}; //End function showFileForm
@@ -130,7 +153,9 @@ function checkFields(){
 						<select data-placeholder="Choose the correct files" id="fileType" name="fileType" class="chosen-select" style="width: 360px;" tabindex="2" onchange="showFileForm()">
 							<option value="" selected></option>
 							<option value="sampleFile" <?php if($fileType == "sampleFile"){echo "selected";} ?>>Upload (multiple) samples to this study.</option>
-							<option value="sxsFile" <?php if($fileType == "sxsFile"){echo "selected";} ?>>Upload SXS expression data (/report/ folder)</option>
+							<option value="customAnnotation" <?php if($fileType == "customAnnotation"){echo "selected";} ?>>Upload custom annotation file for assay</option>
+							<option value="illuFile" <?php if($fileType == "illuFile"){echo "selected";} ?>>Upload Illumina Beadchip expression data (/report/ folder)</option>
+							<option value="affyFile" <?php if($fileType == "affyFile"){echo "selected";} ?>>Upload Affymetrix expression data (.CELL files)</option>
 						</select>
 					</div>
 					<p class="guidelines" id="guide_1">
@@ -140,6 +165,7 @@ function checkFields(){
 		</form>
 		<!--End form select a fileType form -->
 
+		
 		<!--Form for if a sampleFile should be uploaded (Hidden if not selected-->
 		<form id="sampleFileForm" method="post" action="getForm.php" enctype="multipart/form-data">
 			<input id="formType" name="formType" class="element text large" type="hidden" value="uploadSampleFile" />
@@ -205,22 +231,44 @@ function checkFields(){
 		</form>
 		<!--End form to submit a sample File-->
 
-		<!--Form to add expressionData from SXS /report/ folder-->
-		<form id="sxsFile" method="POST" action="getForm.php" enctype="multipart/form-data">
-			<input id="formType" name="formType" class="element text large" type="hidden" value="expressionDataSXSForm" />
+		
+		<!--Form to add custom annotation file -->
+		<form id="customAnnotation" method="POST" action="getForm.php" enctype="multipart/form-data">
+			<input id="formType" name="formType" class="element text large" type="hidden" value="customAnnotationFileForm" />
 			<ol>
-				<li id="expressionDataSXS"><label class="description" for="expressionData">Add beadChip Expression data from Service XS (Contents of the /report/ folder)</label>
+				<li id="customAnnotation"><label class="description" for="customAnnotation">Add your custom annotation file for the used assay.</label>
 					<div>
-						<input id="expressionSXSData" multiple="" webkitdirectory="" name="expressionSXSData[]" class="element text large" type="file" required />
+						<input id="customAnnotationFile" name="customAnnotationFile" class="element text large" type="file" required />
 					</div>
 					<p class="guidelines" id="guide_1">
-						<small>Upload the contents of the /report/ folder gotten from serviceXS. (Can select multiple files)</small>
+						<small>Upload your custom annotation file containing information about the used probes , genes etc.</small>
+					</p>
+				<input type="submit" name="submit" value="Submit">	
+				</li>
+			</ol>
+		</form>
+		<!--End of form adding custom annotation file.-->
+		
+		
+		<!--Form to add Affymetrix expression files -->
+		<form id="affyFile" method="POST" action="getForm.php" enctype="multipart/form-data">
+			<input id="formType" name="formType" class="element text large" type="hidden" value="affyFileForm" />
+			<ol>
+				<li><label class="description" for="affyFileUpload">Upload your Affymetrix .CELL files.</label>
+					<div>
+						<input id="affyFileUpload"  name="expressionDataUpload[]" multiple="" webkitdirectory="" class="element text large" type="file" required />
+					</div>
+					<p class="guidelines" id="guide_1">
+						<small>Upload your Affymetrix .Cell files. <BR><BR>Multiple files can be uploaded. (Folder upload)</small>
 					</p>
 				</li>
 				
-				<li><label class="description" for="sampleToSXSNumber">Add a tab-delimited file to add the SXS number to the samples (on sampleName).</label>
+				<!-- Add sample2assayName file -->
+				
+				<li>
+					<label class="description" for="sampleToAssayName">Add a tab-delimited file to add the assay name to the samples (on sampleName).</label>
 					<div>
-						<input id="sampleToSXSNumber" name="sampleToSXSNumber" class="element text large" type="file" /> 
+						<input id="sampleToAssayname" name="sampleToAssayname" class="element text large" type="file" /> 
 						<input type="checkbox" name="headersInFile" value="1" checked>Does the file contain	headers?<br>
 						<?php 
 						
@@ -228,10 +276,54 @@ function checkFields(){
 						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND sxsName != 0 ;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
-									echo "<input type='checkbox' checked disabled /><font color='green'>Samples already have SXS number? (".$row['count']." samples) </font> <br>";
+									echo "<input type='checkbox' checked disabled /><font color='green'>Samples already have assay names? (".$row['count']." samples) </font> <br>";
 								}
 								else{
-									echo "<input type='checkbox' disabled /><font color='red'>Samples already have SXS number?</font> <br>";
+									echo "<input type='checkbox' disabled /><font color='red'>Samples already have sxs names?</font> <br>";
+								}
+							}
+						}
+						?>
+					</div>
+					<p class="guidelines" id="guide_1">
+						<small>Upload a tab-delimited file as such: assayName | sampleName.</small>
+					</p>
+					<input type="submit" name="submit" value="Submit">	
+				</li>
+			</ol>
+		</form>
+		<!--End of form adding affymetrix file.-->
+		
+						
+		<!--Form to add Illumina Beadchip expressionData from SXS /report/ folder-->
+		<form id="illuFile" method="POST" action="getForm.php" enctype="multipart/form-data">
+			<input id="formType" name="formType" class="element text large" type="hidden" value="illuDataSXSForm" />
+			<ol>
+				<li id="expressionDataSXS"><label class="description" for="expressionData">Add Illumina BeadChip Expression data from Service XS (Contents of the /report/ folder)</label>
+					<div>
+						<input id="expressionSXSData" multiple="" webkitdirectory="" name="expressionDataUpload[]" class="element text large" type="file" required />
+					</div>
+					<p class="guidelines" id="guide_1">
+						<small>Upload the contents of the /report/ folder gotten from serviceXS. <BR><BR>Multiple files can be uploaded. (Folder upload)</small>
+					</p>
+				</li>
+				<!-- Add sample2assayName file -->
+				
+				<li>
+					<label class="description" for="sampleToAssayname">Add a tab-delimited file to add the SXS number to the samples (on sampleName).</label>
+					<div>
+						<input id="sampleToAssayname" name="sampleToAssayname" class="element text large" type="file" /> 
+						<input type="checkbox" name="headersInFile" value="1" checked>Does the file contain	headers?<br>
+						<?php 
+						
+						//Check if samples have SXS number attached
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND sxsName != 0 ;")) {
+							while ($row = mysqli_fetch_assoc($result)) {
+								if($row['count'] != 0){
+									echo "<input type='checkbox' checked disabled /><font color='green'>Samples already have assay names? (".$row['count']." samples) </font> <br>";
+								}
+								else{
+									echo "<input type='checkbox' disabled /><font color='red'>Samples already have sxs names?</font> <br>";
 								}
 							}
 						}
@@ -239,12 +331,12 @@ function checkFields(){
 						<input type="submit" name="submit" value="Submit">
 					</div>
 					<p class="guidelines" id="guide_1">
-						<small>Upload a tab-delimited file as such: sxsNumber | sampleName.</small>
+						<small>Upload a tab-delimited file as such: sampleName | assayName.</small>
 					</p>
 				</li>
 			</ol>
 		</form>
-		<!--End of form for submitting serviceXS zip file.-->
+		<!--End of form for submitting Illumina Beadchip file.-->
 	</div>
 </body>
 

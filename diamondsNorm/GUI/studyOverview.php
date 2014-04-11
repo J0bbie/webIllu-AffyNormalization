@@ -13,23 +13,24 @@ Function:				This page will present an overview of the study and also allows for
 ?>
 
 <?php
-	#Debug option to select a study without using a GUI/cookie
-	$idStudy = $_GET['idStudy'];
+	//Include the scripts containing the config variables
+	require_once('../logic/config.php');
+
+	// Show PHP errors if config has this enabled
+	if(CONFIG_ERRORREPORTING){
+		error_reporting(E_ALL);
+		ini_set('display_errors', '1');
+	}
 	
-	error_reporting(E_ALL);
-	ini_set('display_errors', '1');
-?>
-
-<?php
-// Get the idStudy from the session, if no session is made, let the user select a study.
-session_start ();
-
-if (isset ( $_SESSION ['idStudy'] )) {
-	$idStudy = $_SESSION ['idStudy'];
-} else {
-	// Redirect to studyOverview of this study
-	header('Location: chooseStudy');
-}
+	// Get the idStudy from the session, if no session is made, let the user select a study.
+	session_start ();
+	
+	if (isset ( $_SESSION ['idStudy'] )) {
+		$idStudy = $_SESSION ['idStudy'];
+	} else {
+		// Redirect to studyOverview of this study
+		header('Location: chooseStudy');
+	}
 ?>
 
 

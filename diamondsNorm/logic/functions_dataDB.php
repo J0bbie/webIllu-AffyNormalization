@@ -10,17 +10,20 @@ Function:				This file contains the functions to connect to the DIAMONDS databas
 						This script could be included into a page which needs these functionality.
 */
 
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
-
 //Include the scripts containing the config variables
 require_once('../logic/config.php');
 
+// Show PHP errors if config has this enabled
+ if(CONFIG_ERRORREPORTING){
+	error_reporting(E_ALL);
+	ini_set('display_errors', '1');
+ }
+
 function makeConnectionToDIAMONDS(){
-	$host = host;
-	$databaseSchema = databaseSchema;
-	$username = databaseUser;
-	$password = databaseUserPassword;
+	$host = CONFIG_HOST;
+	$databaseSchema = CONFIG_DATABASESCHEMA;
+	$username = CONFIG_DATABASEUSER;
+	$password = CONFIG_DATABASEUSERPASSWORD;
 	$tryConnect = mysqli_connect($host, $username, $password, $databaseSchema);
 
 	// Check connection
