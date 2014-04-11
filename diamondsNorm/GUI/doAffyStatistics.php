@@ -626,7 +626,7 @@ function showSampleSelection() {
 						name: {
 							title: 'Sample Name'
 						},
-						sxsName: {
+						assayName: {
 							title: 'Array ID'
 						},
 						compoundName:{

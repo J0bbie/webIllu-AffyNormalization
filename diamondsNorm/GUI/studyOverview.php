@@ -80,7 +80,10 @@ Function:				This page will present an overview of the study and also allows for
 						require_once('../logic/functions_dataDB.php');
 						$connection = makeConnectionToDIAMONDS();
 						
-						//Check for running job
+						/////////////////////////////////////////
+						//		Check for running job			/
+						/////////////////////////////////////////
+						
 						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tJobStatus WHERE idStudy = $idStudy AND status = 0;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
@@ -101,7 +104,10 @@ Function:				This page will present an overview of the study and also allows for
 							}
 						}
 							
-						//Check if samples have been added
+						/////////////////////////////////////////
+						//		Check samples + assay name		/
+						/////////////////////////////////////////
+						
 						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
@@ -113,46 +119,94 @@ Function:				This page will present an overview of the study and also allows for
 							}
 						}
 
-						//Check if samples have SXS number attached
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND sxsName != 0 ;")) {
+						//Check if samples have assay names attached
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND assayName != 0 ;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
-									echo "<input type='checkbox' checked disabled /><font color='green'>Samples have SXS number? (".$row['count']." samples) </font> <br>";
+									echo "<input type='checkbox' checked disabled /><font color='green'>Samples have assay names? (".$row['count']." samples) </font> <br>";
 								}
 								else{
-									echo "<input type='checkbox' disabled /><font color='red'>Samples have SXS number?</font> <br>";
+									echo "<input type='checkbox' disabled /><font color='red'>Samples have assay names?</font> <br>";
 								}
 							}
 						}
 						
-						//Check if raw expression data from SXS has been uploaded.
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tFiles WHERE idStudy = $idStudy AND idFileType = 4;" )) {
+						/////////////////////////////////////////
+						//		Check raw expression data		/
+						/////////////////////////////////////////
+						
+						// If study has been run on Affymetrix
+						if ($result =  mysqli_query($connection, "SELECT idStudy FROM tStudy WHERE idStudy = $idStudy AND platformType = 'affy' LIMIT 1;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
-								$controlProbeProfile = $row['count'];
+								$affyStudy = $row['idStudy'];
 							}
 						}
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tFiles WHERE idStudy = $idStudy AND idFileType = 7;" )) {
+						
+						if(isset($affyStudy)){
+							
+							// Get the count of cell files
+							if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tFiles WHERE idStudy = $idStudy AND idFileType = "SET THIS";")) {
+								while ($row = mysqli_fetch_assoc($result)) {
+									if($row['count'] != 0){
+										echo "<input type='checkbox' checked disabled /><font color='green'>Uploaded CELL files: ".$row['count']." </font> <br>";
+									}else{
+										echo "<input type='checkbox' disabled /><font color='red'>No raw .CELL files uploaded!</font> <br>";
+									}
+								}
+							}							
+						}
+						
+						// If study has been run on Illumina
+						if ($result =  mysqli_query($connection, "SELECT idStudy FROM tStudy WHERE idStudy = $idStudy AND platformType = 'illu' LIMIT 1;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
-								$sampleProbeProfile = $row['count'];
+								$illuStudy = $row['idStudy'];
 							}
 						}
-						if($controlProbeProfile != 0 AND $sampleProbeProfile != 0){
-							echo "<input type='checkbox' checked disabled /><font color='green'>Raw expression data from SXS uploaded? </font> <br>";
-						}
-						//If files are missing
-						else{
-							echo "<input type='checkbox' disabled /><font color='red'>Raw expression data from SXS uploaded?";
-							//If no control probe profile
-							if($controlProbeProfile == 0){
-								echo "<br>(No Control Probe Profile)";
+						
+						if(isset($illuStudy)){
+							if ($result =  mysqli_query($connection, "SELECT idStudy FROM tFiles WHERE idStudy = $idStudy AND idFileType = 4 LIMIT 1;" )) {
+								while ($row = mysqli_fetch_assoc($result)) {
+									$controlProbeProfile = $row['idStudy'];
+								}
 							}
-							//If no sample probe profile
-							if($sampleProbeProfile == 0){
-								echo "<br>(No Sample Probe Profile)";
+							if ($result =  mysqli_query($connection, "SELECT idStudy as count FROM tFiles WHERE idStudy = $idStudy AND idFileType = 7 LIMIT 1;" )) {
+								while ($row = mysqli_fetch_assoc($result)) {
+									$sampleProbeProfile = $row['idStudy'];
+								}
 							}
-							echo "</font> <br>";
+							if(isset($controlProbeProfile) AND isset($sampleProbeProfile)){
+								echo "<input type='checkbox' checked disabled /><font color='green'>Raw expression data from SXS uploaded? </font> <br>";
+							}
+							//If files are missing
+							else{
+								echo "<input type='checkbox' disabled /><font color='red'>Raw expression data from SXS uploaded?";
+								//If no control probe profile
+								if(isset($controlProbeProfile)){
+									echo "<br>(No Control Probe Profile)";
+								}
+								//If no sample probe profile
+								if(isset($sampleProbeProfile)){
+									echo "<br>(No Sample Probe Profile)";
+								}
+								echo "</font> <br>";
+							}
 						}
-
+		
+						/////////////////////////////////////////
+						//		Check custom assay annotation	/
+						/////////////////////////////////////////
+						
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tFiles WHERE idStudy = $idStudy AND idFileType = "SET THIS";")) {
+							while ($row = mysqli_fetch_assoc($result)) {
+								if($row['count'] != 0){
+									echo "<input type='checkbox' checked disabled /><font color='green'>Study has custom annotation file uploaded</font> <br>";
+								}
+							}
+						}
+						
+						/////////////////////////////////////////
+						//			Check normAnalysis			/
+						/////////////////////////////////////////
 						
 						//Check if a normAnalyses has been run.
 						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tNormAnalysis WHERE idStudy = $idStudy;")) {
@@ -189,8 +243,11 @@ Function:				This page will present an overview of the study and also allows for
 								}
 							}
 						}
+
+						/////////////////////////////////////////
+						//			Check statistics runs		/
+						/////////////////////////////////////////
 						
-						//Check if QC has been run on this study
 						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tFiles WHERE idStudy = $idStudy AND idStatistics != NULL;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){

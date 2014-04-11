@@ -207,7 +207,7 @@ function checkFields(){
 					<div>
 						<label class="description" for="multiSelectHeaders">Choose the correct datatypes for your columns. <br><em><font size="0.5">Must correspond to order of columns in file!</font></em></label>
 						<select id="multiSelectHeaders" data-placeholder="What are your columns?" style="width: 100%" multiple class="chosen-select" onChange="getMultipleHeaders()" required>
-							<option value="sxsName">sxsName</option>
+							<option value="assayName">assayName</option>
 							<?php
 							if ($result =  mysqli_query($connection, "SELECT * FROM tDataType")) {
 								while ($row = mysqli_fetch_assoc($result)) {
@@ -272,14 +272,14 @@ function checkFields(){
 						<input type="checkbox" name="headersInFile" value="1" checked>Does the file contain	headers?<br>
 						<?php 
 						
-						//Check if samples have SXS number attached
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND sxsName != 0 ;")) {
+						//Check if samples have assayName attached
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND assayName != 0 ;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
 									echo "<input type='checkbox' checked disabled /><font color='green'>Samples already have assay names? (".$row['count']." samples) </font> <br>";
 								}
 								else{
-									echo "<input type='checkbox' disabled /><font color='red'>Samples already have sxs names?</font> <br>";
+									echo "<input type='checkbox' disabled /><font color='red'>Samples already have assay names?</font> <br>";
 								}
 							}
 						}
@@ -301,7 +301,7 @@ function checkFields(){
 			<ol>
 				<li id="expressionDataSXS"><label class="description" for="expressionData">Add Illumina BeadChip Expression data from Service XS (Contents of the /report/ folder)</label>
 					<div>
-						<input id="expressionSXSData" multiple="" webkitdirectory="" name="expressionDataUpload[]" class="element text large" type="file" required />
+						<input id="expressionDataUpload" multiple="" webkitdirectory="" name="expressionDataUpload[]" class="element text large" type="file" required />
 					</div>
 					<p class="guidelines" id="guide_1">
 						<small>Upload the contents of the /report/ folder gotten from serviceXS. <BR><BR>Multiple files can be uploaded. (Folder upload)</small>
@@ -310,20 +310,20 @@ function checkFields(){
 				<!-- Add sample2assayName file -->
 				
 				<li>
-					<label class="description" for="sampleToAssayname">Add a tab-delimited file to add the SXS number to the samples (on sampleName).</label>
+					<label class="description" for="sampleToAssayname">Add a tab-delimited file to add the assayName to the samples (on sampleName).</label>
 					<div>
 						<input id="sampleToAssayname" name="sampleToAssayname" class="element text large" type="file" /> 
 						<input type="checkbox" name="headersInFile" value="1" checked>Does the file contain	headers?<br>
 						<?php 
 						
-						//Check if samples have SXS number attached
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND sxsName != 0 ;")) {
+						//Check if samples have assayName number attached
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND assayName != 0 ;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
 									echo "<input type='checkbox' checked disabled /><font color='green'>Samples already have assay names? (".$row['count']." samples) </font> <br>";
 								}
 								else{
-									echo "<input type='checkbox' disabled /><font color='red'>Samples already have sxs names?</font> <br>";
+									echo "<input type='checkbox' disabled /><font color='red'>Samples already have assay names?</font> <br>";
 								}
 							}
 						}

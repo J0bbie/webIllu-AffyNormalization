@@ -12,32 +12,31 @@ Function:				This page will present the user with options to perform a normilaza
 ?>
 
 <?php
-//Include the scripts containing the config variables
-require_once('../logic/config.php');
-
-// Show PHP errors if config has this enabled
-if(CONFIG_ERRORREPORTING){
-	error_reporting(E_ALL);
-	ini_set('display_errors', '1');
-}
-
-// Get the idStudy from the session, if no session is made, let the user select a study.
-session_start ();
-
-if (isset ( $_SESSION ['idStudy'] )) {
-	$idStudy = $_SESSION ['idStudy'];
-} else {
-	// Redirect to studyOverview of this study
-	header('Location: chooseStudy');
-}
-
-//Include the script to make a connection to the DIAMONDS DB
-require_once('../logic/functions_dataDB.php');
-//Initialize DIAMONDSDBClass
-$connection = makeConnectionToDIAMONDS();
+	//Include the scripts containing the config variables
+	require_once('../logic/config.php');
+	
+	// Show PHP errors if config has this enabled
+	if(CONFIG_ERRORREPORTING){
+		error_reporting(E_ALL);
+		ini_set('display_errors', '1');
+	}
+	
+	// Get the idStudy from the session, if no session is made, let the user select a study.
+	session_start ();
+	
+	if (isset ( $_SESSION ['idStudy'] )) {
+		$idStudy = $_SESSION ['idStudy'];
+	} else {
+		// Redirect to studyOverview of this study
+		header('Location: chooseStudy');
+	}
+	
+	//Include the script to make a connection to the DIAMONDS DB
+	require_once('../logic/functions_dataDB.php');
+	//Initialize DIAMONDSDBClass
+	$connection = makeConnectionToDIAMONDS();
 
 ?>
-
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -72,87 +71,101 @@ $connection = makeConnectionToDIAMONDS();
 	<?php require_once("menu.htm"); ?>
 </div>
 
-<script type="text/javascript">
-//Function to get the selected attributes on which the samples should be clustered
-function getAttributes(){
- var selection = ChosenOrder.getSelectionOrder(document.getElementById('groupOnSelector'));
-	$('#selectedAttributes').val(selection);
-};
+<!--
+	/////////////////////////////////////////
+	//		Gets selected cluster options	/
+	/////////////////////////////////////////
+ -->
 
-//Ask if the user if sure if they do not want to cluster the samples and treat each sample independently when QCing
-function checkAttributes(){
-	var selection = $('#selectedAttributes').val();
-	if($('#expressionDataUploaded').val() == 1){
-		if(selection == ""){
-			if (confirm('Are you sure you do NOT want to cluster the samples when QCing the normalized/raw data?\nPress cancel to stop.')) {
+<script type="text/javascript">
+	//Function to get the selected attributes on which the samples should be clustered
+	function getAttributes(){
+	 var selection = ChosenOrder.getSelectionOrder(document.getElementById('groupOnSelector'));
+		$('#selectedAttributes').val(selection);
+	};
+	
+	//Ask if the user if sure if they do not want to cluster the samples and treat each sample independently when QCing
+	function checkAttributes(){
+		var selection = $('#selectedAttributes').val();
+		if($('#expressionDataUploaded').val() == 1){
+			if(selection == ""){
+				if (confirm('Are you sure you do NOT want to cluster the samples when QCing the normalized/raw data?\nPress cancel to stop.')) {
+					document.getElementById("normalizeStudyForm").submit();
+				} else {
+				    return false;
+				}
+			}
+			else{
 				document.getElementById("normalizeStudyForm").submit();
-			} else {
-			    return false;
 			}
 		}
 		else{
-			document.getElementById("normalizeStudyForm").submit();
+			alert("Cannot do a normalization if the expression data is not uploaded!");
+			return false;
 		}
+	};
+	
+	/////////////////////////////////////////
+	//	Functions to display HTML elements	/
+	/////////////////////////////////////////
+	
+	//Function to display filtering
+	function showStatisticsOptions() {
+		if($('#performStatistics').is(':checked')) {
+			$("#qcPlots").show();
+			$("#normQCsignalPlots").show();
+			$("#normQCarrayPlots").show();
+			$("#descStatDiv").show();		
+		} else {
+			$("#qcPlots").hide();
+			$("#normQCsignalPlots").hide();
+			$("#normQCarrayPlots").hide();
+			$("#descStatDiv").hide();
+		}
+	};
+	
+	function showSampleSelection() {
+		if($('#sampleFiltering').is(':checked')) {
+			$("#sampleSelection").show();
+			$("#searchSamples").show();
+			showSampleSelectTable();
+		} else {
+			$("#sampleSelection").hide();
+			$("#searchSamples").hide();
+		}
+	};
+	
+	function filterSamples(){
+		 $('#sampleSelection').jtable('load', {
+			sampleName : $('#searchSampleName').val(),
+			compoundName : $('#searchCompoundName').val(),
+			sampleType : $('#searchSampleType').val(),
+			attrValue : $('#searchAttributes').val(),
+			attrFilter : $('#attrFilter').val(),
+			dataTypeFilter : $('#dataTypeFilter').val(),
+			idStudy : <?php echo $idStudy; ?>
+	     });
 	}
-	else{
-		alert("Cannot do a normalization if the expression data is not uploaded!");
-		return false;
+	
+	/////////////////////////////////////////
+	//			Get filtered samples		/
+	/////////////////////////////////////////
+	
+	//Get the selected sample IDs and put them in a , separated string
+	function getSampleSelection(){
+		var $selectedRows = $('#sampleSelection').jtable('selectedRows');
+		var $line = "";
+	    $selectedRows.each(function () {
+	        var record = $(this).data('record').idSample;
+	       	if($line != ""){
+	       		$line += ","+record;
+	       	}else{
+	       		$line += record;
+	       	}
+	    });
+	    $('#selectedSamples').val($line);
+	    alert("Samples subset has been selected.");
 	}
-};
-
-//Function to display filtering
-function showStatisticsOptions() {
-	if($('#performStatistics').is(':checked')) {
-		$("#qcPlots").show();
-		$("#normQCsignalPlots").show();
-		$("#normQCarrayPlots").show();
-		$("#descStatDiv").show();		
-	} else {
-		$("#qcPlots").hide();
-		$("#normQCsignalPlots").hide();
-		$("#normQCarrayPlots").hide();
-		$("#descStatDiv").hide();
-	}
-};
-
-function showSampleSelection() {
-	if($('#sampleFiltering').is(':checked')) {
-		$("#sampleSelection").show();
-		$("#searchSamples").show();
-		showSampleSelectTable();
-	} else {
-		$("#sampleSelection").hide();
-		$("#searchSamples").hide();
-	}
-};
-
-function filterSamples(){
-	 $('#sampleSelection').jtable('load', {
-		sampleName : $('#searchSampleName').val(),
-		compoundName : $('#searchCompoundName').val(),
-		sampleType : $('#searchSampleType').val(),
-		attrValue : $('#searchAttributes').val(),
-		attrFilter : $('#attrFilter').val(),
-		dataTypeFilter : $('#dataTypeFilter').val(),
-		idStudy : <?php echo $idStudy; ?>
-     });
-}
-
-//Get the selected sample IDs and put them in a , separated string
-function getSampleSelection(){
-	var $selectedRows = $('#sampleSelection').jtable('selectedRows');
-	var $line = "";
-    $selectedRows.each(function () {
-        var record = $(this).data('record').idSample;
-       	if($line != ""){
-       		$line += ","+record;
-       	}else{
-       		$line += record;
-       	}
-    });
-    $('#selectedSamples').val($line);
-    alert("Samples subset has been selected.");
-}
 </script>
 
 <body onload="showSampleSelection()">
@@ -247,11 +260,11 @@ function getSampleSelection(){
 						}
 						
 						//Check if samples have array names attached
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND sxsName != 0 ;")) {
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND assayName != 0 ;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
 									echo "<input type='checkbox' checked disabled /><font color='green'>Samples have assay names? (".$row['count']." samples) </font> <br>";
-									echo "<input type='checkbox' id='skipNoSXS' name='skipNoSXS' checked />Skip samples without assay names?<br>";
+									echo "<input type='checkbox' id='skipNoAssayName' name='skipNoAssayName' checked />Skip samples without assay names?<br>";
 								}
 								else{
 									echo "<input type='checkbox' disabled /><font color='red'>Samples have assay names?</font> <br>";
@@ -753,7 +766,7 @@ function getSampleSelection(){
 					name: {
 						title: 'Sample Name'
 					},
-					sxsName: {
+					assayName: {
 						title: 'Array ID'
 					},
 					compoundName:{

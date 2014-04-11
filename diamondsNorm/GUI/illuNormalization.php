@@ -266,12 +266,12 @@ function getSampleSelection(){
 							}
 						}
 						
-						//Check if samples have SXS number attached
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND sxsName != 0 ;")) {
+						//Check if samples have assayName attached
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND assayName != 0 ;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
-									echo "<input type='checkbox' checked disabled /><font color='green'>Samples have SXS number? (".$row['count']." samples) </font> <br>";
-									echo "<input type='checkbox' id='skipNoSXS' name='skipNoSXS' checked />Skip samples without assay names?<br>";
+									echo "<input type='checkbox' checked disabled /><font color='green'>Samples have assay names? (".$row['count']." samples) </font> <br>";
+									echo "<input type='checkbox' id='skipNoAssayName' name='skipNoAssayName' checked />Skip samples without assay names?<br>";
 								}
 								else{
 									echo "<input type='checkbox' disabled /><font color='red'>Samples have assay names?</font> <br>";
@@ -576,7 +576,7 @@ function getSampleSelection(){
 					name: {
 						title: 'Sample Name'
 					},
-					sxsName: {
+					assayName: {
 						title: 'Array ID'
 					},
 					compoundName:{

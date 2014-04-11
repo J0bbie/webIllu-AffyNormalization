@@ -105,13 +105,13 @@ try
 		$attrFilter = $_POST['attrFilter'];
 		$dataTypeFilter = $_POST['dataTypeFilter'];
 			
-		$queryCount = "SELECT DISTINCT COUNT(idSample) AS RecordCount FROM vSamplesWithInfoNames.idSample, name, sxsName, compoundName, casNumber, typeName FROM normdb.vSamplesWithInfoNames JOIN vSamplesWithAttributes ON vSamplesWithInfoNames.idSample = vSamplesWithAttributes.idSample 
+		$queryCount = "SELECT DISTINCT COUNT(idSample) AS RecordCount FROM vSamplesWithInfoNames.idSample, name, assayName, compoundName, casNumber, typeName FROM normdb.vSamplesWithInfoNames JOIN vSamplesWithAttributes ON vSamplesWithInfoNames.idSample = vSamplesWithAttributes.idSample 
 				WHERE vSamplesWithInfoNames.idStudy = $idStudy 
 				".(isset($sampleName) ? " AND name LIKE '%$sampleName%'" : '')."
 				".(isset($compoundName) ? " AND compoundName LIKE '%$compoundName%'" : '')."
 				".(isset($sampleType) ? " AND typeName LIKE '%$sampleType%'" : '');
 		
-		$queryGet = "SELECT DISTINCT vSamplesWithInfoNames.idSample as idSample, name, sxsName, compoundName, casNumber, typeName FROM normdb.vSamplesWithInfoNames JOIN vSamplesWithAttributes ON vSamplesWithInfoNames.idSample = vSamplesWithAttributes.idSample 
+		$queryGet = "SELECT DISTINCT vSamplesWithInfoNames.idSample as idSample, name, assayName, compoundName, casNumber, typeName FROM normdb.vSamplesWithInfoNames JOIN vSamplesWithAttributes ON vSamplesWithInfoNames.idSample = vSamplesWithAttributes.idSample 
 				WHERE vSamplesWithInfoNames.idStudy = $idStudy 
 				".(isset($sampleName) ? " AND name LIKE '%$sampleName%'" : '')."
 				".(isset($compoundName) ? " AND compoundName LIKE '%$compoundName%'" : '')."
