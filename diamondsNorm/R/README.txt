@@ -39,7 +39,7 @@ Useful short flags:
 -n       Whether to normalize or not (TRUE/FALSE)
 -u       Whether to skip background correction (TRUE/FALSE) (TRUE means skip background correction)
 -m       Name of the file containing the normalized data R object   (When already normalized and wanting to do new statistics)
--F       File containing the sampleNames/AssayNames on which statistics should be done.
+-F       File containing the sampleNames/ArrayNames on which statistics should be done.
 -B       Whether to perform statistics on a subset (As defined in -F)
 -f       Whether to load the old normalized data.
 

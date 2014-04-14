@@ -67,6 +67,11 @@ Function:				This page will present an overview of files uploaded to a study. It
 	}
 ?>
 
+<!-- 
+/////////////////////////////////////////
+//		Functions to hide containers	/
+/////////////////////////////////////////
+ -->
 <!--Based on the selection from the sample functionality options-->
 <script type="text/javascript">
 	function showCRUD(){
@@ -224,6 +229,11 @@ Function:				This page will present an overview of files uploaded to a study. It
 					This page shows the data as they are stored in the database. <br>CRUD (Create/Read/Update/Delete) functions can be performed on the selected data.
 				</p>
 			</div>
+			<!-- 
+			/////////////////////////////////////////
+			//		Choose which data to show		/
+			/////////////////////////////////////////
+			 -->
 			<ol>
 				<li id="li_1"><label class="description" for="crudTypeSelect">Select the data on which you want to perform CRUD:</label> 
 				<select data-placeholder="Choose the table you want to view/edit."
@@ -259,9 +269,9 @@ Function:				This page will present an overview of files uploaded to a study. It
 					</div>
 					<button type=button onclick="searchTable('fileType')">Search through records.</button>
 				</li>
-				<li id="searchAssayTypes"><label class="description" for="assayName">Search on assay name:</label>
+				<li id="searchAssayTypes"><label class="description" for="arrayName">Search on array name:</label>
 					<div>
-						<input id="assayName" name="assayName" class="element text large" type="text" maxlength="255" value="" />
+						<input id="arrayName" name="arrayName" class="element text large" type="text" maxlength="255" value="" />
 					</div>
 					<button type=button onclick="searchTable('assayType')">Search through records.</button>
 				</li>
@@ -301,6 +311,10 @@ Function:				This page will present an overview of files uploaded to a study. It
 
 	<script type="text/javascript">
 
+	/////////////////////////////////////////
+	//		Definitions of the CRUDTables	/
+	/////////////////////////////////////////
+
     //Re-load records when user clicks search button.
     function searchTable(selected) {
         
@@ -319,7 +333,7 @@ Function:				This page will present an overview of files uploaded to a study. It
 		        });
 			case "assayType":
 		        $('#assayTypeContainer').jtable('load', {
-		            name: $('#assayName').val()
+		            name: $('#arrayName').val()
 		        });
 			case "compound":
 		        $('#compoundContainer').jtable('load', {
@@ -548,10 +562,10 @@ Function:				This page will present an overview of files uploaded to a study. It
 						list: true
 					},
 					name: {
-						title: 'Name of the assay Type'
+						title: 'Name of the array Type'
 					},
 					description: {
-						title: 'Description of assay type'
+						title: 'Description of array type'
 					}
 				}
 			});

@@ -126,7 +126,7 @@ function getSamples()
 				<th>idStudy</th>
 				<th>idSample</th>
 				<th>Name</th>
-				<th>assayName</th>
+				<th>arrayName</th>
 				<th>Compound</th>
 				<th>Compound-CAS</th>
 				<th>SampleType</th>
@@ -145,7 +145,7 @@ function getSamples()
 				<th>idStudy</th>
 				<th>idSample</th>
 				<th>Name</th>
-				<th>assayName</th>
+				<th>arrayName</th>
 				<th>Compound</th>
 				<th>Compound-CAS</th>
 				<th>SampleType</th>
@@ -170,7 +170,7 @@ function getSamples()
 								echo "<td>".$row['idStudy']. "</td>";
 								echo "<td>".$row['idSample']. "</td>";
 								echo "<td>".$row['name']. "</td>";
-								if($row['assayName'] == ''){ echo "<td>N/A</td>";} else{echo "<td>".$row['assayName']."</td>";};
+								if($row['arrayName'] == ''){ echo "<td>N/A</td>";} else{echo "<td>".$row['arrayName']."</td>";};
 								echo "<td>".$row['compoundName']. "</td>";
 								echo "<td>".$row['casNumber']. "</td>";
 								echo "<td>".$row['typeName']. "</td>";

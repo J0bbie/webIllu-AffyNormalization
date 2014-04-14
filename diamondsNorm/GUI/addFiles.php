@@ -153,7 +153,7 @@ function checkFields(){
 						<select data-placeholder="Choose the correct files" id="fileType" name="fileType" class="chosen-select" style="width: 360px;" tabindex="2" onchange="showFileForm()">
 							<option value="" selected></option>
 							<option value="sampleFile" <?php if($fileType == "sampleFile"){echo "selected";} ?>>Upload (multiple) samples to this study.</option>
-							<option value="customAnnotation" <?php if($fileType == "customAnnotation"){echo "selected";} ?>>Upload custom annotation file for assay</option>
+							<option value="customAnnotation" <?php if($fileType == "customAnnotation"){echo "selected";} ?>>Upload custom annotation file for array</option>
 							<option value="illuFile" <?php if($fileType == "illuFile"){echo "selected";} ?>>Upload Illumina Beadchip expression data (/report/ folder)</option>
 							<option value="affyFile" <?php if($fileType == "affyFile"){echo "selected";} ?>>Upload Affymetrix expression data (.CELL files)</option>
 						</select>
@@ -165,6 +165,11 @@ function checkFields(){
 		</form>
 		<!--End form select a fileType form -->
 
+		<!-- 
+		/////////////////////////////////////////
+		//		Add a sampleFile to study		/
+		///////////////////////////////////////// 
+		-->
 		
 		<!--Form for if a sampleFile should be uploaded (Hidden if not selected-->
 		<form id="sampleFileForm" method="post" action="getForm.php" enctype="multipart/form-data">
@@ -207,7 +212,7 @@ function checkFields(){
 					<div>
 						<label class="description" for="multiSelectHeaders">Choose the correct datatypes for your columns. <br><em><font size="0.5">Must correspond to order of columns in file!</font></em></label>
 						<select id="multiSelectHeaders" data-placeholder="What are your columns?" style="width: 100%" multiple class="chosen-select" onChange="getMultipleHeaders()" required>
-							<option value="assayName">assayName</option>
+							<option value="arrayName">arrayName</option>
 							<?php
 							if ($result =  mysqli_query($connection, "SELECT * FROM tDataType")) {
 								while ($row = mysqli_fetch_assoc($result)) {
@@ -231,12 +236,17 @@ function checkFields(){
 		</form>
 		<!--End form to submit a sample File-->
 
+		<!-- 
+		/////////////////////////////////////////
+		//		Add a custom annotation			/
+		///////////////////////////////////////// 
+		-->
 		
 		<!--Form to add custom annotation file -->
 		<form id="customAnnotation" method="POST" action="getForm.php" enctype="multipart/form-data">
 			<input id="formType" name="formType" class="element text large" type="hidden" value="customAnnotationFileForm" />
 			<ol>
-				<li id="customAnnotation"><label class="description" for="customAnnotation">Add your custom annotation file for the used assay.</label>
+				<li id="customAnnotation"><label class="description" for="customAnnotation">Add your custom annotation file for the used array.</label>
 					<div>
 						<input id="customAnnotationFile" name="customAnnotationFile" class="element text large" type="file" required />
 					</div>
@@ -249,6 +259,11 @@ function checkFields(){
 		</form>
 		<!--End of form adding custom annotation file.-->
 		
+		<!-- 
+		/////////////////////////////////////////
+		//		Add affymetrix .CEL files		/
+		///////////////////////////////////////// 
+		-->
 		
 		<!--Form to add Affymetrix expression files -->
 		<form id="affyFile" method="POST" action="getForm.php" enctype="multipart/form-data">
@@ -263,30 +278,30 @@ function checkFields(){
 					</p>
 				</li>
 				
-				<!-- Add sample2assayName file -->
+				<!-- Add sample2arrayName file -->
 				
 				<li>
-					<label class="description" for="sampleToAssayName">Add a tab-delimited file to add the assay name to the samples (on sampleName).</label>
+					<label class="description" for="sampleToArrayName">Add a tab-delimited file to add the array name to the samples (on sampleName).</label>
 					<div>
-						<input id="sampleToAssayname" name="sampleToAssayname" class="element text large" type="file" /> 
+						<input id="sampleToArrayname" name="sampleToArrayname" class="element text large" type="file" /> 
 						<input type="checkbox" name="headersInFile" value="1" checked>Does the file contain	headers?<br>
 						<?php 
 						
-						//Check if samples have assayName attached
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND assayName != 0 ;")) {
+						//Check if samples have arrayName attached
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND arrayName != 0 ;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
-									echo "<input type='checkbox' checked disabled /><font color='green'>Samples already have assay names? (".$row['count']." samples) </font> <br>";
+									echo "<input type='checkbox' checked disabled /><font color='green'>Samples already have array names? (".$row['count']." samples) </font> <br>";
 								}
 								else{
-									echo "<input type='checkbox' disabled /><font color='red'>Samples already have assay names?</font> <br>";
+									echo "<input type='checkbox' disabled /><font color='red'>Samples already have array names?</font> <br>";
 								}
 							}
 						}
 						?>
 					</div>
 					<p class="guidelines" id="guide_1">
-						<small>Upload a tab-delimited file as such: assayName | sampleName.</small>
+						<small>Upload a tab-delimited file as such: arrayName | sampleName.</small>
 					</p>
 					<input type="submit" name="submit" value="Submit">	
 				</li>
@@ -294,7 +309,12 @@ function checkFields(){
 		</form>
 		<!--End of form adding affymetrix file.-->
 		
-						
+		<!-- 
+		/////////////////////////////////////////
+		//		Add Illumina expression files	/
+		///////////////////////////////////////// 
+		-->
+					
 		<!--Form to add Illumina Beadchip expressionData from SXS /report/ folder-->
 		<form id="illuFile" method="POST" action="getForm.php" enctype="multipart/form-data">
 			<input id="formType" name="formType" class="element text large" type="hidden" value="illuDataSXSForm" />
@@ -307,23 +327,23 @@ function checkFields(){
 						<small>Upload the contents of the /report/ folder gotten from serviceXS. <BR><BR>Multiple files can be uploaded. (Folder upload)</small>
 					</p>
 				</li>
-				<!-- Add sample2assayName file -->
+				<!-- Add sample2arrayName file -->
 				
 				<li>
-					<label class="description" for="sampleToAssayname">Add a tab-delimited file to add the assayName to the samples (on sampleName).</label>
+					<label class="description" for="sampleToArrayname">Add a tab-delimited file to add the arrayName to the samples (on sampleName).</label>
 					<div>
-						<input id="sampleToAssayname" name="sampleToAssayname" class="element text large" type="file" /> 
+						<input id="sampleToArrayname" name="sampleToArrayname" class="element text large" type="file" /> 
 						<input type="checkbox" name="headersInFile" value="1" checked>Does the file contain	headers?<br>
 						<?php 
 						
-						//Check if samples have assayName number attached
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND assayName != 0 ;")) {
+						//Check if samples have arrayName number attached
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND arrayName != 0 ;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
-									echo "<input type='checkbox' checked disabled /><font color='green'>Samples already have assay names? (".$row['count']." samples) </font> <br>";
+									echo "<input type='checkbox' checked disabled /><font color='green'>Samples already have array names? (".$row['count']." samples) </font> <br>";
 								}
 								else{
-									echo "<input type='checkbox' disabled /><font color='red'>Samples already have assay names?</font> <br>";
+									echo "<input type='checkbox' disabled /><font color='red'>Samples already have array names?</font> <br>";
 								}
 							}
 						}
@@ -331,7 +351,7 @@ function checkFields(){
 						<input type="submit" name="submit" value="Submit">
 					</div>
 					<p class="guidelines" id="guide_1">
-						<small>Upload a tab-delimited file as such: sampleName | assayName.</small>
+						<small>Upload a tab-delimited file as such: sampleName | arrayName.</small>
 					</p>
 				</li>
 			</ol>

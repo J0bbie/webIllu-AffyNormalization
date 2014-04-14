@@ -71,6 +71,12 @@ Function:				This page will present the user with options to perform a normilaza
 	<?php require_once("menu.htm"); ?>
 </div>
 
+<!-- 
+/////////////////////////////////////////
+//		Functions to show/hide HTML		/
+/////////////////////////////////////////
+ -->
+ 
 <script type="text/javascript">
 //Function to get the selected attributes on which the samples should be clustered
 function getAttributes(){
@@ -154,7 +160,11 @@ function showSampleSelection() {
 };
 </script>
 
-
+<!-- 
+/////////////////////////////////////////
+//	Selection of a run normalization	/
+/////////////////////////////////////////
+ -->
 <body onload="showStatistics()">
 	<div id="normChoser">
 		<!-- Form to show study info -->
@@ -192,7 +202,11 @@ function showSampleSelection() {
 		<img id="bottom" src="../img/bottom.png" alt="">
 	</div>
 
-	<!-- Div containing the statistics options -->
+	<!-- 
+	/////////////////////////////////////////
+	//Div containing the statistics options	/
+	/////////////////////////////////////////
+	 -->
 	<div id="statisticsOptions">
 		<!-- Form to show statistics options -->
 		<img id="top" src="../img/top.png" alt="" />
@@ -266,9 +280,9 @@ function showSampleSelection() {
 							<input type="checkbox" id="reorderSamples" name="reorderSamples" checked />Reorder samples by experimental group? <small>(Used for the order in plots)</small><br>
 
 							<?php
-							//Check if the raw expression data already has been uploaded for this study. (Sample Gene Profile / Control Probe Profile)
+							//Check if the normed R object is available
 							$checkFiles = 0;
-							if ($result =  mysqli_query($connection, "SELECT DISTINCT idStudy FROM tFiles WHERE idNorm = ".(isset($_GET['normSelect']) ? $_GET['normSelect'] : '0')." AND idStudy = $idStudy AND idFileType= 14")) {
+							if ($result =  mysqli_query($connection, "SELECT DISTINCT idStudy FROM tFiles WHERE idNorm = ".(isset($_GET['normSelect']) ? $_GET['normSelect'] : '0')." AND idStudy = $idStudy AND idFileType= 33")) {
 								while ($row = mysqli_fetch_assoc($result)) {
 									$checkFiles = 1;
 								}
@@ -586,7 +600,6 @@ function showSampleSelection() {
 		<img id="bottom" src="../img/bottom.png" alt="">
 	</div>
 
-
 	<!--Give chosen JQuery to selected elements-->
 	<script type="text/javascript">
 			var config = {
@@ -626,7 +639,7 @@ function showSampleSelection() {
 						name: {
 							title: 'Sample Name'
 						},
-						assayName: {
+						arrayName: {
 							title: 'Array ID'
 						},
 						compoundName:{

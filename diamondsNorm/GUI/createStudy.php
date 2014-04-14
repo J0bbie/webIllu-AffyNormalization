@@ -34,7 +34,11 @@
 </div>
 
 <body id="main_body">
-	<!-- Form to create a new study -->
+	<!-- 
+	/////////////////////////////////////////
+	//		Form to create a new study		/
+	///////////////////////////////////////// 
+	-->
 	<img id="top" src="../img/top.png" alt="" />
 	<div id="form_container">
 		<h1>
@@ -102,7 +106,7 @@
 							<?php
 							if ($result =  mysqli_query($connection, "SELECT * FROM tSpecies")) {
 								while ($row = mysqli_fetch_assoc($result)) {
-									echo "<option value=".$row['idSpecies'].">".$row['name']."</option>";
+									echo "<option value=".$row['idSpecies'].">".$row['genericName']."</option>";
 								}
 							}
 						?>

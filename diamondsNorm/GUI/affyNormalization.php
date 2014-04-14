@@ -247,7 +247,11 @@ Function:				This page will present the user with options to perform a normilaza
 						<input type="checkbox" id="performStatistics" name="performStatistics" checked onchange="showStatisticsOptions()"/>Perform statistics on raw/norm data? <small>(Define which, below)</small><br>
 															
 						<?php
-						//Check if samples have been added
+												
+						/////////////////////////////////////////
+						//		Check if study has samples		/
+						/////////////////////////////////////////
+						
 						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
@@ -259,22 +263,25 @@ Function:				This page will present the user with options to perform a normilaza
 							}
 						}
 						
-						//Check if samples have array names attached
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND assayName != 0 ;")) {
+						/////////////////////////////////////////
+						//	Check array names given to samples	/
+						/////////////////////////////////////////
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND arrayName != 0 ;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
-									echo "<input type='checkbox' checked disabled /><font color='green'>Samples have assay names? (".$row['count']." samples) </font> <br>";
-									echo "<input type='checkbox' id='skipNoAssayName' name='skipNoAssayName' checked />Skip samples without assay names?<br>";
+									echo "<input type='checkbox' checked disabled /><font color='green'>Samples have array names? (".$row['count']." samples) </font> <br>";
+									echo "<input type='checkbox' id='skipNoArrayName' name='skipNoArrayName' checked />Skip samples without array names?<br>";
 								}
 								else{
-									echo "<input type='checkbox' disabled /><font color='red'>Samples have assay names?</font> <br>";
+									echo "<input type='checkbox' disabled /><font color='red'>Samples have array names?</font> <br>";
 								}
 							}
 						}
-						
-						//Check if the raw expression data already has been uploaded for this study. (Sample Gene Profile / Control Probe Profile)
+						/////////////////////////////////////////
+						//		Check if raw data uploaded 		/
+						/////////////////////////////////////////
 						$checkFiles = 0;
-						if ($result =  mysqli_query($connection, "SELECT DISTINCT idStudy FROM tFiles WHERE idStudy = $idStudy AND idFileType= 7 AND 4")) {
+						if ($result =  mysqli_query($connection, "SELECT DISTINCT idStudy FROM tFiles WHERE idStudy = $idStudy AND idFileType = 14;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								$checkFiles = 1;
 							}
@@ -286,7 +293,21 @@ Function:				This page will present the user with options to perform a normilaza
 							echo "<input type='checkbox' id='expressionDataUploaded' name='expressionDataUploaded' value='0' disabled/>This study has expression data?<br>";
 						}
 						
-						//Check if the study already has been normalized.
+						/////////////////////////////////////////
+						//		Check custom array annotation	/
+						/////////////////////////////////////////
+						
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tFiles WHERE idStudy = $idStudy AND idFileType = 13;")) {
+							while ($row = mysqli_fetch_assoc($result)) {
+								if($row['count'] != 0){
+									echo "<input type='checkbox' checked disabled /><font color='green'>Study has custom annotation file uploaded</font> <br>";
+								}
+							}
+						}
+						
+						/////////////////////////////////////////
+						//		Check if already normalized		/
+						/////////////////////////////////////////
 						$checkNorm = 0;
 						if ($result =  mysqli_query($connection, "SELECT DISTINCT idStudy FROM tNormAnalysis WHERE idStudy = ".$idStudy)) {
 							while ($row = mysqli_fetch_assoc($result)) {
@@ -547,7 +568,13 @@ Function:				This page will present the user with options to perform a normilaza
 							                        <tr>
 														<td width='33%' style='text-align: center'>
 															Normalization method <br>
-															<input type="checkbox" name="normMethod" checked style="margin: 0 auto;">
+															<select id="normMethod" size="1" onchange="" name="normMeth">
+																<option value="GCRMA">GCRMA</option>
+																<option value="RMA">RMA</option>
+																<option value="MAS5">MAS5</option>
+																<option value="PLIER">PLIER</option>
+																<option value="LOESS">LOESS</option>
+															</select>
 														</td>
 														<td width='33%' style='text-align: center'>
 															Normalize per group <br>
@@ -555,7 +582,17 @@ Function:				This page will present the user with options to perform a normilaza
 														</td>
 														<td width='33%' style='text-align: center'>
 															Use custom annotation? <br>
-															<input type="checkbox" name="customAnnotation" style="margin: 0 auto;">
+															<?php 
+															if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tFiles WHERE idStudy = $idStudy AND idFileType = 13;")) {
+																while ($row = mysqli_fetch_assoc($result)) {
+																	if($row['count'] != 0){
+																		echo '<input type="checkbox" checked disabled name="customAnnotation" style="margin: 0 auto;">';
+																	}else{
+																		echo '<input type="checkbox" disabled name="customAnnotation" style="margin: 0 auto;">';
+																	}
+																}
+															}
+															?>	
 														</td>
 													</tr>
 													<tr>
@@ -598,55 +635,66 @@ Function:				This page will present the user with options to perform a normilaza
 															</select>
 														</td>
 														<td></td>
+														<?php 
+														//Get information about the study such as species, array used etc.
+														$querySpecies = ("SELECT idMainSpecies FROM tStudy WHERE idStudy = $idStudy;");
+														$species;
+														if ($resultSpecies =  mysqli_query($connection, $querySpecies)) {
+															while ($row = mysqli_fetch_assoc($resultSpecies)) {
+																$idSpecies = $row['idMainSpecies'];
+															}
+														}
+														?>
+
 														<td width='33%' style='text-align: center'>
 															Species <br>
-															<select id="species" name="species" onchange="" size="1">
-																<option value="Ag">
+															<select id="species" disabled name="species" onchange="" size="1">
+																<option value="Ag" <?php if($idSpecies == 2) echo "selected"; ?>>
 																	Anopheles gambiae
 																</option>
-																<option value="At">
+																<option value="At" <?php if($idSpecies == 3) echo "selected"; ?>>
 																	Arabidopsis thaliana
 																</option>
-																<option value="Bt">
+																<option selected value="Bt" <?php if($idSpecies == 4) echo "selected"; ?>>
 																	Bos taurus
 																</option>
-																<option value="Ce">
+																<option value="Ce" <?php if($idSpecies == 5) echo "selected"; ?>>
 																	Caenorhabditis elegans
 																</option>
-																<option value="Cf">
+																<option value="Cf" <?php if($idSpecies == 6) echo "selected"; ?>>
 																	Canis familiaris
 																</option>
-																<option value="Dr">
+																<option value="Dr" <?php if($idSpecies == 7) echo "selected"; ?>>
 																	Danio rerio
 																</option>
-																<option value="Dm">
+																<option value="Dm" <?php if($idSpecies == 8) echo "selected"; ?>>
 																	Drosophila melanogaster
 																</option>
-																<option value="Gg">
+																<option value="Gg" <?php if($idSpecies == 9) echo "selected"; ?>>
 																	Gallus gallus
 																</option>
-																<option value="Hs">
+																<option value="Hs" <?php if($idSpecies == 1) echo "selected"; ?>>
 																	Homo sapiens
 																</option>
-																<option value="MAmu">
+																<option value="MAmu" <?php if($idSpecies == 10) echo "selected"; ?>>
 																	Macaca mulatta
 																</option>
-																<option value="Mm">
+																<option value="Mm" <?php if($idSpecies == 11) echo "selected"; ?>>
 																	Mus musculus
 																</option>
-																<option value="Os">
+																<option value="Os" <?php if($idSpecies == 12) echo "selected"; ?>>
 																	Oryza sativa
 																</option>
-																<option value="Rn">
+																<option value="Rn" <?php if($idSpecies == 13) echo "selected"; ?>>
 																	Rattus norvegicus
 																</option>
-																<option value="Sc">
+																<option value="Sc" <?php if($idSpecies == 14) echo "selected"; ?>>
 																	Saccharomyces cerevisiae
 																</option>
-																<option value="Sp">
+																<option value="Sp" <?php if($idSpecies == 15) echo "selected"; ?>>
 																	Schizosaccharomyces pombe
 																</option>
-																<option value="Ss">
+																<option value="Ss" <?php if($idSpecies == 16) echo "selected"; ?>>
 																	Sus scrofa
 																</option>
 															</select>
@@ -766,7 +814,7 @@ Function:				This page will present the user with options to perform a normilaza
 					name: {
 						title: 'Sample Name'
 					},
-					assayName: {
+					arrayName: {
 						title: 'Array ID'
 					},
 					compoundName:{

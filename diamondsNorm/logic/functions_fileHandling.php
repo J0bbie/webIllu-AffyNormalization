@@ -56,7 +56,7 @@
 		$compoundNameIndex;
 		$compoundCASIndex;
 		$sampleTypeIndex;
-		$assayNameIndex;
+		$arrayNameIndex;
 			
 		//Check if the required column/headers are supplied
 		//Split the headers on ,
@@ -84,8 +84,8 @@
 					$sampleTypeIndex = $i;
 					$requiredColumns--;
 					break;
-				case "assayName":
-					$assayNameIndex = $i;
+				case "arrayName":
+					$arrayNameIndex = $i;
 					break;
 			}
 			$i++;
@@ -163,8 +163,8 @@
 					$compoundCas = $lineSplit[$compoundCASIndex];
 					$sampleName = $lineSplit[$sampleNameIndex];
 					$sampleTypeName = $lineSplit[$sampleTypeIndex];
-					if(isset($assayNameIndex)){
-						$assayName = $lineSplit[$assayNameIndex];
+					if(isset($arrayNameIndex)){
+						$arrayName = $lineSplit[$arrayNameIndex];
 					}
 					
 					//Translate the sampleType into its ID, create if it does not yet exist.
@@ -175,12 +175,12 @@
 					$idCompound = getCreateCompound(array('name'=>$compoundName, 'casNumber'=>$compoundCas));
 					//Make a sample with the newly created/retrieved idCompound and the column containing the sampleName and sampleType
 					$idSample = getCreateSample(array('idStudy'=>$idStudy, 'name'=>$sampleName, 'idCompound'=>$idCompound, 'idArrayPlatform'=>$idArray, 'idSampleType' => $idSampleType, 'overwrite'=>$overwrite));
-					//If the assayName was also supplied, update the record and add tis number
-					if(isset($assayNameIndex)){
-						$assayName = $lineSplit[$assayNameIndex];
-						$connection = $mysqli->prepare("UPDATE tSamples SET assayName = ? WHERE idSample = ?");
+					//If the arrayName was also supplied, update the record and add tis number
+					if(isset($arrayNameIndex)){
+						$arrayName = $lineSplit[$arrayNameIndex];
+						$connection = $mysqli->prepare("UPDATE tSamples SET arrayName = ? WHERE idSample = ?");
 						$connection->bind_param('si',
-								$assayName,
+								$arrayName,
 								$idSample);
 						$connection->execute();
 					}
@@ -361,13 +361,13 @@
 			exit('<p><font color=red>Failed to upload all the raw expressions files. It possibly exceeds maximum filesize. ('.$postMax.')</font></p>');
 		}
 	
-		//Check if assayName->sampleName file is given
-		if($FILES['sampleToAssayname']['name'] != null){
+		//Check if arrayName->sampleName file is given
+		if($FILES['sampleToArrayname']['name'] != null){
 	
-			//Add the assayName to the samples
-			//Read file to set assayName to the correct sample (using its name)		
+			//Add the arrayName to the samples
+			//Read file to set arrayName to the correct sample (using its name)		
 			try{
-				if($fileHandle = fopen($FILES['sampleToAssayname']['tmp_name'], "r")){
+				if($fileHandle = fopen($FILES['sampleToArrayname']['tmp_name'], "r")){
 					//If file had headers, skip that file
 					if($POST['headersInFile'] == 1){
 						$line = fgets($fileHandle);
@@ -380,12 +380,12 @@
 						//Check if # of headers correspond with # of tab-delimited columns
 						if(count($lineSplit) == 2){
 							$sampleName = rtrim($lineSplit[0]);
-							$assayName = rtrim($lineSplit[1]);
+							$arrayName = rtrim($lineSplit[1]);
 		
-							//Update the sample with the assayName
+							//Update the sample with the arrayName
 							$idSample = getIDSampleByName($connection, $idStudy, $sampleName);
 							if($idSample != ''){
-								$connection->query("UPDATE tSamples SET assayName = '$assayName' WHERE idSample = '$idSample'");
+								$connection->query("UPDATE tSamples SET arrayName = '$arrayName' WHERE idSample = '$idSample'");
 							}else{
 								$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Could not find a sample for this study with the name of ".$sampleName."' WHERE idJob = '$idJob'");
 								exit("<p><font color=red>Could not find a sample for this study with the name of ".$sampleName."</font></p>");
@@ -402,11 +402,11 @@
 					fclose($fileHandle);
 				}
 			}catch (Exception $e) {
-				echo 'Caught exception while reading file '.$FILES['sampleToAssayname']['tmp_name'].'. Exception: ',  $e->getMessage(), "\n";
+				echo 'Caught exception while reading file '.$FILES['sampleToArrayname']['tmp_name'].'. Exception: ',  $e->getMessage(), "\n";
 			}
 			//If everything succeeded, close the file and commit the data and close the connection
 			
-		}//End adding assayName -> sampleName
+		}//End adding arrayName -> sampleName
 		$connection->query("UPDATE tJobStatus SET status = 1, statusMessage = 'Succes!' WHERE idJob = '$idJob'");
 	
 		//Commit data to DB
@@ -415,10 +415,10 @@
 	}
 	
 	///////////////////////////////////////////////////////////////////
-	// 			Upload custom annotation file for assay				///
+	// 			Upload custom annotation file for array				///
 	///////////////////////////////////////////////////////////////////
 	
-	// If an assay is used that has a custom design, upload the description file of this assay to the server and link it in the database.
+	// If an array is used that has a custom design, upload the description file of this array to the server and link it in the database.
 	function uploadCustomAnnotationFile($connection, $idStudy, $studyTitle, $folderName, $idJob){
 		
 		//Check if the studyID id provided
@@ -430,7 +430,7 @@
 		$connection = makeConnectionToDIAMONDS();
 		
 		//Make a jobStatus in the DB
-		$connection->query("INSERT INTO tJobStatus (`idStudy`, `name`, `description`, status) VALUES ($idStudy, 'Uploading custom annotation file', 'Uploading annotation file with custom design for the assay used in this study', 0);");
+		$connection->query("INSERT INTO tJobStatus (`idStudy`, `name`, `description`, status) VALUES ($idStudy, 'Uploading custom annotation file', 'Uploading annotation file with custom design for the array used in this study', 0);");
 		$idJob = mysqli_insert_id($connection);
 		
 		//Get the correct folder name (/sampleAnnotation/)

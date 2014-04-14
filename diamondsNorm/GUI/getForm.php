@@ -119,21 +119,21 @@ Function:				This page gets called each time a form is submitted. It will then c
 							header('Refresh: 5; URL=sampleOverview');
 							break; //End adding samples from a file
 							
-						//Add a custom annotation file to the assay
+						//Add a custom annotation file to the array
 						case "customAnnotationFileForm":
 							uploadCustomAnnotationFile($_FILES,$_POST, $_SESSION['idStudy'], $_SESSION['studyTitle']);
 							echo "<p><font color=green>Samples have been added! <br> Redirecting to samples overview. (5 sec)</font></p>";
 							header('Refresh: 5; URL=sampleOverview');
 							break; //End adding samples from a file
 							
-						//Upload Illumina expression data to the DB + Added file with assayName to sampleName 
+						//Upload Illumina expression data to the DB + Added file with arrayName to sampleName 
 						case "illuDataSXSForm":
 							uploadRawExpressionToDB($_FILES,$_POST, $_SESSION['idStudy'], $_SESSION['studyTitle']);
 							echo "<p><font color=green>Illumina expression files have been added! <br> Redirecting to files overview. (5 sec)</font></p>";
 							header('Refresh: 5; URL=fileOverview');
 							break; //End uploading expression data.
 							
-						//Upload Affymetrix expression data to the DB + Added file with assayName to sampleName
+						//Upload Affymetrix expression data to the DB + Added file with arrayName to sampleName
 						case "affyFileForm":
 							uploadRawExpressionToDB($_FILES,$_POST, $_SESSION['idStudy'], $_SESSION['studyTitle']);
 							echo "<p><font color=green>Affymetrix expression files have been added! <br> Redirecting to files overview. (5 sec)</font></p>";

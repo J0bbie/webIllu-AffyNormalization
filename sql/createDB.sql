@@ -11,12 +11,12 @@ USE `normdb` ;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tStudyType` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tStudyType` (
-  `idStudyType` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
-  `description` TEXT NULL,
-  PRIMARY KEY (`idStudyType`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
+CREATE  TABLE IF NOT EXISTS `normdb`.`tStudyType` (
+  `idStudyType` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  `description` TEXT NULL ,
+  PRIMARY KEY (`idStudyType`) ,
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC) )
 ENGINE = InnoDB;
 
 
@@ -25,11 +25,13 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tSpecies` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tSpecies` (
-  `idSpecies` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(50) NOT NULL,
-  PRIMARY KEY (`idSpecies`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
+CREATE  TABLE IF NOT EXISTS `normdb`.`tSpecies` (
+  `idSpecies` INT NOT NULL AUTO_INCREMENT ,
+  `genericName` VARCHAR(50) NOT NULL ,
+  `latinName` VARCHAR(100) NOT NULL ,
+  PRIMARY KEY (`idSpecies`) ,
+  UNIQUE INDEX `name_UNIQUE` (`genericName` ASC) ,
+  UNIQUE INDEX `latinName_UNIQUE` (`latinName` ASC) )
 ENGINE = InnoDB;
 
 
@@ -38,12 +40,12 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tAssayType` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tAssayType` (
-  `idAssayType` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
-  `description` TEXT NULL,
-  PRIMARY KEY (`idAssayType`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
+CREATE  TABLE IF NOT EXISTS `normdb`.`tAssayType` (
+  `idAssayType` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  `description` TEXT NULL ,
+  PRIMARY KEY (`idAssayType`) ,
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC) )
 ENGINE = InnoDB;
 
 
@@ -52,12 +54,12 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tDomains` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tDomains` (
-  `idDomain` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
-  `description` TEXT NULL,
-  PRIMARY KEY (`idDomain`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
+CREATE  TABLE IF NOT EXISTS `normdb`.`tDomains` (
+  `idDomain` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  `description` TEXT NULL ,
+  PRIMARY KEY (`idDomain`) ,
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC) )
 ENGINE = InnoDB;
 
 
@@ -66,12 +68,13 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tArrayPlatform` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tArrayPlatform` (
-  `idArrayPlatform` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(100) NOT NULL,
-  `arrayType` VARCHAR(45) NOT NULL,
-  `annoType` VARCHAR(75) NOT NULL,
-  PRIMARY KEY (`idArrayPlatform`))
+CREATE  TABLE IF NOT EXISTS `normdb`.`tArrayPlatform` (
+  `idArrayPlatform` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(100) NOT NULL ,
+  `arrayType` VARCHAR(45) NOT NULL ,
+  `annoType` VARCHAR(75) NOT NULL ,
+  `platformType` SET('affy','illu') NOT NULL ,
+  PRIMARY KEY (`idArrayPlatform`) )
 ENGINE = InnoDB;
 
 
@@ -80,47 +83,47 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tStudy` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tStudy` (
-  `idStudy` INT NOT NULL AUTO_INCREMENT,
-  `title` VARCHAR(255) NOT NULL,
-  `curator` VARCHAR(45) NULL,
-  `description` TEXT NULL,
-  `source` VARCHAR(45) NULL,
-  `submissionDate` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `idStudyType` INT NOT NULL,
-  `idMainSpecies` INT NOT NULL,
-  `idAssayType` INT NOT NULL,
-  `idDomain` INT NOT NULL,
-  `idArrayPlatform` INT NULL,
-  PRIMARY KEY (`idStudy`),
-  INDEX `fk_tStudy_tStudyTypes_idx` (`idStudyType` ASC),
-  INDEX `fk_tStudy_tSpecies1_idx` (`idMainSpecies` ASC),
-  INDEX `fk_tStudy_tExperimentType1_idx` (`idAssayType` ASC),
-  INDEX `fk_tStudy_tDomains1_idx` (`idDomain` ASC),
-  INDEX `fk_tStudy_tArrayPlatform1_idx` (`idArrayPlatform` ASC),
+CREATE  TABLE IF NOT EXISTS `normdb`.`tStudy` (
+  `idStudy` INT NOT NULL AUTO_INCREMENT ,
+  `title` VARCHAR(255) NOT NULL ,
+  `curator` VARCHAR(45) NULL ,
+  `description` TEXT NULL ,
+  `source` VARCHAR(45) NULL ,
+  `submissionDate` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ,
+  `idStudyType` INT NOT NULL ,
+  `idMainSpecies` INT NOT NULL ,
+  `idAssayType` INT NOT NULL ,
+  `idDomain` INT NOT NULL ,
+  `idArrayPlatform` INT NULL ,
+  PRIMARY KEY (`idStudy`) ,
+  INDEX `fk_tStudy_tStudyTypes_idx` (`idStudyType` ASC) ,
+  INDEX `fk_tStudy_tSpecies1_idx` (`idMainSpecies` ASC) ,
+  INDEX `fk_tStudy_tExperimentType1_idx` (`idAssayType` ASC) ,
+  INDEX `fk_tStudy_tDomains1_idx` (`idDomain` ASC) ,
+  INDEX `fk_tStudy_tArrayPlatform1_idx` (`idArrayPlatform` ASC) ,
   CONSTRAINT `fk_tStudy_tStudyTypes`
-    FOREIGN KEY (`idStudyType`)
-    REFERENCES `normdb`.`tStudyType` (`idStudyType`)
+    FOREIGN KEY (`idStudyType` )
+    REFERENCES `normdb`.`tStudyType` (`idStudyType` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `fk_tStudy_tSpecies1`
-    FOREIGN KEY (`idMainSpecies`)
-    REFERENCES `normdb`.`tSpecies` (`idSpecies`)
+    FOREIGN KEY (`idMainSpecies` )
+    REFERENCES `normdb`.`tSpecies` (`idSpecies` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `fk_tStudy_tExperimentType1`
-    FOREIGN KEY (`idAssayType`)
-    REFERENCES `normdb`.`tAssayType` (`idAssayType`)
+    FOREIGN KEY (`idAssayType` )
+    REFERENCES `normdb`.`tAssayType` (`idAssayType` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `fk_tStudy_tDomains1`
-    FOREIGN KEY (`idDomain`)
-    REFERENCES `normdb`.`tDomains` (`idDomain`)
+    FOREIGN KEY (`idDomain` )
+    REFERENCES `normdb`.`tDomains` (`idDomain` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `fk_tStudy_tArrayPlatform1`
-    FOREIGN KEY (`idArrayPlatform`)
-    REFERENCES `normdb`.`tArrayPlatform` (`idArrayPlatform`)
+    FOREIGN KEY (`idArrayPlatform` )
+    REFERENCES `normdb`.`tArrayPlatform` (`idArrayPlatform` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -131,14 +134,14 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tCompound` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tCompound` (
-  `idCompound` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
-  `casNumber` VARCHAR(45) NOT NULL,
-  `abbreviation` VARCHAR(45) NULL,
-  `officialName` VARCHAR(45) NULL,
-  PRIMARY KEY (`idCompound`),
-  UNIQUE INDEX `casNumber_UNIQUE` (`casNumber` ASC))
+CREATE  TABLE IF NOT EXISTS `normdb`.`tCompound` (
+  `idCompound` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  `casNumber` VARCHAR(45) NOT NULL ,
+  `abbreviation` VARCHAR(45) NULL ,
+  `officialName` VARCHAR(45) NULL ,
+  PRIMARY KEY (`idCompound`) ,
+  UNIQUE INDEX `casNumber_UNIQUE` (`casNumber` ASC) )
 ENGINE = InnoDB;
 
 
@@ -147,12 +150,12 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tSampleType` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tSampleType` (
-  `idSampleType` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(75) NOT NULL,
-  `description` TEXT NULL,
-  PRIMARY KEY (`idSampleType`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
+CREATE  TABLE IF NOT EXISTS `normdb`.`tSampleType` (
+  `idSampleType` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(75) NOT NULL ,
+  `description` TEXT NULL ,
+  PRIMARY KEY (`idSampleType`) ,
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC) )
 ENGINE = InnoDB;
 
 
@@ -161,33 +164,33 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tSamples` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tSamples` (
-  `idSample` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `idStudy` INT NOT NULL,
-  `idSampleType` INT NOT NULL,
-  `sxsName` VARCHAR(75) NULL,
-  `name` VARCHAR(100) NOT NULL,
-  `submissionDate` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `idCompound` INT NOT NULL,
-  PRIMARY KEY (`idSample`),
-  INDEX `fk_tSamples_tCompound1_idx` (`idCompound` ASC),
-  INDEX `fk_tSamples_tStudy1_idx` (`idStudy` ASC),
-  INDEX `fk_tSamples_tSampleType1_idx` (`idSampleType` ASC),
-  UNIQUE INDEX `study_name_UNIQUE` (`name` ASC, `idStudy` ASC),
-  INDEX `sampleNameIndex` (`name` ASC),
+CREATE  TABLE IF NOT EXISTS `normdb`.`tSamples` (
+  `idSample` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `idStudy` INT NOT NULL ,
+  `idSampleType` INT NOT NULL ,
+  `arrayName` VARCHAR(75) NULL ,
+  `name` VARCHAR(100) NOT NULL ,
+  `submissionDate` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ,
+  `idCompound` INT NOT NULL ,
+  PRIMARY KEY (`idSample`) ,
+  INDEX `fk_tSamples_tCompound1_idx` (`idCompound` ASC) ,
+  INDEX `fk_tSamples_tStudy1_idx` (`idStudy` ASC) ,
+  INDEX `fk_tSamples_tSampleType1_idx` (`idSampleType` ASC) ,
+  UNIQUE INDEX `study_name_UNIQUE` (`name` ASC, `idStudy` ASC) ,
+  INDEX `sampleNameIndex` (`name` ASC) ,
   CONSTRAINT `fk_tSamples_tCompound1`
-    FOREIGN KEY (`idCompound`)
-    REFERENCES `normdb`.`tCompound` (`idCompound`)
+    FOREIGN KEY (`idCompound` )
+    REFERENCES `normdb`.`tCompound` (`idCompound` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `fk_tSamples_tStudy1`
-    FOREIGN KEY (`idStudy`)
-    REFERENCES `normdb`.`tStudy` (`idStudy`)
+    FOREIGN KEY (`idStudy` )
+    REFERENCES `normdb`.`tStudy` (`idStudy` )
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_tSamples_tSampleType1`
-    FOREIGN KEY (`idSampleType`)
-    REFERENCES `normdb`.`tSampleType` (`idSampleType`)
+    FOREIGN KEY (`idSampleType` )
+    REFERENCES `normdb`.`tSampleType` (`idSampleType` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -198,13 +201,13 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tCompoundSynonyms` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tCompoundSynonyms` (
-  `idCompound` INT NOT NULL,
-  `synonym` VARCHAR(100) NOT NULL,
-  INDEX `fk_tCompoundSynonyms_tCompound1_idx` (`idCompound` ASC),
+CREATE  TABLE IF NOT EXISTS `normdb`.`tCompoundSynonyms` (
+  `idCompound` INT NOT NULL ,
+  `synonym` VARCHAR(100) NOT NULL ,
+  INDEX `fk_tCompoundSynonyms_tCompound1_idx` (`idCompound` ASC) ,
   CONSTRAINT `fk_tCompoundSynonyms_tCompound1`
-    FOREIGN KEY (`idCompound`)
-    REFERENCES `normdb`.`tCompound` (`idCompound`)
+    FOREIGN KEY (`idCompound` )
+    REFERENCES `normdb`.`tCompound` (`idCompound` )
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -215,12 +218,12 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tDataType` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tDataType` (
-  `idDataType` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(75) NOT NULL,
-  `description` TEXT NULL,
-  PRIMARY KEY (`idDataType`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
+CREATE  TABLE IF NOT EXISTS `normdb`.`tDataType` (
+  `idDataType` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(75) NOT NULL ,
+  `description` TEXT NULL ,
+  PRIMARY KEY (`idDataType`) ,
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC) )
 ENGINE = InnoDB;
 
 
@@ -229,20 +232,20 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tAttributes` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tAttributes` (
-  `idSample` INT UNSIGNED NOT NULL,
-  `idDataType` INT NOT NULL,
-  `value` VARCHAR(50) NOT NULL,
-  INDEX `fk_tAttributes_tSamples1_idx` (`idSample` ASC),
-  INDEX `fk_tAttributes_tDataType1_idx` (`idDataType` ASC),
+CREATE  TABLE IF NOT EXISTS `normdb`.`tAttributes` (
+  `idSample` INT UNSIGNED NOT NULL ,
+  `idDataType` INT NOT NULL ,
+  `value` VARCHAR(50) NOT NULL ,
+  INDEX `fk_tAttributes_tSamples1_idx` (`idSample` ASC) ,
+  INDEX `fk_tAttributes_tDataType1_idx` (`idDataType` ASC) ,
   CONSTRAINT `fk_tAttributes_tSamples1`
-    FOREIGN KEY (`idSample`)
-    REFERENCES `normdb`.`tSamples` (`idSample`)
+    FOREIGN KEY (`idSample` )
+    REFERENCES `normdb`.`tSamples` (`idSample` )
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_tAttributes_tDataType1`
-    FOREIGN KEY (`idDataType`)
-    REFERENCES `normdb`.`tDataType` (`idDataType`)
+    FOREIGN KEY (`idDataType` )
+    REFERENCES `normdb`.`tDataType` (`idDataType` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -253,17 +256,17 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tProbes` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tProbes` (
-  `idProbe` INT NOT NULL AUTO_INCREMENT,
-  `nuID` VARCHAR(75) NOT NULL,
-  `ilmnGene` VARCHAR(45) NULL,
-  `probeID` VARCHAR(45) NULL,
-  `entrezGeneID` VARCHAR(45) NULL,
-  `geneSymbol` VARCHAR(45) NULL,
-  `geneName` VARCHAR(45) NULL,
-  `accessionName` VARCHAR(45) NULL,
-  PRIMARY KEY (`idProbe`),
-  UNIQUE INDEX `nuID_UNIQUE` (`nuID` ASC))
+CREATE  TABLE IF NOT EXISTS `normdb`.`tProbes` (
+  `idProbe` INT NOT NULL AUTO_INCREMENT ,
+  `nuID` VARCHAR(75) NOT NULL ,
+  `ilmnGene` VARCHAR(45) NULL ,
+  `probeID` VARCHAR(45) NULL ,
+  `entrezGeneID` VARCHAR(45) NULL ,
+  `geneSymbol` VARCHAR(45) NULL ,
+  `geneName` VARCHAR(45) NULL ,
+  `accessionName` VARCHAR(45) NULL ,
+  PRIMARY KEY (`idProbe`) ,
+  UNIQUE INDEX `nuID_UNIQUE` (`nuID` ASC) )
 ENGINE = InnoDB;
 
 
@@ -272,20 +275,20 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tNormAnalysis` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tNormAnalysis` (
-  `idNormAnalysis` INT NOT NULL AUTO_INCREMENT,
-  `idStudy` INT NOT NULL,
-  `description` TEXT NULL,
-  `normType` VARCHAR(10) NULL,
-  `bgCorrectionMethod` VARCHAR(20) NULL,
-  `varStabMethod` VARCHAR(20) NULL,
-  `normMethod` VARCHAR(20) NULL,
-  `filterThreshold` FLOAT NULL,
-  PRIMARY KEY (`idNormAnalysis`),
-  INDEX `fk_tNormAnalysis_tStudy1_idx` (`idStudy` ASC),
+CREATE  TABLE IF NOT EXISTS `normdb`.`tNormAnalysis` (
+  `idNormAnalysis` INT NOT NULL AUTO_INCREMENT ,
+  `idStudy` INT NOT NULL ,
+  `description` TEXT NULL ,
+  `normType` VARCHAR(10) NULL ,
+  `bgCorrectionMethod` VARCHAR(20) NULL ,
+  `varStabMethod` VARCHAR(20) NULL ,
+  `normMethod` VARCHAR(20) NULL ,
+  `filterThreshold` FLOAT NULL ,
+  PRIMARY KEY (`idNormAnalysis`) ,
+  INDEX `fk_tNormAnalysis_tStudy1_idx` (`idStudy` ASC) ,
   CONSTRAINT `fk_tNormAnalysis_tStudy1`
-    FOREIGN KEY (`idStudy`)
-    REFERENCES `normdb`.`tStudy` (`idStudy`)
+    FOREIGN KEY (`idStudy` )
+    REFERENCES `normdb`.`tStudy` (`idStudy` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -296,29 +299,29 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tNormedExpression` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tNormedExpression` (
-  `idNormExpression` INT NOT NULL AUTO_INCREMENT,
-  `expressionValue` FLOAT NOT NULL,
-  `idSample` INT UNSIGNED NOT NULL,
-  `idProbe` INT NOT NULL,
-  `idNormAnalysis` INT NOT NULL,
-  INDEX `fk_tNormedExpression_tProbes1_idx` (`idProbe` ASC),
-  INDEX `fk_tNormedExpression_tNormAnalysis1_idx` (`idNormAnalysis` ASC),
-  PRIMARY KEY (`idNormExpression`),
-  INDEX `fk_tNormedExpression_tSamples1_idx` (`idSample` ASC),
+CREATE  TABLE IF NOT EXISTS `normdb`.`tNormedExpression` (
+  `idNormExpression` INT NOT NULL AUTO_INCREMENT ,
+  `expressionValue` FLOAT NOT NULL ,
+  `idSample` INT UNSIGNED NOT NULL ,
+  `idProbe` INT NOT NULL ,
+  `idNormAnalysis` INT NOT NULL ,
+  INDEX `fk_tNormedExpression_tProbes1_idx` (`idProbe` ASC) ,
+  INDEX `fk_tNormedExpression_tNormAnalysis1_idx` (`idNormAnalysis` ASC) ,
+  PRIMARY KEY (`idNormExpression`) ,
+  INDEX `fk_tNormedExpression_tSamples1_idx` (`idSample` ASC) ,
   CONSTRAINT `fk_tNormedExpression_tProbes1`
-    FOREIGN KEY (`idProbe`)
-    REFERENCES `normdb`.`tProbes` (`idProbe`)
+    FOREIGN KEY (`idProbe` )
+    REFERENCES `normdb`.`tProbes` (`idProbe` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `fk_tNormedExpression_tNormAnalysis1`
-    FOREIGN KEY (`idNormAnalysis`)
-    REFERENCES `normdb`.`tNormAnalysis` (`idNormAnalysis`)
+    FOREIGN KEY (`idNormAnalysis` )
+    REFERENCES `normdb`.`tNormAnalysis` (`idNormAnalysis` )
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_tNormedExpression_tSamples1`
-    FOREIGN KEY (`idSample`)
-    REFERENCES `normdb`.`tSamples` (`idSample`)
+    FOREIGN KEY (`idSample` )
+    REFERENCES `normdb`.`tSamples` (`idSample` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -329,26 +332,26 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tSampleSummary` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tSampleSummary` (
-  `idSummary` INT NOT NULL AUTO_INCREMENT,
-  `idNormAnalysis` INT NOT NULL,
-  `idSample` INT UNSIGNED NOT NULL,
-  `meanSample` FLOAT NULL,
-  `standardError` FLOAT NULL,
-  `detectionRate_01` FLOAT NULL,
-  `distanceToMeanSample` FLOAT NULL,
-  `normed` TINYINT(1) NULL,
-  INDEX `fk_tSampleSummary_tSamples1_idx` (`idSample` ASC),
-  INDEX `fk_tSampleSummary_tNormAnalysis1_idx` (`idNormAnalysis` ASC),
-  PRIMARY KEY (`idSummary`),
+CREATE  TABLE IF NOT EXISTS `normdb`.`tSampleSummary` (
+  `idSummary` INT NOT NULL AUTO_INCREMENT ,
+  `idNormAnalysis` INT NOT NULL ,
+  `idSample` INT UNSIGNED NOT NULL ,
+  `meanSample` FLOAT NULL ,
+  `standardError` FLOAT NULL ,
+  `detectionRate_01` FLOAT NULL ,
+  `distanceToMeanSample` FLOAT NULL ,
+  `normed` TINYINT(1) NULL ,
+  INDEX `fk_tSampleSummary_tSamples1_idx` (`idSample` ASC) ,
+  INDEX `fk_tSampleSummary_tNormAnalysis1_idx` (`idNormAnalysis` ASC) ,
+  PRIMARY KEY (`idSummary`) ,
   CONSTRAINT `fk_tSampleSummary_tSamples1`
-    FOREIGN KEY (`idSample`)
-    REFERENCES `normdb`.`tSamples` (`idSample`)
+    FOREIGN KEY (`idSample` )
+    REFERENCES `normdb`.`tSamples` (`idSample` )
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_tSampleSummary_tNormAnalysis1`
-    FOREIGN KEY (`idNormAnalysis`)
-    REFERENCES `normdb`.`tNormAnalysis` (`idNormAnalysis`)
+    FOREIGN KEY (`idNormAnalysis` )
+    REFERENCES `normdb`.`tNormAnalysis` (`idNormAnalysis` )
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
@@ -359,12 +362,12 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tDirectory` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tDirectory` (
-  `idDirectory` INT NOT NULL AUTO_INCREMENT,
-  `folderName` VARCHAR(100) NOT NULL,
-  `description` TEXT NULL,
-  PRIMARY KEY (`idDirectory`),
-  UNIQUE INDEX `folderName_UNIQUE` (`folderName` ASC))
+CREATE  TABLE IF NOT EXISTS `normdb`.`tDirectory` (
+  `idDirectory` INT NOT NULL AUTO_INCREMENT ,
+  `folderName` VARCHAR(100) NOT NULL ,
+  `description` TEXT NULL ,
+  PRIMARY KEY (`idDirectory`) ,
+  UNIQUE INDEX `folderName_UNIQUE` (`folderName` ASC) )
 ENGINE = InnoDB;
 
 
@@ -373,17 +376,17 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tFileType` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tFileType` (
-  `idFileType` INT NOT NULL AUTO_INCREMENT,
-  `idDirectory` INT NOT NULL,
-  `name` VARCHAR(100) NOT NULL,
-  `description` TEXT NOT NULL,
-  `searchOn` VARCHAR(100) NULL,
-  PRIMARY KEY (`idFileType`),
-  INDEX `fk_tFileType_tDirectory1_idx` (`idDirectory` ASC),
+CREATE  TABLE IF NOT EXISTS `normdb`.`tFileType` (
+  `idFileType` INT NOT NULL AUTO_INCREMENT ,
+  `idDirectory` INT NOT NULL ,
+  `name` VARCHAR(100) NOT NULL ,
+  `description` TEXT NOT NULL ,
+  `searchOn` VARCHAR(100) NULL ,
+  PRIMARY KEY (`idFileType`) ,
+  INDEX `fk_tFileType_tDirectory1_idx` (`idDirectory` ASC) ,
   CONSTRAINT `fk_tFileType_tDirectory1`
-    FOREIGN KEY (`idDirectory`)
-    REFERENCES `normdb`.`tDirectory` (`idDirectory`)
+    FOREIGN KEY (`idDirectory` )
+    REFERENCES `normdb`.`tDirectory` (`idDirectory` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -394,17 +397,17 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tStatistics` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tStatistics` (
-  `idStatistics` INT NOT NULL AUTO_INCREMENT,
-  `idNormAnalysis` INT NOT NULL,
-  `groupedOn` VARCHAR(100) NULL,
-  `submissionDate` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `description` TEXT NULL,
-  PRIMARY KEY (`idStatistics`),
-  INDEX `fk_tStatistics_tNormAnalysis1_idx` (`idNormAnalysis` ASC),
+CREATE  TABLE IF NOT EXISTS `normdb`.`tStatistics` (
+  `idStatistics` INT NOT NULL AUTO_INCREMENT ,
+  `idNormAnalysis` INT NOT NULL ,
+  `groupedOn` VARCHAR(100) NULL ,
+  `submissionDate` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ,
+  `description` TEXT NULL ,
+  PRIMARY KEY (`idStatistics`) ,
+  INDEX `fk_tStatistics_tNormAnalysis1_idx` (`idNormAnalysis` ASC) ,
   CONSTRAINT `fk_tStatistics_tNormAnalysis1`
-    FOREIGN KEY (`idNormAnalysis`)
-    REFERENCES `normdb`.`tNormAnalysis` (`idNormAnalysis`)
+    FOREIGN KEY (`idNormAnalysis` )
+    REFERENCES `normdb`.`tNormAnalysis` (`idNormAnalysis` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -415,36 +418,36 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tFiles` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tFiles` (
-  `idFile` INT NOT NULL AUTO_INCREMENT,
-  `idStudy` INT NOT NULL,
-  `idFileType` INT NOT NULL,
-  `fileName` VARCHAR(150) NOT NULL,
-  `idNorm` INT NULL,
-  `idStatistics` INT NULL,
-  INDEX `fk_tFiles_tStudy1_idx` (`idStudy` ASC),
-  INDEX `fk_tFiles_tFileType1_idx` (`idFileType` ASC),
-  PRIMARY KEY (`idFile`),
-  INDEX `fk_tFiles_tNormAnalysis1_idx` (`idNorm` ASC),
-  INDEX `fk_tFiles_tStatistics1_idx` (`idStatistics` ASC),
+CREATE  TABLE IF NOT EXISTS `normdb`.`tFiles` (
+  `idFile` INT NOT NULL AUTO_INCREMENT ,
+  `idStudy` INT NOT NULL ,
+  `idFileType` INT NOT NULL ,
+  `fileName` VARCHAR(150) NOT NULL ,
+  `idNorm` INT NULL ,
+  `idStatistics` INT NULL ,
+  INDEX `fk_tFiles_tStudy1_idx` (`idStudy` ASC) ,
+  INDEX `fk_tFiles_tFileType1_idx` (`idFileType` ASC) ,
+  PRIMARY KEY (`idFile`) ,
+  INDEX `fk_tFiles_tNormAnalysis1_idx` (`idNorm` ASC) ,
+  INDEX `fk_tFiles_tStatistics1_idx` (`idStatistics` ASC) ,
   CONSTRAINT `fk_tFiles_tStudy1`
-    FOREIGN KEY (`idStudy`)
-    REFERENCES `normdb`.`tStudy` (`idStudy`)
+    FOREIGN KEY (`idStudy` )
+    REFERENCES `normdb`.`tStudy` (`idStudy` )
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_tFiles_tFileType1`
-    FOREIGN KEY (`idFileType`)
-    REFERENCES `normdb`.`tFileType` (`idFileType`)
+    FOREIGN KEY (`idFileType` )
+    REFERENCES `normdb`.`tFileType` (`idFileType` )
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `fk_tFiles_tNormAnalysis1`
-    FOREIGN KEY (`idNorm`)
-    REFERENCES `normdb`.`tNormAnalysis` (`idNormAnalysis`)
+    FOREIGN KEY (`idNorm` )
+    REFERENCES `normdb`.`tNormAnalysis` (`idNormAnalysis` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_tFiles_tStatistics1`
-    FOREIGN KEY (`idStatistics`)
-    REFERENCES `normdb`.`tStatistics` (`idStatistics`)
+    FOREIGN KEY (`idStatistics` )
+    REFERENCES `normdb`.`tStatistics` (`idStatistics` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -455,19 +458,19 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `normdb`.`tJobStatus` ;
 
-CREATE TABLE IF NOT EXISTS `normdb`.`tJobStatus` (
-  `idJob` INT NOT NULL AUTO_INCREMENT,
-  `idStudy` INT NOT NULL,
-  `name` VARCHAR(100) NULL,
-  `description` TEXT NULL,
-  `status` TINYINT NULL,
-  `statusMessage` TEXT NULL,
-  `submissionDate` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idJob`),
-  INDEX `fk_tJobStatus_tStudy1_idx` (`idStudy` ASC),
+CREATE  TABLE IF NOT EXISTS `normdb`.`tJobStatus` (
+  `idJob` INT NOT NULL AUTO_INCREMENT ,
+  `idStudy` INT NOT NULL ,
+  `name` VARCHAR(100) NULL ,
+  `description` TEXT NULL ,
+  `status` TINYINT NULL ,
+  `statusMessage` TEXT NULL ,
+  `submissionDate` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ,
+  PRIMARY KEY (`idJob`) ,
+  INDEX `fk_tJobStatus_tStudy1_idx` (`idStudy` ASC) ,
   CONSTRAINT `fk_tJobStatus_tStudy1`
-    FOREIGN KEY (`idStudy`)
-    REFERENCES `normdb`.`tStudy` (`idStudy`)
+    FOREIGN KEY (`idStudy` )
+    REFERENCES `normdb`.`tStudy` (`idStudy` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -482,7 +485,7 @@ CREATE TABLE IF NOT EXISTS `normdb`.`vStudyWithTypeNames` (`idStudy` INT, `title
 -- -----------------------------------------------------
 -- Placeholder table for view `normdb`.`vSamplesWithInfoNames`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `normdb`.`vSamplesWithInfoNames` (`idSample` INT, `idStudy` INT, `title` INT, `name` INT, `sxsName` INT, `submissionDate` INT, `idCompound` INT, `compoundName` INT, `casNumber` INT, `typeName` INT);
+CREATE TABLE IF NOT EXISTS `normdb`.`vSamplesWithInfoNames` (`idSample` INT, `idStudy` INT, `title` INT, `name` INT, `arrayName` INT, `submissionDate` INT, `idCompound` INT, `compoundName` INT, `casNumber` INT, `typeName` INT);
 
 -- -----------------------------------------------------
 -- Placeholder table for view `normdb`.`vSamplesWithAttributes`
@@ -502,7 +505,7 @@ CREATE TABLE IF NOT EXISTS `normdb`.`vFileTypesWithInfo` (`idFileType` INT, `nam
 -- -----------------------------------------------------
 -- Placeholder table for view `normdb`.`vExpressionWithInfo`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `normdb`.`vExpressionWithInfo` (`idNormExpression` INT, `expressionValue` INT, `sampleName` INT, `sxsName` INT, `typeName` INT, `idNormAnalysis` INT, `idProbe` INT, `geneName` INT, `entrezGeneID` INT);
+CREATE TABLE IF NOT EXISTS `normdb`.`vExpressionWithInfo` (`idNormExpression` INT, `expressionValue` INT, `sampleName` INT, `arrayName` INT, `typeName` INT, `idNormAnalysis` INT, `idProbe` INT, `geneName` INT, `entrezGeneID` INT);
 
 -- -----------------------------------------------------
 -- View `normdb`.`vStudyWithTypeNames`
@@ -515,7 +518,7 @@ CREATE  OR REPLACE SQL SECURITY INVOKER VIEW `vStudyWithTypeNames` AS
         tStudy . *,
         tStudyType.name AS studyTypeName,
         tAssayType.name AS assayName,
-        tSpecies.name AS speciesName,
+        tSpecies.genericName AS speciesName,
         tDomains.name AS domainName,
 		tArrayPlatform.name AS platFormName,
 		tArrayPlatform.arrayType AS arrayType,
@@ -549,7 +552,7 @@ VIEW `vSamplesWithInfoNames` AS
         `tSamples`.`idStudy` AS `idStudy`,
         `tStudy`.`title` AS `title`,
         `tSamples`.`name` AS `name`,
-		`tSamples`.`sxsName` AS `sxsName`,
+		`tSamples`.`arrayName` AS `arrayName`,
         `tSamples`.`submissionDate` AS `submissionDate`,
         `tSamples`.`idCompound` AS `idCompound`,
         `tCompound`.`name` AS `compoundName`,
@@ -651,7 +654,7 @@ VIEW `vExpressionWithInfo` AS
 		`tNormedExpression`.`idNormExpression` AS `idNormExpression`,
         `tNormedExpression`.`expressionValue` AS `expressionValue`,
         `tSamples`.`name` AS `sampleName`,
-		`tSamples`.`sxsName` AS `sxsName`,
+		`tSamples`.`arrayName` AS `arrayName`,
 		`tSampleType`.`name` AS `typeName`,
         `tNormAnalysis`.`idNormAnalysis` AS `idNormAnalysis`,
         `tProbes`.`idProbe` AS `idProbe`,
@@ -667,6 +670,7 @@ VIEW `vExpressionWithInfo` AS
         `tNormAnalysis` ON `tNormAnalysis`.`idNormAnalysis` = `tNormedExpression`.`idNormAnalysis`
          join
         `tProbes` ON `tProbes`.`idProbe` = `tNormedExpression`.`idProbe`;
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

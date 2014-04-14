@@ -82,7 +82,7 @@
 		///////////////////////////////////////////////////////////////////
 		
 		// Get the correct folder in which the raw output has been stored
-		$queryFiles = ("SELECT idFileType, folderName FROM vFilesWithInfo WHERE idStudy = $idStudy AND idFileType = $changeThisToFileTypeCELL;");
+		$queryFiles = ("SELECT idFileType, folderName FROM vFilesWithInfo WHERE idStudy = $idStudy AND idFileType = 13;");
 		
 		if ($resultFiles =  mysqli_query($connection, $queryFiles)) {
 			while ($row = mysqli_fetch_assoc($resultFiles)) {
@@ -134,7 +134,7 @@
 		///////////////////////////////////////////////////////////////////
 		
 		//Make a description file
-		makeDescriptionFile($connection ,$normFolder, $groupAttributes, $idStudy, $idJob, (isset($GET['skipNoAssayName']) ? $GET['skipNoAssayName'] : 'off') , FALSE);
+		makeDescriptionFile($connection ,$normFolder, $groupAttributes, $idStudy, $idJob, (isset($GET['skipNoArrayName']) ? $GET['skipNoArrayName'] : 'off') , FALSE);
 		
 		///////////////////////////////////////////////////////////////////
 		// 	Build all the arguments which are supplied to pipeline		///
@@ -236,7 +236,7 @@
 			fclose($fileHandlerStat);
 				
 			//Add the file to the DB
-			$connection->query("INSERT INTO tFiles (`idStudy`, `idFileType`, `fileName`, idStatistics) VALUES ($idStudy, '31', 'statSubsetFile.txt', $idStat);");
+			$connection->query("INSERT INTO tFiles (`idStudy`, `idFileType`, `fileName`, idStatistics) VALUES ($idStudy, '71', 'statSubsetFile.txt', $idStat);");
 			echo "<p><font color=green>Succesfully written a statSubsetFile file in folder: ".$statFolder."</font><p>";
 		}
 		

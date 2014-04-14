@@ -17,10 +17,10 @@ Function:				This page will present an overview of the study and also allows for
 	require_once('../logic/config.php');
 
 	// Show PHP errors if config has this enabled
-	if(CONFIG_ERRORREPORTING){
+	//if(CONFIG_ERRORREPORTING != ' asdasd' ){
 		error_reporting(E_ALL);
 		ini_set('display_errors', '1');
-	}
+	//}
 	
 	// Get the idStudy from the session, if no session is made, let the user select a study.
 	session_start ();
@@ -105,7 +105,7 @@ Function:				This page will present an overview of the study and also allows for
 						}
 							
 						/////////////////////////////////////////
-						//		Check samples + assay name		/
+						//		Check samples + array name		/
 						/////////////////////////////////////////
 						
 						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy;")) {
@@ -119,14 +119,14 @@ Function:				This page will present an overview of the study and also allows for
 							}
 						}
 
-						//Check if samples have assay names attached
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND assayName != 0 ;")) {
+						//Check if samples have array names attached
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND arrayName != 0 ;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
-									echo "<input type='checkbox' checked disabled /><font color='green'>Samples have assay names? (".$row['count']." samples) </font> <br>";
+									echo "<input type='checkbox' checked disabled /><font color='green'>Samples have array names? (".$row['count']." samples) </font> <br>";
 								}
 								else{
-									echo "<input type='checkbox' disabled /><font color='red'>Samples have assay names?</font> <br>";
+									echo "<input type='checkbox' disabled /><font color='red'>Samples have array names?</font> <br>";
 								}
 							}
 						}
@@ -145,7 +145,7 @@ Function:				This page will present an overview of the study and also allows for
 						if(isset($affyStudy)){
 							
 							// Get the count of cell files
-							if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tFiles WHERE idStudy = $idStudy AND idFileType = "SET THIS";")) {
+							if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tFiles WHERE idStudy = $idStudy AND idFileType = 14;")) {
 								while ($row = mysqli_fetch_assoc($result)) {
 									if($row['count'] != 0){
 										echo "<input type='checkbox' checked disabled /><font color='green'>Uploaded CELL files: ".$row['count']." </font> <br>";
@@ -193,10 +193,10 @@ Function:				This page will present an overview of the study and also allows for
 						}
 		
 						/////////////////////////////////////////
-						//		Check custom assay annotation	/
+						//		Check custom array annotation	/
 						/////////////////////////////////////////
 						
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tFiles WHERE idStudy = $idStudy AND idFileType = "SET THIS";")) {
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tFiles WHERE idStudy = $idStudy AND idFileType = 13;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
 									echo "<input type='checkbox' checked disabled /><font color='green'>Study has custom annotation file uploaded</font> <br>";
@@ -233,7 +233,7 @@ Function:				This page will present an overview of the study and also allows for
 						}	
 						
 						//Check if normed Expression data is merged with Entrez Genes
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tFiles WHERE idStudy = $idStudy AND idFileType = 13;")) {
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tFiles WHERE idStudy = $idStudy AND idFileType = 17;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
 									echo "<input type='checkbox' checked disabled /><font color='green'>Normalized expression data available? (Mergen Entrez)</font> <br>";

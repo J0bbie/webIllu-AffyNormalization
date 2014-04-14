@@ -266,15 +266,15 @@ function getSampleSelection(){
 							}
 						}
 						
-						//Check if samples have assayName attached
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND assayName != 0 ;")) {
+						//Check if samples have arrayName attached
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND arrayName != 0 ;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
-									echo "<input type='checkbox' checked disabled /><font color='green'>Samples have assay names? (".$row['count']." samples) </font> <br>";
-									echo "<input type='checkbox' id='skipNoAssayName' name='skipNoAssayName' checked />Skip samples without assay names?<br>";
+									echo "<input type='checkbox' checked disabled /><font color='green'>Samples have array names? (".$row['count']." samples) </font> <br>";
+									echo "<input type='checkbox' id='skipNoArrayName' name='skipNoArrayName' checked />Skip samples without array names?<br>";
 								}
 								else{
-									echo "<input type='checkbox' disabled /><font color='red'>Samples have assay names?</font> <br>";
+									echo "<input type='checkbox' disabled /><font color='red'>Samples have array names?</font> <br>";
 								}
 							}
 						}
@@ -576,7 +576,7 @@ function getSampleSelection(){
 					name: {
 						title: 'Sample Name'
 					},
-					assayName: {
+					arrayName: {
 						title: 'Array ID'
 					},
 					compoundName:{

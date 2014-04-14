@@ -247,7 +247,7 @@ if(userParameters$normalize){
     fileName <- paste(userParameters$outputDir,  userParameters$studyName,"_summary_rawData.txt", sep="") 
     cat("\nCreating summary file of the means and SD of the raw data: ", fileName ,"\n", sep="")
     rawSum.table = createSummary(rawData, fileName);
-    addNormFile( userParameters$idStudy, 17, userParameters$idNorm ,paste(userParameters$studyName,"_summary_rawData.txt", sep=""))
+    addNormFile( userParameters$idStudy, 19, userParameters$idNorm ,paste(userParameters$studyName,"_summary_rawData.txt", sep=""))
     cat("\nSuccesfully made summary file of raw data.\n")    
   }
   
@@ -256,7 +256,7 @@ if(userParameters$normalize){
     fileName <- paste(userParameters$outputDir,  userParameters$studyName,"_summary_normData.txt", sep="") 
     cat("\nCreating summary file of the means and SD of the normalized data: ", fileName ,"\n", sep="")
     normSum.table = createSummary(normData, fileName );
-    addNormFile( userParameters$idStudy, 18, userParameters$idNorm, paste(userParameters$studyName,"_summary_normData.txt", sep=""))
+    addNormFile( userParameters$idStudy, 20, userParameters$idNorm, paste(userParameters$studyName,"_summary_normData.txt", sep=""))
     cat("\nSuccesfully made summary file of normalized data.\n")          
   }                   
   
@@ -278,7 +278,7 @@ if(userParameters$normalize){
     fileName <- paste(userParameters$outputDir,  userParameters$studyName,"_normData.Rdata", sep="")
     cat("\nSaving lumiBatch R object of the normalized data in: ", fileName ,"\n", sep="")
     save(normData, file=fileName )
-    addNormFile( userParameters$idStudy, 14, userParameters$idNorm, paste(userParameters$studyName,"_normData.Rdata", sep=""))
+    addNormFile( userParameters$idStudy, 16, userParameters$idNorm, paste(userParameters$studyName,"_normData.Rdata", sep=""))
     cat("\nSuccesfully saved lumiBatch R object of the normalized data\n")
   }
 } #End background correction/normalization
@@ -378,19 +378,19 @@ if(userParameters$performStatistics){
     if(userParameters$raw.boxplot) {
       cat("\nPlot boxplot for raw intensities\n")
       gar <-box.plot(rawData, fileNamePrefix , col=plotColors, maxArray=50)
-      addStatFile( userParameters$idStudy, 19, userParameters$idStatistics, paste(userParameters$studyName,"_RAW_boxplot.pdf", sep=""))
+      addStatFile( userParameters$idStudy, 21, userParameters$idStatistics, paste(userParameters$studyName,"_RAW_boxplot.pdf", sep=""))
     }
     
     if(userParameters$raw.density) {
       cat("\nPlot density histogram for raw intensities\n")
       gar <- density.plot(rawData, fileNamePrefix , col=plotColors, maxArray=16)
-      addStatFile( userParameters$idStudy, 21, userParameters$idStatistics, paste(userParameters$studyName,"_RAW_density.pdf", sep=""))
+      addStatFile( userParameters$idStudy, 23, userParameters$idStatistics, paste(userParameters$studyName,"_RAW_density.pdf", sep=""))
     }
     
     if(userParameters$raw.cv) {
       cat("\nPlot density for coefficient of variance for raw intensities\n")
       gar <- cv.plot(rawData, fileNamePrefix, col=plotColors, maxArray=16)
-      addStatFile( userParameters$idStudy, 20, userParameters$idStatistics, paste(userParameters$studyName,"_RAW_cv_plot.pdf", sep=""))
+      addStatFile( userParameters$idStudy, 22, userParameters$idStatistics, paste(userParameters$studyName,"_RAW_cv_plot.pdf", sep=""))
     }
     
     fileNamePrefix <- paste(userParameters$statisticsDir, "/", userParameters$studyName,sep="")
@@ -403,7 +403,7 @@ if(userParameters$performStatistics){
                         WIDTH=userParameters$img.width,HEIGHT=userParameters$img.heigth,
                         POINTSIZE=userParameters$img.pointSize,MAXARRAY=userParameters$img.maxArray,
                         normalization.m=userParameters$normalization.m, fileName=fileNamePrefix) 
-      addStatFile( userParameters$idStudy, 23, userParameters$idStatistics, paste(userParameters$studyName,"_RAW_dataCluster_",userParameters$clusterOption1,"_",userParameters$clusterOption2,".png",sep=""))
+      addStatFile( userParameters$idStudy, 25, userParameters$idStatistics, paste(userParameters$studyName,"_RAW_dataCluster_",userParameters$clusterOption1,"_",userParameters$clusterOption2,".png",sep=""))
     }
     
     if(userParameters$raw.pca) {  
@@ -417,7 +417,7 @@ if(userParameters$performStatistics){
                     WIDTH=userParameters$img.width,HEIGHT=userParameters$img.heigth,
                     POINTSIZE=userParameters$img.pointSize, normalization.m=userParameters$normalization.m, 
                     fileName=fileNamePrefix)
-      addStatFile( userParameters$idStudy, 24, userParameters$idStatistics, paste(userParameters$studyName,"_RAW_dataPCA_analysis.png",sep=""))
+      addStatFile( userParameters$idStudy, 26, userParameters$idStatistics, paste(userParameters$studyName,"_RAW_dataPCA_analysis.png",sep=""))
     }
     
     if(userParameters$raw.correl){  
@@ -428,7 +428,7 @@ if(userParameters$performStatistics){
                        WIDTH=userParameters$img.width,HEIGHT=userParameters$img.heigth,
                        POINTSIZE=userParameters$img.pointSize,MAXARRAY=userParameters$img.maxArray,
                        normalization.m=userParameters$normalization.m, fileName=fileNamePrefix)   
-      addStatFile( userParameters$idStudy, 22, userParameters$idStatistics, paste(userParameters$studyName,"_RAW_dataArrayCorrelation.png",sep=""))
+      addStatFile( userParameters$idStudy, 24, userParameters$idStatistics, paste(userParameters$studyName,"_RAW_dataArrayCorrelation.png",sep=""))
     }
   }else{
     cat("\nSkipping QC plots for the raw data.\n")   
@@ -494,19 +494,19 @@ if(userParameters$performStatistics){
     if(userParameters$norm.boxplot) {
       cat("\nPlot boxplot for normalized intensities\n")
       gar <- box.plot(normData, fileNamePrefix , col=plotColors, maxArray=50)
-      addStatFile( userParameters$idStudy,  25, userParameters$idStatistics, paste(userParameters$studyName, "_NORM_boxplot.pdf", sep=""))
+      addStatFile( userParameters$idStudy,  27, userParameters$idStatistics, paste(userParameters$studyName, "_NORM_boxplot.pdf", sep=""))
     }
     
     if(userParameters$norm.density) {
       cat("\nPlot density histogram for normalized intensities\n")
       gar <- density.plot(normData, fileNamePrefix , col=plotColors, maxArray=16)
-      addStatFile( userParameters$idStudy, 27, userParameters$idStatistics, paste(userParameters$studyName,"_NORM_density.pdf", sep=""))
+      addStatFile( userParameters$idStudy, 29, userParameters$idStatistics, paste(userParameters$studyName,"_NORM_density.pdf", sep=""))
     }
     
     if(userParameters$norm.cv) {
       cat("\nPlot density for coefficient of variance for normalized intensities\n")
       gar <- cv.plot(normData, fileNamePrefix , col=plotColors, maxArray=16)
-      addStatFile( userParameters$idStudy, 26, userParameters$idStatistics, paste(userParameters$studyName,"_NORM_cv_plot.pdf", sep=""))
+      addStatFile( userParameters$idStudy, 28, userParameters$idStatistics, paste(userParameters$studyName,"_NORM_cv_plot.pdf", sep=""))
     }
     
     fileNamePrefix <- paste(userParameters$statisticsDir, "/", userParameters$studyName,sep="")
@@ -519,7 +519,7 @@ if(userParameters$performStatistics){
                         WIDTH=userParameters$img.width,HEIGHT=userParameters$img.heigth,
                         POINTSIZE=userParameters$img.pointSize,MAXARRAY=userParameters$img.maxArray,
                         normalization.m=userParameters$normalization.m, fileName=fileNamePrefix)
-      addStatFile(userParameters$idStudy, 29, userParameters$idStatistics, paste(userParameters$studyName,"_NORM_dataCluster_",userParameters$clusterOption1,"_",userParameters$clusterOption2,".png",sep=""))
+      addStatFile(userParameters$idStudy, 31, userParameters$idStatistics, paste(userParameters$studyName,"_NORM_dataCluster_",userParameters$clusterOption1,"_",userParameters$clusterOption2,".png",sep=""))
       
     }
     
@@ -534,7 +534,7 @@ if(userParameters$performStatistics){
                     WIDTH=userParameters$img.width,HEIGHT=userParameters$img.heigth,
                     POINTSIZE=userParameters$img.pointSize, normalization.m=userParameters$normalization.m, 
                     fileName=fileNamePrefix)
-      addStatFile(userParameters$idStudy, 30, userParameters$idStatistics, paste(userParameters$studyName,"_NORM_dataPCA_analysis.png",sep=""))
+      addStatFile(userParameters$idStudy, 32, userParameters$idStatistics, paste(userParameters$studyName,"_NORM_dataPCA_analysis.png",sep=""))
       
     }
     
@@ -546,7 +546,7 @@ if(userParameters$performStatistics){
                        WIDTH=userParameters$img.width,HEIGHT=userParameters$img.heigth,
                        POINTSIZE=userParameters$img.pointSize,MAXARRAY=userParameters$img.maxArray,
                        normalization.m=userParameters$normalization.m, fileName=fileNamePrefix)
-      addStatFile(userParameters$idStudy, 28, userParameters$idStatistics, paste(userParameters$studyName, "_NORM_dataArrayCorrelation.png", sep=""))
+      addStatFile(userParameters$idStudy, 30, userParameters$idStatistics, paste(userParameters$studyName, "_NORM_dataArrayCorrelation.png", sep=""))
     }
   }else{
     cat("\nSkipping QC plots for the normalized data.\n")
@@ -655,7 +655,7 @@ if(userParameters$saveToDB){
   cat("\nSaving expressions of probes to DB\n")
   
   #Loop over the expression values for each probe
-  #Replace the assay names with the idSample from the idVector
+  #Replace the array names with the idSample from the idVector
   names(eset.anno.normData)[9:length(names(eset.anno.normData))] <- idVector
   
   #Make a prepared statement

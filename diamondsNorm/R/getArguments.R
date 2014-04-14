@@ -20,9 +20,10 @@
 #-p       Whether to perform plots + PCA on data. (TRUE/FALSE)
 #-u       Whether to skip background correction (TRUE/FALSE) (TRUE means skip)
 #-m       Name of the file containing the normalized data R object   (When already normalized and wanting to do new statistics)
-#-F       File containing the sampleNames/AssayNames on which statistics should be done.
+#-F       File containing the sampleNames/ArrayNames on which statistics should be done.
 #-B       Whether to perform statistics on a subset (As defined in -F)
 #-f       Whether to load the old normalized data.
+#-C       Load custom annotation file to use for annotation
 
 #Parameters for normDB/DIAMONDS
 #-j       idJob (For updating jobstatus)
@@ -62,9 +63,6 @@ getArguments <- function(commandArguments, con){
     
     make_option(c("-O","--statisticsDir"), type="character", default="/var/www/diamondsNorm/data/statistics/",
                 help = "Path to folder where the output statistics files will be stored \ndefault = [%default] "),
-    
-    make_option(c("-a","--annoDir"), type="character", default="/var/www/diamondsNorm/anno/",
-                help="Path to folder where the annotation files for the arrays are stored. (Containing the Probes + Genes etc. on the array) \ndefault = [%default] "),
     
     make_option("--scriptDir", type="character", default="/var/www/diamondsNorm/R/",
                 help="Path to folder where the scripts are stored. \ndefault = [%default] "),
@@ -294,7 +292,6 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
   userParameters$scriptDir      <- correctDirectory(userParameters$scriptDir)
   userParameters$inputDir       <- correctDirectory(userParameters$inputDir)
   userParameters$outputDir      <- correctDirectory(userParameters$outputDir)
-  userParameters$annoDir        <- correctDirectory(userParameters$annoDir)
   
   #Create a logFile in the outputdirectory
   if(userParameters$createLog){

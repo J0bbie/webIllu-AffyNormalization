@@ -45,6 +45,12 @@ Function:				User will be redirected to this page if not logged in or selected a
 	?>
 	<div id="navBar"><?php require_once("menu.htm"); ?></div>
 	
+	<!-- 
+	/////////////////////////////////////////
+	//		Form to choose a study			/
+	///////////////////////////////////////// 
+	-->
+		
 	<body id="main_body" >
 		<!-- Form to show study info -->
 		<img id="top" src="../img/top.png" alt=""/>

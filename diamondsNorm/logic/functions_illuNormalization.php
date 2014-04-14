@@ -156,7 +156,7 @@
 		///////////////////////////////////////////////////////////////////
 		
 		//Make a description file
-		makeDescriptionFile($connection ,$normFolder, $groupAttributes, $idStudy, $idJob, (isset($GET['skipNoAssayName']) ? $GET['skipNoAssayName'] : 'off') , FALSE);
+		makeDescriptionFile($connection ,$normFolder, $groupAttributes, $idStudy, $idJob, (isset($GET['skipNoArrayName']) ? $GET['skipNoArrayName'] : 'off') , FALSE);
 		
 		///////////////////////////////////////////////////////////////////
 		// 	Build all the arguments which are supplied to pipeline		///
@@ -258,7 +258,7 @@
 			fclose($fileHandlerStat);
 			
 			//Add the file to the DB
-			$connection->query("INSERT INTO tFiles (`idStudy`, `idFileType`, `fileName`, idStatistics) VALUES ($idStudy, '31', 'statSubsetFile.txt', $idStat);");
+			$connection->query("INSERT INTO tFiles (`idStudy`, `idFileType`, `fileName`, idStatistics) VALUES ($idStudy, '71', 'statSubsetFile.txt', $idStat);");
 			echo "<p><font color=green>Succesfully written a statSubsetFile file in folder: ".$statFolder."</font><p>";	
 		}
 		
@@ -382,7 +382,7 @@
 		///////////////////////////////////////////////////////////////////
 		
 		//Get the correct folder in which the rawdata R object has been stored
-		$queryFiles = ("SELECT idFileType, folderName, fileName, idNorm FROM vFilesWithInfo WHERE idStudy = $idStudy AND idNorm = ".$GET['normSelect']." AND idFileType = 14;");
+		$queryFiles = ("SELECT idFileType, folderName, fileName, idNorm FROM vFilesWithInfo WHERE idStudy = $idStudy AND idNorm = ".$GET['normSelect']." AND idFileType = 12;");
 		
 		$normObjectPath;
 		
@@ -393,7 +393,7 @@
 				$inputFolder = $mainFolder."/".$row['folderName']."/".$row['idNorm'];
 				$fileLocation = $row['fileName'];
 				//rawData R object
-				if($row['idFileType'] == 14){
+				if($row['idFileType'] == 12){
 					$normObjectPath = $fileLocation;
 				}
 			}
@@ -474,7 +474,7 @@
 			fclose($fileHandlerStat);
 		
 			//Add the file to the DB
-			$connection->query("INSERT INTO tFiles (`idStudy`, `idFileType`, `fileName`, idStatistics) VALUES ($idStudy, '31', 'statSubsetFile.txt', $idStat);");
+			$connection->query("INSERT INTO tFiles (`idStudy`, `idFileType`, `fileName`, idStatistics) VALUES ($idStudy, '71', 'statSubsetFile.txt', $idStat);");
 			echo "<p><font color=green>Succesfully written a statSubsetFile file in folder: ".$statFolder."</font><p>";
 		}
 		
@@ -541,9 +541,9 @@
 	// 		Function to create a description file (clustergroups)	///
 	///////////////////////////////////////////////////////////////////
 	
-	//Make a tab-delimited description file (assayName|sampleName|Group), the group is based on the user selected attributes.
-	//If $skipNoAssayName == "on", it skips all the samples  from the study without a sampleName.
-	function makeDescriptionFile($connection, $normFolder, $groupAttributes, $idStudy, $idJob, $skipNoAssayName, $oldNorm){
+	//Make a tab-delimited description file (arrayName|sampleName|Group), the group is based on the user selected attributes.
+	//If $skipNoArrayName == "on", it skips all the samples  from the study without a sampleName.
+	function makeDescriptionFile($connection, $normFolder, $groupAttributes, $idStudy, $idJob, $skipNoArrayName, $oldNorm){
 		echo "<p><font color=orange>Making description file.</font></p>";
 	
 		//Open a file + fileHandler to make the description file, save the file in the Normfolder also.
@@ -557,22 +557,22 @@
 		fwrite($fileHandler, "ArrayDataFile\tSourceName\tFactorValue\n");
 		
 		//Loop over all the samples in a given study
-		if($skipNoAssayName != "on"){
-			$query = ("SELECT idSample, assayName, name FROM tSamples WHERE idStudy = 1 AND assayName != NULL;");
+		if($skipNoArrayName != "on"){
+			$query = ("SELECT idSample, arrayName, name FROM tSamples WHERE idStudy = 1 AND arrayName != NULL;");
 		}
 		else{
-			$query = ("SELECT idSample, assayName, name FROM tSamples WHERE idStudy = 1;");
+			$query = ("SELECT idSample, arrayName, name FROM tSamples WHERE idStudy = 1;");
 		}
 		if ($samples = $connection->query("SELECT * FROM tSamples WHERE idStudy = $idStudy")){
 			while ($row = mysqli_fetch_assoc($samples)) {
 				$idSample = rtrim($row['idSample']);
-				$assayName = rtrim($row['assayName']);
+				$arrayName = rtrim($row['arrayName']);
 				$sampleName = rtrim($row['name']);
 				
-				if($assayName == "" && $skipNoAssayName != "on"){
-					$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Sample $sampleName (id: $idSample) has no assayName and user selected no sampels should be skipped!' WHERE idJob = '$idJob'");
+				if($arrayName == "" && $skipNoArrayName != "on"){
+					$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Sample $sampleName (id: $idSample) has no arrayName and user selected no sampels should be skipped!' WHERE idJob = '$idJob'");
 					fclose($fileHandler);
-					exit("<p><font color=red>Failed: Sample $sampleName (id: $idSample) has no assayName!</font></p>");
+					exit("<p><font color=red>Failed: Sample $sampleName (id: $idSample) has no arrayName!</font></p>");
 				}
 				//Get all the attributes selected to cluster on of a given sample
 				$groupOnLine = "";
@@ -605,13 +605,13 @@
 				//Cut of the last _ symbol
 				$groupOnLine = substr($groupOnLine, 0, -1);
 				if($groupOnLine=="") $groupOnLine = "noGroup";
-				//Write the line (assayName|sampleName|Group) to the descriptionFile.txt
-				if($assayName != ""){
-					//If normalized data has already been provided, the unique names are the sampleNames and not the assayNames
+				//Write the line (arrayName|sampleName|Group) to the descriptionFile.txt
+				if($arrayName != ""){
+					//If normalized data has already been provided, the unique names are the sampleNames and not the arrayNames
 					if($oldNorm == TRUE){
 						fwrite($fileHandler, $sampleName."\t".$sampleName."\t".$groupOnLine."\n");
 					}else{
-						fwrite($fileHandler, $assayName."\t".$sampleName."\t".$groupOnLine."\n");
+						fwrite($fileHandler, $arrayName."\t".$sampleName."\t".$groupOnLine."\n");
 					}
 				}
 			}

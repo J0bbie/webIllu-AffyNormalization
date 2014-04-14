@@ -265,9 +265,9 @@ function showSampleSelection() {
 							<input type="checkbox" id="reorderSamples" name="reorderSamples" checked />Reorder samples by experimental group? <small>(Used for the order in plots)</small><br>
 
 							<?php
-							//Check if the raw expression data already has been uploaded for this study. (Sample Gene Profile / Control Probe Profile)
+							//Check if the normed data is available
 							$checkFiles = 0;
-							if ($result =  mysqli_query($connection, "SELECT DISTINCT idStudy FROM tFiles WHERE idNorm = ".(isset($_GET['normSelect']) ? $_GET['normSelect'] : '0')." AND idStudy = $idStudy AND idFileType= 14")) {
+							if ($result =  mysqli_query($connection, "SELECT DISTINCT idStudy FROM tFiles WHERE idNorm = ".(isset($_GET['normSelect']) ? $_GET['normSelect'] : '0')." AND idStudy = $idStudy AND idFileType= 16")) {
 								while ($row = mysqli_fetch_assoc($result)) {
 									$checkFiles = 1;
 								}
@@ -429,7 +429,7 @@ function showSampleSelection() {
 						name: {
 							title: 'Sample Name'
 						},
-						assayName: {
+						arrayName: {
 							title: 'Array ID'
 						},
 						compoundName:{
