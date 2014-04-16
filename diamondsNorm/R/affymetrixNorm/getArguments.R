@@ -129,9 +129,6 @@ getArguments <- function(commandArguments, con){
     make_option(c("-J", "--normOption1"), type="character", default="dataset",
                 help="two possible values: (group, dataset) \ndefault = [%default] "),
     
-    make_option(c("-l", "--customCDF"), type="logical", default=TRUE,
-                help="boolean for a custom CDF for the pre-processed data \ndefault = [%default] "),
-    
     make_option(c("-L", "--CDFtype"), type="character", default="ENSG",
                 help="annotation format (default: ENSG), possibilities: (ENTREZG, REFSEQ, ENSG, ENSE, ENST, VEGAG, VEGAE, VEGAT, TAIRG, TAIRT, UG, MIRBASEF, MIRBASEG) \ndefault = [%default] "),
     

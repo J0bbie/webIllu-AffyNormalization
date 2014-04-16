@@ -186,7 +186,7 @@ if(userParameters$normalize){
   }
   
   ##################################################################################
-  ##                            Background correction                             ##
+  ##                Background correction/Normalizing                             ##
   ##################################################################################
   
   #If background corrections has already been performed
@@ -293,7 +293,7 @@ if(userParameters$normalize){
 if(userParameters$performStatistics){
   
   #################################################################################
-  #                 Open subset file if user selected a subset                     #
+  #                 Open subset file if user selected a subset                    #
   #################################################################################
   
   if(userParameters$statSubset){
@@ -660,9 +660,6 @@ if(userParameters$saveToDB){
   #Loop over the expression values for each probe
   #Replace the array names with the idSample from the idVector
   names(eset.anno.normData)[9:length(names(eset.anno.normData))] <- idVector
-  
-  #Make a prepared statement
-  #statement <- dbSendQuery(con, "PREPARE stmt1 FROM \"INSERT INTO tNormedExpression(expressionValue, idProbe, idSample, idNormAnalysis) VALUES(?,?,?,?);\"")
   
   #Loop over all the genes
   for(p in 1:length(row.names(eset.anno.normData))){
