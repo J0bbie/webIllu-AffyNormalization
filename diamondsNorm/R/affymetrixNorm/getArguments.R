@@ -12,9 +12,11 @@
 #-i       Input directory of .CEL files
 #-o       Output directory of normalized data
 #-O       Output directory of statistics and plots
+#-d       Name of description file (Located in norm output folder), used to group and name samples
 #-F       Name of statFile (Located in statistics folder), used to subset
 #-f       Whether to load old normalized data
 #-m       Filename of normalized data from the input directory
+#-a       Whether to use cusom annotation file
 #-A       Filepath of the custom annotation
 
 #Parameters for normDB/DIAMONDS
@@ -84,8 +86,11 @@ getArguments <- function(commandArguments, con){
     make_option(c("-O","--statisticsDir"), type="character",  default=paste(configMainFolder, "statistics", sep="/"),
                 help = "Path to folder where the output statistics files will be stored \ndefault = [%default] "),
     
-    make_option("--scriptDir", type="character",  default=paste(configMainFolder, "R" ,"affyNorm", sep="/"),
+    make_option("--scriptDir", type="character",  default=paste(configMainFolder, "R" ,"affymetrixNorm", sep="/"),
                 help="Path to folder where the scripts are stored. \ndefault = [%default] "),
+    
+    make_option(c("-d","--descFile"), type="character", default="descriptionFile.txt",
+                help="Tab-delimited file containing: arrayNames | sampleNames | sampleGroup \ndefault = [%default] "),
     
     make_option(c("-m","--normData"), type="character", default="normData.Rdata",
                 help="R Lumibatch object containing the normalized expression values. (If normalization has been run before) \ndefault = [%default] "),
@@ -93,8 +98,8 @@ getArguments <- function(commandArguments, con){
     make_option(c("-F","--statFile"), type="character", default="statSubsetFile.txt",
                 help="File containing a single column with the sampleNames or ArrayNames on which statistics should be performed. If none given, statistics is performed on all samples in the description file. \ndefault = [%default] "),
     
-    make_option(c("-g", "--arrayGroup"), type="character", default="",
-                help="description file describing the array names and experimental groups \ndefault = [%default] "),
+    make_option(c("-a", "--useCustomAnnotation"), type="logical", default=FALSE,
+                help="Whether to use a custom annotation file, given in -A \ndefault = [%default] "),
     
     make_option(c("-A", "--customAnnotation"), type="character", default="",
                 help="File containing the custom annotation of the array \ndefault = [%default] "),
@@ -140,7 +145,7 @@ getArguments <- function(commandArguments, con){
     make_option(c("-B","--statSubset"),  type="logical", default=FALSE,
                 help="Whether statistics should be done only on a subset. (defined in --statFile) \ndefault = [%default] "),
     
-    make_option(c("-G", "--reOrder"), type="logical", default=TRUE,
+    make_option(c("-G", "--perGroup"), type="logical", default=TRUE,
                 help="boolean for whether the arrays have to be ordered per group in the plots FALSE keeps the order of the description file, TRUE reorders per group \ndefault = [%default] "),
 
     #####################################################################################################
@@ -156,40 +161,40 @@ getArguments <- function(commandArguments, con){
     make_option("--normDataQC", type="logical", default=TRUE,
                 help="Determine whether to do QC assessment for the normed data; if false no summary can be computed. \ndefault = [%default] "), 
     
-    make_option(c("-F", "--layoutPlot"), type="logical", default=TRUE,
+    make_option(c("--layoutPlot"), type="logical", default=TRUE,
                 help="boolean for plot of the array layout \ndefault = [%default] "),
     
-    make_option(c("-H", "--controlPlot"), type="logical", default=TRUE,
+    make_option(c("--controlPlot"), type="logical", default=TRUE,
                 help="boolean for plots of the AFFX controls on the arrays \ndefault = [%default] "),
     
-    make_option(c("-s", "--samplePrep"), type="logical", default=TRUE,
+    make_option(c("--samplePrep"), type="logical", default=TRUE,
                 help="boolean for Sample prep controls \ndefault = [%default] "),
     
-    make_option(c("-r", "--ratioPlot"), type="logical", default=TRUE,
+    make_option(c("--ratioPlot"), type="logical", default=TRUE,
                 help="boolean for 3?/5? for b-actin and GAPDH \ndefault = [%default] "),
     
-    make_option(c("-e", "--degPlot"), type="logical", default=TRUE,
+    make_option(c("--degPlot"), type="logical", default=TRUE,
                 help="boolean for DNA degration plot \ndefault = [%default] "),
     
-    make_option(c("-h", "--hybridPlot"), type="logical", default=TRUE,
+    make_option(c("--hybridPlot"), type="logical", default=TRUE,
                 help="boolean for Spike-in controls \ndefault = [%default] "),
     
-    make_option(c("-p", "--percPres"), type="logical", default=TRUE,
+    make_option(c("--percPres"), type="logical", default=TRUE,
                 help="boolean for Percent present \ndefault = [%default] "),
     
-    make_option(c("-n", "--posnegDistrib"), type="logical", default=TRUE,
+    make_option(c("--posnegDistrib"), type="logical", default=TRUE,
                 help="boolean for +and - controls distribution \ndefault = [%default] "),
     
-    make_option(c("-b", "--bgPlot"), type="logical", default=TRUE,
+    make_option(c("--bgPlot"), type="logical", default=TRUE,
                 help="boolean for Background intensity \ndefault = [%default] "),
     
-    make_option(c("-f", "--scaleFact"), type="logical", default=TRUE,
+    make_option(c("--scaleFact"), type="logical", default=TRUE,
                 help="boolean for Scale factor \ndefault = [%default] "),
     
-    make_option(c("-x", "--boxplotRaw"), type="logical", default=TRUE,
+    make_option(c("--boxplotRaw"), type="logical", default=TRUE,
                 help="boolean for Raw boxplot of log-intensity \ndefault = [%default] "),
     
-    make_option(c("-X", "--boxplotNorm"), type="logical", default=TRUE,
+    make_option(c("--boxplotNorm"), type="logical", default=TRUE,
                 help="boolean for Norm boxplot of log-intensity \ndefault = [%default] "),
     
     make_option(c("--densityRaw"), type="logical", default=TRUE,
@@ -198,55 +203,55 @@ getArguments <- function(commandArguments, con){
     make_option(c("--densityNorm"), type="logical", default=TRUE,
                 help="boolean for Norm density histrogram \ndefault = [%default] "),
     
-    make_option(c("-k", "--MARaw"), type="logical", default=TRUE,
+    make_option(c("--MARaw"), type="logical", default=TRUE,
                 help="boolean for Raw MA-plot \ndefault = [%default] "),
     
-    make_option(c("-K", "--MANorm"), type="logical", default=TRUE,
+    make_option(c("--MANorm"), type="logical", default=TRUE,
                 help="boolean for Norm MA-plot \ndefault = [%default] "),
     
     make_option(c("--MAOption1"), type="character", default="dataset",
                 help="two possible values: group or dataset \ndefault = [%default] "),
     
-    make_option(c("-R", "--spatialImage"), type="logical", default=TRUE,
+    make_option(c("--spatialImage"), type="logical", default=TRUE,
                 help="boolean for 2D images \ndefault = [%default] "),
     
-    make_option(c("-W", "--PLMimage"), type="logical", default=TRUE,
+    make_option(c("--PLMimage"), type="logical", default=TRUE,
                 help="boolean for 2D PLM plots \ndefault = [%default] "),
     
-    make_option(c("-N", "--posnegCOI"), type="logical", default=TRUE,
+    make_option(c("--posnegCOI"), type="logical", default=TRUE,
                 help="boolean for + and ? controls COI plot \ndefault = [%default] "),
     
-    make_option(c("-u", "--Nuse"), type="logical", default=TRUE,
+    make_option(c("--Nuse"), type="logical", default=TRUE,
                 help="boolean for NUSE \ndefault = [%default] "),
     
-    make_option(c("-a", "--Rle"), type="logical", default=TRUE,
+    make_option(c("--Rle"), type="logical", default=TRUE,
                 help="boolean for RLE \ndefault = [%default] "),
     
-    make_option(c("-c", "--correlRaw"), type="logical", default=TRUE,
+    make_option(c("--correlRaw"), type="logical", default=TRUE,
                 help="boolean for Raw correlation plot \ndefault = [%default] "),
     
-    make_option(c("-C", "--correlNorm"), type="logical", default=TRUE,
+    make_option(c("--correlNorm"), type="logical", default=TRUE,
                 help="boolean for Norm correlation plot \ndefault = [%default] "),
     
-    make_option(c("-o", "--clusterRaw"), type="logical", default=TRUE,
+    make_option(c("--clusterRaw"), type="logical", default=TRUE,
                 help="boolean for Raw hierarchical clustering \ndefault = [%default] "),
     
-    make_option(c("-O", "--clusterNorm"), type="logical", default=TRUE,
+    make_option(c("--clusterNorm"), type="logical", default=TRUE,
                 help="boolean for Norm hierarchical clustering \ndefault = [%default] "),
     
-    make_option(c("-v", "--clusterOption1"), type="character", default="Spearman",
+    make_option(c("--clusterOption1"), type="character", default="Spearman",
                 help="possible values for Distance: (Spearman, Pearson, Euclidian) \ndefault = [%default] "),
     
-    make_option(c("-w", "--clusterOption2"), type="character", default="ward",
+    make_option(c("--clusterOption2"), type="character", default="ward",
                 help="possible values for Tree: (ward, singlecomplete, average, mcquitty, median, centroid)  \ndefault = [%default] "),
     
-    make_option(c("-t", "--PCARaw"), type="logical", default=TRUE,
+    make_option(c("--PCARaw"), type="logical", default=TRUE,
                 help="boolean for PCA analysis of raw data \ndefault = [%default] "),
     
-    make_option(c("-T", "--PCANorm"), type="logical", default=TRUE,
+    make_option(c("--PCANorm"), type="logical", default=TRUE,
                 help="boolean for PCA analysis of normalized data \ndefault = [%default] "),
     
-    make_option(c("-P", "--PMAcalls"), type="logical", default=FALSE,
+    make_option(c("--PMAcalls"), type="logical", default=FALSE,
                 help="boolean for Present/Marginal/Absent calls using MAS5 \ndefault = [%default] "),
     
     #####################################################################################################
@@ -282,7 +287,9 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
   #Check if the directories exist, also clean their path if not properly closed of with last /
   userParameters$scriptDir      <- correctDirectory(userParameters$scriptDir)
   userParameters$inputDir       <- correctDirectory(userParameters$inputDir)
-  userParameters$outputDir      <- correctDirectory(userParameters$outputDir)      
+  userParameters$outputDir      <- correctDirectory(userParameters$outputDir)   
+  
+  print(userParameters$inputDir)
 
   if (file.info(userParameters$scriptDir)$isdir == FALSE){
     message <- paste("\nThe script directory does not exist:",userParameters$scriptDir, sep="")
@@ -324,16 +331,8 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
     }
   }
   if(!userParameters$loadOldNorm){
-    #Check if the paths to the input files are all valid
-    if (file.exists(paste(userParameters$inputDir, userParameters$sampleProbeProfilePath, sep="")) == FALSE){
-      message <- paste("\nNo Sample Probe Profile in path:", paste(userParameters$inputDir, userParameters$sampleProbeProfilePath, sep=""), sep=" ")
-      cat(message)
-      changeJobStatus(con, userParameters$idJob, 2, message)
-      if(userParameters$createLog) sink()
-      stop(message)
-    }
     # Check for any .CEL file
-    if (list.files(userParameters$inputDir, pattern="*.cel", ignore.case = TRUE) == 0){
+    if (list.celfiles(userParameters$inputDir, full.names = TRUE) == 0){
       message <- paste("\nNo .CEL files in path:", userParameters$inputDir, sep=" ")
       cat(message)
       changeJobStatus(con, userParameters$idJob, 2, message)

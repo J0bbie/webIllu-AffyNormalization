@@ -25,7 +25,7 @@ source("../config.R")
 
 #Path to folder where the R scripts are found for the normalization of Illumina expression data.
 #The main folder is defined in the config.R file
-SCRIPT.DIR <- paste(configMainFolder,"R","illuNorm",sep="/")
+SCRIPT.DIR <- paste(configMainFolder,"R","illuminaNorm",sep="/")
 
 #Functions to access the normDB/DIAMONDS
 source(paste(SCRIPT.DIR,"functions_myDB.R",sep="/"))

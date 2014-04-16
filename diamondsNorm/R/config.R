@@ -24,4 +24,6 @@ configDbHost = "<serverName>"   # 127.0.0.1
 #####################################################################################################
 
 # Set the main folder of the application, this is the folder which contains the GUI/R/logic/ etc. folders
-configMainFolder = "<mainFolder>"       # /var/www/normDiamonds/
+configMainFolder = "C:/Users/rietjv/AppData/Local/My Local Documents/Github/webIlluminaNormalization/diamondsNorm/"       # /var/www/normDiamonds/
+
+

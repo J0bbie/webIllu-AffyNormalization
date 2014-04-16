@@ -144,6 +144,8 @@ rm(colList)
 plotSymbols <- 18-as.numeric(experimentFactor)
 legendSymbols <- sort(unique(plotSymbols), decreasing=TRUE)
 
+
+
 ###############################################################################
 # Define display parameters for the images			                          #
 ###############################################################################

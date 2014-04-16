@@ -64,7 +64,7 @@ getArguments <- function(commandArguments, con){
     make_option(c("-O","--statisticsDir"), type="character", default=paste(configMainFolder, "statistics", sep="/"),
                 help = "Path to folder where the output statistics files will be stored \ndefault = [%default] "),
     
-    make_option("--scriptDir", type="character",  default=paste(configMainFolder, "R", "illuNorm", sep="/"),
+    make_option("--scriptDir", type="character",  default=paste(configMainFolder, "R", "illuminaNorm", sep="/"),
                 help="Path to folder where the scripts are stored. \ndefault = [%default] "),
     
     make_option("--species",  type="character", default="Human",
