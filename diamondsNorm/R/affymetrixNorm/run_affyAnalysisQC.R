@@ -17,6 +17,19 @@
 # limitations under the License.                                              #
 #=============================================================================#
 
+# Changes by TNO
+
+# Author:  Job van Riet + Jordy Coolen
+# Date of  creation: 16-4-14
+# Date of modification:  16-4-14
+# Version: 1.0
+# Modifications: Original version
+# Known bugs:  None known
+# Function:
+# This script tries to catch all the options for the normalization used by the ArrayAnalysis scripts for Affymetrix normalization.
+# Also checks if the entered parameters are all valid.
+
+
 version_nb <- "1.0.0"
 cat("Script run using R version ",R.Version()$major,".",R.Version()$minor,
   " and affyAnalysisQC version_",version_nb,"\n",sep="")

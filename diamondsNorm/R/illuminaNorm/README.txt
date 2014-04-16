@@ -10,8 +10,8 @@ Description:
 Scripts for running background correction, normalization and quality assessment of Illumina Beadchip data using the methods found in the limma and lumi packages. If possible, missing packages are installed.
 
 #################################################################################################################################################
-#	These scripts are made for conjunction with the normDB/DIAMONDS as they also contain jobStatus updates and mySQL functionality		#
-#	For stand-alone functionality, use the stand-alone version (localNormalization)								#
+#	These scripts are made for conjunction with the normDB/DIAMONDS as they also contain jobStatus updates and mySQL functionality				#
+#	For stand-alone functionality, use the stand-alone version (localNormalization)																#
 #################################################################################################################################################
 
 The main files which are needed are:
