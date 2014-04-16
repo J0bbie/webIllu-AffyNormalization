@@ -23,7 +23,7 @@
 #-F       File containing the sampleNames/ArrayNames on which statistics should be done.
 #-B       Whether to perform statistics on a subset (As defined in -F)
 #-f       Whether to load the old normalized data.
-#-C       Load custom annotation file to use for annotation
+#-A       Load custom annotation file to use for annotation
 
 #Parameters for normDB/DIAMONDS
 #-j       idJob (For updating jobstatus)
@@ -55,16 +55,16 @@ getArguments <- function(commandArguments, con){
   }         
   
   option_list <- list(
-    make_option(c("-i", "--inputDir"), type="character", default="/var/www/diamondsNorm/data/",
+    make_option(c("-i", "--inputDir"), type="character", default=paste(configMainFolder, "data", sep="/"),
                 help="Path to folder where the Control_Probe_Profile, Sample_Probe_Profile and Description file are found \ndefault = [%default] "),
     
-    make_option(c("-o","--outputDir"), type="character", default="/var/www/diamondsNorm/expressionData/",
+    make_option(c("-o","--outputDir"), type="character", default=paste(configMainFolder, "expressionData", sep="/"),
                 help = "Path to folder where the output files will be stored \ndefault = [%default] "),
     
-    make_option(c("-O","--statisticsDir"), type="character", default="/var/www/diamondsNorm/data/statistics/",
+    make_option(c("-O","--statisticsDir"), type="character", default=paste(configMainFolder, "statistics", sep="/"),
                 help = "Path to folder where the output statistics files will be stored \ndefault = [%default] "),
     
-    make_option("--scriptDir", type="character", default="/var/www/diamondsNorm/R/",
+    make_option("--scriptDir", type="character",  default=paste(configMainFolder, "R", "illuNorm", sep="/"),
                 help="Path to folder where the scripts are stored. \ndefault = [%default] "),
     
     make_option("--species",  type="character", default="Human",

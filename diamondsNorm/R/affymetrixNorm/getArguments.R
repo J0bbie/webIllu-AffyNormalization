@@ -9,8 +9,13 @@
 #Also checks if the entered parameters are all valid.
 
 #Useful short flags:
-
-
+#-i       Input directory of .CEL files
+#-o       Output directory of normalized data
+#-O       Output directory of statistics and plots
+#-F       Name of statFile (Located in statistics folder), used to subset
+#-f       Whether to load old normalized data
+#-m       Filename of normalized data from the input directory
+#-A       Filepath of the custom annotation
 
 #Parameters for normDB/DIAMONDS
 #-j       idJob (For updating jobstatus)
@@ -18,6 +23,7 @@
 #-y       idNorm (ID of the normalization run)
 #-S       idStatistics (ID of the statistics run)
 #-D       Save data into database
+#-n       Name of the study (Used in naming files)
 
 #Makes an optionList of the possible parameters (Using optparse library)
 #Also reads the passed command-line arguments and returns these in a list
@@ -69,16 +75,16 @@ getArguments <- function(commandArguments, con){
     #                                 Parameters inputfolders & files                                   #
     #####################################################################################################
 
-    make_option(c("-i", "--inputDir"), type="character", default="/var/www/diamondsNorm/data/",
+    make_option(c("-i", "--inputDir"), type="character", default=paste(configMainFolder, "data", sep="/"),
                 help="Path to folder where the Control_Probe_Profile, Sample_Probe_Profile and Description file are found \ndefault = [%default] "),
     
-    make_option(c("-o","--outputDir"), type="character", default="/var/www/diamondsNorm/expressionData/",
+    make_option(c("-o","--outputDir"), type="character",  default=paste(configMainFolder, "expressionData", sep="/"),
                 help = "Path to folder where the output files will be stored \ndefault = [%default] "),
     
-    make_option(c("-O","--statisticsDir"), type="character", default="/var/www/diamondsNorm/data/statistics/",
+    make_option(c("-O","--statisticsDir"), type="character",  default=paste(configMainFolder, "statistics", sep="/"),
                 help = "Path to folder where the output statistics files will be stored \ndefault = [%default] "),
     
-    make_option("--scriptDir", type="character", default="/var/www/diamondsNorm/R/",
+    make_option("--scriptDir", type="character",  default=paste(configMainFolder, "R" ,"affyNorm", sep="/"),
                 help="Path to folder where the scripts are stored. \ndefault = [%default] "),
     
     make_option(c("-m","--normData"), type="character", default="normData.Rdata",
@@ -89,6 +95,9 @@ getArguments <- function(commandArguments, con){
     
     make_option(c("-g", "--arrayGroup"), type="character", default="",
                 help="description file describing the array names and experimental groups \ndefault = [%default] "),
+    
+    make_option(c("-A", "--customAnnotation"), type="character", default="",
+                help="File containing the custom annotation of the array \ndefault = [%default] "),
     
     make_option("--saveHistory",  type="logical", default=TRUE,
                 help="Whether to save the R history to the output directory. \ndefault = [%default] "),
@@ -273,40 +282,8 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
   #Check if the directories exist, also clean their path if not properly closed of with last /
   userParameters$scriptDir      <- correctDirectory(userParameters$scriptDir)
   userParameters$inputDir       <- correctDirectory(userParameters$inputDir)
-  userParameters$outputDir      <- correctDirectory(userParameters$outputDir)
-  
-  #Create a logFile in the outputdirectory
-  if(userParameters$createLog){
-    fileName <- file(paste(userParameters$outputDir, userParameters$studyName, "_log.txt", sep = ""))
-    sink(fileName)
-    sink(fileName, type="message")
-    cat("Creating log file in: ", paste(userParameters$outputDir, userParameters$studyName, "_log.txt", sep = "") ,"\n")
-  }          
-  
-  #Dont check arguments if only the statistics is being done
-  if(!userParameters$loadOldNorm){
-    #Check if combination of species, arrayType and arrayAnnotation is valid.
-    checkCombi <- userParameters$species %in% names(arrayTypeList) && userParameters$arrayType %in% arrayTypeList[[userParameters$species]] && userParameters$annoType %in% arrayAnnoList[[userParameters$arrayType]]
-    if (!checkCombi) {
-      message <- paste('\n' , "The combination of species, array type and array annotation file is not correct:", '\n' ,
-                       "- Species: ", userParameters$species, '\n' ,
-                       "- Array type: ", userParameters$arrayType, '\n' ,
-                       "- Annotation file: ", userParameters$annoType, sep=" ")
-      cat(message)
-      changeJobStatus(con, userParameters$idJob, 2, message)
-      if(userParameters$createLog) sink()
-      stop (message)
-      
-      
-    } 
-    else {
-      print("Combination of species, arrayType and annoType is OK.") 
-    }       
-    
-    #Add correct library for mapping based on species
-    userParameters$lib.mapping = paste( "lumi", userParameters$species, "IDMapping", sep="");
-    userParameters$lib.All.mapping = paste( "lumi", userParameters$species, "All.db", sep="");
-  }
+  userParameters$outputDir      <- correctDirectory(userParameters$outputDir)      
+
   if (file.info(userParameters$scriptDir)$isdir == FALSE){
     message <- paste("\nThe script directory does not exist:",userParameters$scriptDir, sep="")
     cat(message)
@@ -355,15 +332,9 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
       if(userParameters$createLog) sink()
       stop(message)
     }
-    if (file.exists(paste(userParameters$inputDir, userParameters$controlProbeProfilePath, sep="")) == FALSE){
-      message <- paste("\nNo Control Probe Profile in path:", paste(userParameters$inputDir, userParameters$controlProbeProfilePath, sep=""), sep=" ")
-      cat(message)
-      changeJobStatus(con, userParameters$idJob, 2, message)
-      if(userParameters$createLog) sink()
-      stop(message)
-    }
-    if (file.exists(paste(userParameters$outputDir, userParameters$descFile, sep="")) == FALSE){
-      message <- paste("\nNo Description file:", paste(userParameters$outputDir, userParameters$descFile, sep="") , sep=" ")
+    # Check for any .CEL file
+    if (list.files(userParameters$inputDir, pattern="*.cel", ignore.case = TRUE) == 0){
+      message <- paste("\nNo .CEL files in path:", userParameters$inputDir, sep=" ")
       cat(message)
       changeJobStatus(con, userParameters$idJob, 2, message)
       if(userParameters$createLog) sink()
@@ -389,35 +360,3 @@ correctDirectory <- function(dirName) {
   }
   return(dirName)
 }
-
-#####################################################################################################
-#                             Lists of possible arrays and annotations                              #
-#####################################################################################################
-
-arrayTypeList = list(
-  Human = c( "HumanHT-12", "HumanRef-8", "HumanWG-6"),
-  Mouse = c( "MouseRef-8", "MouseWG-6"),
-  Rat   = c( "RatRef-8")
-)
-
-arrayAnnoList = list(
-  `HumanHT-12` = c("HumanHT-12_V4_0_R2_15002873_B_WGDASL", 
-                   "HumanHT-12_V4_0_R2_15002873_B", 
-                   "HumanHT-12_V4_0_R1_15002873_B", 
-                   "HumanHT-12_V3_0_R2_11283641_A",
-                   "HumanHT-12_V3_0_R3_11283641_A"),
-  `HumanRef-8` = c("HumanRef-8_V3_0_R3_11282963_A", 
-                   "HumanRef-8_V3_0_R2_11282963_A", 
-                   "HUMANREF-8_V3_0_R1_11282963_A_WGDASL", 
-                   "HumanRef-8_V2_0_R4_11223162_A"),
-  `HumanWG-6`  = c("HumanWG-6_V2_0_R4_11223189_A", 
-                   "HumanWG-6_V3_0_R2_11282955_A",
-                   "HumanWG-6_V3_0_R3_11282955_A"),
-  `MouseRef-8` = c("MouseRef-8_V1_1_R4_11234312_A", 
-                   "MouseRef-8_V2_0_R2_11278551_A",
-                   "MouseRef-8_V2_0_R3_11278551_A"),
-  `MouseWG-6` = c( "MouseWG-6_V1_1_R4_11234304_A", 
-                   "MouseWG-6_V2_0_R2_11278593_A",
-                   "MouseWG-6_V2_0_R3_11278593_A"),
-  `RatRef-12` = c( "RatRef-12_V1_0_R5_11222119_A")
-)

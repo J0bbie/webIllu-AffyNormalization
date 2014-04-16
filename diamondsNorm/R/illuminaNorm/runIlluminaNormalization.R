@@ -1,8 +1,8 @@
 #Author:                      Job van Riet + ArrayAnalysis.org
 #Date of  creation:           26-2-14
-#Date of modification:        26-2-14
-#Version:                     1.0
-#Modifications:               Original version
+#Date of modification:        16-4-14
+#Version:                     1.1
+#Modifications:               Added configuration file
 #Known bugs:                  None known
 #Function:                    This script functions as the main script, calling the functions of the other scripts.
 #                             This pipeline is used to normalize Illumina microarray data. (From ArrayAnalysis.org)
@@ -20,9 +20,12 @@
 #Keep track of the running time of this script.
 ptm <- proc.time()
 
-#Path to folder where the R scripts are found for the normalization of Illumina expression data. (Ideally, where this script is located also)
-#Can also be given as parameters, but this is to load the getArguments script
-SCRIPT.DIR <- dirname(sys.frame(1)$ofile)
+#Get the configuration options
+source("../config.R")
+
+#Path to folder where the R scripts are found for the normalization of Illumina expression data.
+#The main folder is defined in the config.R file
+SCRIPT.DIR <- paste(configMainFolder,"R","illuNorm",sep="/")
 
 #Functions to access the normDB/DIAMONDS
 source(paste(SCRIPT.DIR,"functions_myDB.R",sep="/"))
@@ -35,8 +38,8 @@ source(paste(SCRIPT.DIR,"getArguments.R",sep="/"))
 
 #Get the command-line parameters that were given to this script (Parameters defined in getArguments.R)
 #Also check the validity of these parameters and directories
-#userParameters <- getArguments(commandArgs(trailingOnly = TRUE))
-userParameters <- getArguments(c("--statSubset", FALSE, "--statFile", "statSubsetFile.txt",  "--studyName", "AIMT2_LiverKidney", "-O", "/var/www/normdb/data/1_AIMT2_LiverKidney/statistics/1/", "-S", "1", "-j", "3", "-o", "/var/www/normdb/data/1_AIMT2_LiverKidney/expressionData/normed/1", "-i","/var/www/normdb/data/1_AIMT2_LiverKidney/expressionData/raw/","-s","Sample_Probe_Profile_102259-2.txt","-c", "Control_Probe_Profile_102259-2.txt","-d","descriptionFile.txt"))
+userParameters <- getArguments(commandArgs(trailingOnly = TRUE))
+#userParameters <- getArguments(c("--statSubset", FALSE, "--statFile", "statSubsetFile.txt",  "--studyName", "AIMT2_LiverKidney", "-O", "/var/www/normdb/data/1_AIMT2_LiverKidney/statistics/1/", "-S", "1", "-j", "3", "-o", "/var/www/normdb/data/1_AIMT2_LiverKidney/expressionData/normed/1", "-i","/var/www/normdb/data/1_AIMT2_LiverKidney/expressionData/raw/","-s","Sample_Probe_Profile_102259-2.txt","-c", "Control_Probe_Profile_102259-2.txt","-d","descriptionFile.txt"))
 
 #Function to install missing libraries
 source(paste(userParameters$scriptDir,"functions_loadPackages.R",sep="/"))
