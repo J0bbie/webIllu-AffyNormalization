@@ -24,6 +24,7 @@
 #-B       Whether to perform statistics on a subset (As defined in -F)
 #-f       Whether to load the old normalized data.
 #-A       Load custom annotation file to use for annotation
+#-X       Whether to perform normalization on a subset of samples (Using the samples in the descriptionFile)
 
 #Parameters for normDB/DIAMONDS
 #-j       idJob (For updating jobstatus)
@@ -105,6 +106,9 @@ getArguments <- function(commandArguments, con){
     
     make_option(c("-B","--statSubset"),  type="logical", default=FALSE,
                 help="Whether statistics should be done only on a subset. (defined in --statFile) \ndefault = [%default] "),
+    
+    make_option(c("-X","--normSubset"),  type="logical", default=FALSE,
+                help="Whether normalization should be done on a subset of samples. (defined in --descriptionFile) \ndefault = [%default] "),
     
     #####################################################################################################
     #                                       The input files paths                                       #

@@ -16,8 +16,9 @@
 #-F       Name of statFile (Located in statistics folder), used to subset
 #-f       Whether to load old normalized data
 #-m       Filename of normalized data from the input directory
-#-a       Whether to use cusom annotation file
+#-a       Whether to use custom annotation file
 #-A       Filepath of the custom annotation
+#-X       Whether to perform normalization on a subset of samples (Using the samples in the descriptionFile)
 
 #Parameters for normDB/DIAMONDS
 #-j       idJob (For updating jobstatus)
@@ -78,7 +79,7 @@ getArguments <- function(commandArguments, con){
     #####################################################################################################
 
     make_option(c("-i", "--inputDir"), type="character", default=paste(configMainFolder, "data", sep="/"),
-                help="Path to folder where the Control_Probe_Profile, Sample_Probe_Profile and Description file are found \ndefault = [%default] "),
+                help="Path to folder where the .CEL files are found \ndefault = [%default] "),
     
     make_option(c("-o","--outputDir"), type="character",  default=paste(configMainFolder, "expressionData", sep="/"),
                 help = "Path to folder where the output files will be stored \ndefault = [%default] "),
@@ -106,6 +107,10 @@ getArguments <- function(commandArguments, con){
     
     make_option("--saveHistory",  type="logical", default=TRUE,
                 help="Whether to save the R history to the output directory. \ndefault = [%default] "),
+    
+    make_option(c("-X","--normSubset"),  type="logical", default=FALSE,
+                help="Whether normalization should be done on a subset of samples. (defined in --descriptionFile) \ndefault = [%default] "),
+    
     
     #####################################################################################################
     #                                     Parameters normalization                                      #

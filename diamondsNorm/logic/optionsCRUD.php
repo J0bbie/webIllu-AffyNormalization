@@ -973,12 +973,13 @@ try
 	{
 		$idStudy = $_POST['idStudy'];
 		$idFileType = $_POST['idFileType'];
+		$fileName = $_POST['fileName'];
 		
 		//Insert record into database
-		$result = mysql_query("INSERT INTO vFilesWithInfo(idStudy, idfileType, fileName) VALUES( $idStudy, $idFileType, '$fileName');");
+		$result = mysql_query("INSERT INTO tFiles(idStudy, idFileType, fileName) VALUES( $idStudy, $idFileType, '$fileName');");
 		
 		//Get last inserted record (to return to jTable)
-		$result = mysql_query("SELECT * FROM vFilesWithInfo WHERE idFile = LAST_INSERT_ID();");
+		$result = mysql_query("SELECT idStudy FROM tFiles WHERE idFile = LAST_INSERT_ID();");
 		$row = mysql_fetch_array($result);
 
 		//Return result to jTable
@@ -1020,7 +1021,7 @@ try
 		rename($oldFilePath,$newFilePath);
 		
 		//Update record in database
-		$result = mysql_query("UPDATE vFilesWithInfo SET idFileType= $idFileType WHERE idFile = $idFile");
+		$result = mysql_query("UPDATE vFilesWithInfo SET idFileType= $idFileType, fileName = $fileName WHERE idFile = $idFile");
 
 		//Return result to jTable
 		$jTableResult = array();

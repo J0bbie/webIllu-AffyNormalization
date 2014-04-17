@@ -71,93 +71,120 @@ Function:				This page will present the user with options to perform a normilaza
 </div>
 
 <script type="text/javascript">
-//Function to get the selected attributes on which the samples should be clustered
-function getAttributes(){
- var selection = ChosenOrder.getSelectionOrder(document.getElementById('groupOnSelector'));
-	$('#selectedAttributes').val(selection);
-};
-
-//Ask if the user if sure if they do not want to cluster the samples and treat each sample independently when QCing
-function checkAttributes(){
-	var selection = $('#selectedAttributes').val();
-	if($('#expressionDataUploaded').val() == 1){
-		if(selection == ""){
-			if (confirm('Are you sure you do NOT want to cluster the samples when QCing the normalized/raw data?\nPress cancel to stop.')) {
+	//Function to get the selected attributes on which the samples should be clustered
+	function getAttributes(){
+	 var selection = ChosenOrder.getSelectionOrder(document.getElementById('groupOnSelector'));
+		$('#selectedAttributes').val(selection);
+	};
+	
+	//Ask if the user if sure if they do not want to cluster the samples and treat each sample independently when QCing
+	function checkAttributes(){
+		var selection = $('#selectedAttributes').val();
+		if($('#expressionDataUploaded').val() == 1){
+			if(selection == ""){
+				if (confirm('Are you sure you do NOT want to cluster the samples when QCing the normalized/raw data?\nPress cancel to stop.')) {
+					document.getElementById("normalizeStudyForm").submit();
+				} else {
+				    return false;
+				}
+			}
+			else{
 				document.getElementById("normalizeStudyForm").submit();
-			} else {
-			    return false;
 			}
 		}
 		else{
-			document.getElementById("normalizeStudyForm").submit();
+			alert("Cannot do a normalization if the expression data is not uploaded!");
+			return false;
 		}
-	}
-	else{
-		alert("Cannot do a normalization if the expression data is not uploaded!");
-		return false;
-	}
-};
-
-//Function to display filtering
-function showStatisticsOptions() {
-	if($('#performStatistics').is(':checked')) {
-		$("#rawPlots").show();
-		$("#normPlots").show();
-		$("#clusterTable").show();
-		$("#reorderSamples").show();
-	} else {
-		$("#rawPlots").hide();
-		$("#normPlots").hide();
-		$("#clusterTable").hide();
-		$("#reorderSamples").show();
-		
-	}
-};
-
-//Function to display background correction options
-function showBackgroundCorrectionOptions() {
-	if($('#performBackgroundCorrection').is(':checked')) {
-		$("#backgroundCorrectionOptions").show();
-	} else {
-		$("#backgroundCorrectionOptions").hide();
-	}
-};
-
-function showVarianceStabilizationOptions() {
-	if($('#performVarianceStabilization').is(':checked')) {
-		$("#varianceStabilizationOptions").show();
-	} else {
-		$("#varianceStabilizationOptions").hide();
-		
-	}
-};
-
+	};
+	
+	//Function to display filtering
+	function showStatisticsOptions() {
+		if($('#performStatistics').is(':checked')) {
+			$("#rawPlots").show();
+			$("#normPlots").show();
+			$("#clusterTable").show();
+			$("#reorderSamples").show();
+		} else {
+			$("#rawPlots").hide();
+			$("#normPlots").hide();
+			$("#clusterTable").hide();
+			$("#reorderSamples").show();
+			
+		}
+	};
+	
+	//Function to display background correction options
+	function showBackgroundCorrectionOptions() {
+		if($('#performBackgroundCorrection').is(':checked')) {
+			$("#backgroundCorrectionOptions").show();
+		} else {
+			$("#backgroundCorrectionOptions").hide();
+		}
+	};
+	
+	// Hides/shows the variance stabilization options
+	function showVarianceStabilizationOptions() {
+		if($('#performVarianceStabilization').is(':checked')) {
+			$("#varianceStabilizationOptions").show();
+		} else {
+			$("#varianceStabilizationOptions").hide();
+			
+		}
+	};
+	
+// Shows the filtering options for the statistics and normalization
 function showSampleSelection() {
-	if($('#sampleFiltering').is(':checked')) {
-		$("#sampleSelection").show();
-		$("#searchSamples").show();
-		showSampleSelectTable();
+	// Show/hide statistics subsetting
+	if($('#sampleStatisticsFiltering').is(':checked')) {
+		$("#sampleStatisticsSelection").show();
+		$("#searchStatisticsSamples").show();
+		showSampleStatisticsSelectTable();
 	} else {
-		$("#sampleSelection").hide();
-		$("#searchSamples").hide();
+		$("#sampleStatisticsSelection").hide();
+		$("#searchStatisticsSamples").hide();
+	}
+
+	// Show/hide normalization subsetting
+	if($('#sampleNormalizationFiltering').is(':checked')) {
+		$("#sampleNormalizationSelection").show();
+		$("#searchNormalizationSamples").show();
+		showSampleNormalizationSelectTable();
+	} else {
+		$("#sampleNormalizationSelection").hide();
+		$("#searchNormalizationSamples").hide();
 	}
 };
 
-function filterSamples(){
-	 $('#sampleSelection').jtable('load', {
-		sampleName : $('#searchSampleName').val(),
-		compoundName : $('#searchCompoundName').val(),
-		sampleType : $('#searchSampleType').val(),
-		attrValue : $('#searchAttributes').val(),
-		attrFilter : $('#attrFilter').val(),
-		dataTypeFilter : $('#dataTypeFilter').val(),
+//Filters the samples for subsetting the statistics on user input
+function filterNormalizationSamples(){
+	 $('#sampleNormalizationSelection').jtable('load', {
+		sampleName : $('#searchSampleNameN').val(),
+		compoundName : $('#searchCompoundNameN').val(),
+		sampleType : $('#searchSampleTypeN').val(),
+		attrValue : $('#searchAttributesN').val(),
+		attrFilter : $('#attrFilterN').val(),
+		dataTypeFilter : $('#dataTypeFilterN').val(),
 		idStudy : <?php echo $idStudy; ?>
      });
 }
 
-//Get the selected sample IDs and put them in a , separated string
-function getSampleSelection(){
-	var $selectedRows = $('#sampleSelection').jtable('selectedRows');
+// Filters the samples for subsetting the statistics on user input
+function filterStatisticsSamples(){
+	 $('#sampleStatisticsSelection').jtable('load', {
+		sampleName : $('#searchSampleNameS').val(),
+		compoundName : $('#searchCompoundNameS').val(),
+		sampleType : $('#searchSampleTypeS').val(),
+		attrValue : $('#searchAttributesS').val(),
+		attrFilter : $('#attrFilterS').val(),
+		dataTypeFilter : $('#dataTypeFilterS').val(),
+		idStudy : <?php echo $idStudy; ?>
+     });
+}
+
+//Get the selected sample IDs used in the normalization and put them in a , separated string
+function getSampleNormalizationSelection(){
+	var $selectedRows = $('#sampleNormalizationSelection').jtable('selectedRows');
 	var $line = "";
     $selectedRows.each(function () {
         var record = $(this).data('record').idSample;
@@ -167,8 +194,24 @@ function getSampleSelection(){
        		$line += record;
        	}
     });
-    $('#selectedSamples').val($line);
-    alert("Samples subset has been selected.");
+    $('#selectedNormalizationSamples').val($line);
+    alert("Samples subset for normalization has been selected.");
+}
+
+//Get the selected sample IDs used in the statistics and put them in a , separated string
+function getSampleStatisticsSelection(){
+	var $selectedRows = $('#sampleStatisticsSelection').jtable('selectedRows');
+	var $line = "";
+    $selectedRows.each(function () {
+        var record = $(this).data('record').idSample;
+       	if($line != ""){
+       		$line += ","+record;
+       	}else{
+       		$line += record;
+       	}
+    });
+    $('#selectedStatisticsSamples').val($line);
+    alert("Samples subset for statistics has been selected.");
 }
 </script>
 
@@ -182,7 +225,9 @@ function getSampleSelection(){
 			<!--Add hidden value to keep track of which form this is-->
 			<input id="formType" name="formType" type="hidden" value="normalizeIlluStudy" /> 
 			<input id="selectedAttributes" name="selectedAttributes" type="hidden" />
-			<input id="selectedSamples" name="selectedSamples" value=0 type="hidden" />
+			<input id="selectedStatisticsSamples" name="selectedStatisticsSamples" value=0 type="hidden" />
+			<input id="selectedNormalizationSamples" name="selectedNormalizationSamples" value=0 type="hidden" />
+			
 			<div class="form_description">
 				<h2>Normalize the Illumina Beadchip samples from this study.</h2>
 				<p>This form can be used to normalize the Illumina Beadchip omics data from the samples originating from this study.</p>
@@ -208,25 +253,30 @@ function getSampleSelection(){
 						</p>
 					</div>
 				</li>
-				<!-- Checkbox/filtering selection for sample filtering during normalization and statistics-->
+				
+				<!-- 
+				##########################################################################
+				# Checkbox/filtering selection for sample filtering during normalization #
+				##########################################################################
+				-->
 				<li>
-					<input type="checkbox" id="sampleFiltering" name="sampleFiltering" onchange="showSampleSelection()"/>Want to perform statistics on a subset only?
-					<div id="searchSamples">
-						<label class="description" for="searchSampleName">Filter on sample name:</label>
-						<input id="searchSampleName" name="searchSampleName" class="element text large" type="text" maxlength="255" value="" />
-						<label class="description" for="searchCompoundName">Filter on compound name:</label>
-						<input id="searchCompoundName" name="searchCompoundName" class="element text large" type="text" maxlength="255" value="" />
-						<label class="description" for="searchSampleType">Filter on sampleType:</label>
-						<input id="searchSampleType" name="searchSampleType" class="element text large" type="text" maxlength="255" value="" />
-						<label class="description" for="searchAttributes">Filter on attributes (Organ/Noel etc.):</label>
-						<input id="searchAttributes" name="searchAttributes" class="element text large" type="text" maxlength="255" value="" />
-						<select name="attrFilter" id="attrFilter">
+					<input type="checkbox" id="sampleNormalizationFiltering" name="sampleNormalizationFiltering" onchange="showSampleSelection()"/>Want to perform <strong>normalization</strong> on a subset only?
+					<div id="searchNormalizationSamples">
+						<label class="description" for="searchSampleNameN">Filter on sample name:</label>
+						<input id="searchSampleNameN" name="searchSampleNameN" class="element text large" type="text" maxlength="255" value="" />
+						<label class="description" for="searchCompoundNameN">Filter on compound name:</label>
+						<input id="searchCompoundNameN" name="searchCompoundNameN" class="element text large" type="text" maxlength="255" value="" />
+						<label class="description" for="searchSampleTypeN">Filter on sampleType:</label>
+						<input id="searchSampleTypeN" name="searchSampleTypeN" class="element text large" type="text" maxlength="255" value="" />
+						<label class="description" for="searchAttributesN">Filter on attributes (Organ/Noel etc.):</label>
+						<input id="searchAttributesN" name="searchAttributesN" class="element text large" type="text" maxlength="255" value="" />
+						<select name="attrFilterN" id="attrFilterN">
 							<option value="L">LIKE</option>
 							<option value="NL">NOT LIKE</option>
 							<option value="GT">&gt;=</option>
 							<option value="LT">&lt;=</option>
 						</select>
-						<select name="dataTypeFilter" id="dataTypeFilter">
+						<select name="dataTypeFilterN" id="dataTypeFilterN">
 							<?php 
 							if ($result =  mysqli_query($connection, "SELECT DISTINCT idDataType, dataTypeName FROM vSamplesWithAttributes WHERE idStudy = ".$idStudy)) {
 								while ($row = mysqli_fetch_assoc($result)) {
@@ -235,10 +285,52 @@ function getSampleSelection(){
 							}
 							?>
 						</select><br>
-						<button type=button onclick="filterSamples()">Search through records.</button>
-						<button type=button onclick="getSampleSelection()">Select these samples.</button>
+						<button type=button onclick="filterNormalizationSamples()">Search through records.</button>
+						<button type=button onclick="getSampleNormalizationSelection()">Select these samples.</button>
 					</div>
-					<div id="sampleSelection"></div>
+					<div id="sampleNormalizationSelection"></div>
+					<p class="guidelines" id="guide_filtering">
+						<small>Select the samples you want to use when performing the statistics. When selecting the filter of attributes, also select how and on what attribute it should be filtered. 
+						<br> When the samples are selected that should be used in the subsetting of the statistics, click the "Select these samples" button.</small>
+					</p>
+				</li>				
+				
+				<!-- 
+				##########################################################################
+				# Checkbox/filtering selection for sample filtering during statistics	 #
+				##########################################################################
+				-->
+				
+				<li>
+					<input type="checkbox" id="sampleStatisticsFiltering" name="sampleStatisticsFiltering" onchange="showSampleSelection()"/>Want to perform <strong>statistics</strong> on a subset only?
+					<div id="searchStatisticsSamples">
+						<label class="description" for="searchSampleNameS">Filter on sample name:</label>
+						<input id="searchSampleNameS" name="searchSampleNamSe" class="element text large" type="text" maxlength="255" value="" />
+						<label class="description" for="searchCompoundNameS">Filter on compound name:</label>
+						<input id="searchCompoundNameS" name="searchCompoundNameS" class="element text large" type="text" maxlength="255" value="" />
+						<label class="description" for="searchSampleTypeS">Filter on sampleType:</label>
+						<input id="searchSampleTypeS" name="searchSampleTypeS" class="element text large" type="text" maxlength="255" value="" />
+						<label class="description" for="searchAttributesS">Filter on attributes (Organ/Noel etc.):</label>
+						<input id="searchAttributesS" name="searchAttributesS" class="element text large" type="text" maxlength="255" value="" />
+						<select name="attrFilterS" id="attrFilterS">
+							<option value="L">LIKE</option>
+							<option value="NL">NOT LIKE</option>
+							<option value="GT">&gt;=</option>
+							<option value="LT">&lt;=</option>
+						</select>
+						<select name="dataTypeFilterS" id="dataTypeFilterS">
+							<?php 
+							if ($result =  mysqli_query($connection, "SELECT DISTINCT idDataType, dataTypeName FROM vSamplesWithAttributes WHERE idStudy = ".$idStudy)) {
+								while ($row = mysqli_fetch_assoc($result)) {
+									echo "<option value=".$row['idDataType'].">".$row['dataTypeName']."</option>";
+								}
+							}
+							?>
+						</select><br>
+						<button type=button onclick="filterStatisticsSamples()">Search through records.</button>
+						<button type=button onclick="getSampleStatisticsSelection()">Select these samples.</button>
+					</div>
+					<div id="sampleStatisticsSelection"></div>
 					<p class="guidelines" id="guide_filtering">
 						<small>Select the samples you want to use when performing the statistics. When selecting the filter of attributes, also select how and on what attribute it should be filtered. 
 						<br> When the samples are selected that should be used in the subsetting of the statistics, click the "Select these samples" button.</small>
@@ -549,11 +641,56 @@ function getSampleSelection(){
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
-	  
-	  	//Function to load a CRUD table for tStudyTypes
-		function showSampleSelectTable() {
+
+		  	//Function to load a CRUD table for tStudyTypes used for subsetting statistics
+			function showSampleNormalizationSelectTable() {
+				//Prepare jTable
+				$('#sampleNormalizationSelection').jtable({
+					title: 'Samples of this study',
+					paging: true,
+					pageSize: 200,
+					sorting: true,
+					defaultSorting: 'idSample ASC',
+		            selecting: true, //Enable selecting
+		            multiselect: true, //Allow multiple selecting
+		            selectingCheckboxes: true, //Show checkboxes on first column
+					actions: {
+						listAction: '../logic/optionsCRUD.php?action=list_tSamples'
+					},
+					fields: {
+						idSample: {
+							key: true,
+							title: 'idSample',
+							create: false,
+							edit: false,
+							list: true
+						},
+						name: {
+							title: 'Sample Name'
+						},
+						arrayName: {
+							title: 'Array ID'
+						},
+						compoundName:{
+							title: 'compoundName'
+						},
+						casNumber:{
+							title: 'casNumber'
+						},
+						typeName:{
+							title: 'sampleType'
+						}
+					}
+				});
+
+				//Load list from server
+				$('#sampleNormalizationSelection').jtable('load', {idStudy: <?php echo $idStudy; ?>});
+			}; //End function normalization samples
+
+	  	//Function to load a CRUD table for tStudyTypes used for subsetting statistics
+		function showSampleStatisticsSelectTable() {
 			//Prepare jTable
-			$('#sampleSelection').jtable({
+			$('#sampleStatisticsSelection').jtable({
 				title: 'Samples of this study',
 				paging: true,
 				pageSize: 200,
@@ -592,8 +729,8 @@ function getSampleSelection(){
 			});
 
 			//Load list from server
-			$('#sampleSelection').jtable('load', {idStudy: <?php echo $idStudy; ?>});
-		}; //End function samples
+			$('#sampleStatisticsSelection').jtable('load', {idStudy: <?php echo $idStudy; ?>});
+		}; //End statistics samples
 
 	</script>
 </body>

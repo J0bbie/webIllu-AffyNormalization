@@ -100,7 +100,7 @@ function checkAttributes(){
 		}
 	}
 	else{
-		alert("Cannot do a rerun of statistics if the normalized lumiBatch Object is not available on the fileserver (and linked in DB)!");
+		alert("Cannot do a rerun of statistics if the normalized affyBatch Object is not available on the fileserver (and linked in DB)!");
 		return false;
 	}
 };
@@ -288,9 +288,9 @@ function showSampleSelection() {
 								}
 							}
 							if($checkFiles == 1){
-								echo "<input type='checkbox' id='normDataAvailable' name='normDataAvailable' checked value='1' disabled/><font color=green>This study has lumiBatch R Object of normalized data?</font><br>";
+								echo "<input type='checkbox' id='normDataAvailable' name='normDataAvailable' checked value='1' disabled/><font color=green>This study has affyBatch R Object of normalized data?</font><br>";
 							}else{
-								echo "<input type='checkbox' id='normDataAvailable' name='normDataAvailable' value='0' disabled/><font color=red>This study has lumiBatch R Object of normalized data</font><br>";
+								echo "<input type='checkbox' id='normDataAvailable' name='normDataAvailable' value='0' disabled/><font color=red>This study has no affyBatch R Object of normalized data</font><br>";
 							}
 							
 							?>

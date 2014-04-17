@@ -151,7 +151,26 @@ if(userParameters$normalize){
   #Change order of rawData in order of file_order
   rawData <- rawData[,file_order]
   
-  cat("\nDescription data is valid.\n")          
+  cat("\nDescription data is valid.\n")   
+  
+  ##################################################################################
+  ##                Make a subset of the samples for normalization                ##
+  ##################################################################################
+  
+  # If subsetting is not enabled, all samples from the sample_Probe_Profile are used
+  # Else ony select the samples found in the descriptionFile
+  if(userParameters$normSubset){
+    
+    cat("\nMaking a subset for the normalization based on the samples in the descriptionFile\n")
+    
+    #Match sampleNames from datafile with first column from description file
+    subsetSamples <- match(description2[,4],sampleNames(rawData))
+    
+    #Make subset of samples
+    rawData <- rawData[,subsetSamples]
+    
+    cat("\nSuccesfully made subset of samples to normalize!\n")
+  }
   
   ##################################################################################
   ##        Reorder rawData lumibatch file on Group and sampleNames               ##
@@ -164,14 +183,15 @@ if(userParameters$normalize){
     #Match sampleNames from datafile with first column from description file
     file_order2 <- match(description2[,4],sampleNames(rawData))
     
-    #If not all the array have a sample name
+
+    #If not all the array have a sample name and subsetting is not enabled
     if(sum(is.na(file_order2)) > 0) {
       message <- ("Error: File names in Sample Probe Profile and file names in description file do not match!")
       cat(message)
       changeJobStatus(con, userParameters$idJob, 2, message)
       if(userParameters$createLog) sink()
       stop(message)
-    }
+    
     #Reorder the raw expression data
     rawData <- rawData[,file_order2]
     

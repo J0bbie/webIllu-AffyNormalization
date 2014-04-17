@@ -372,13 +372,13 @@ if(userParameters$normalize){
                                                   userParameters$species <- deduceSpecies(rawData@annotation)
                                         }
                                         if(userParameters$species!=""){
-                                                  PMAtable <- computePMAtable(rawData,userParameters$customAnnotation,userParameters$species,userParameters$CDFtype)
+                                                  PMAtable <- computePMAtable(rawData, userParameters$useCustomAnnotation,userParameters$species,userParameters$CDFtype)
                                         }else{
                                                   warning("\nCould not define species; the CDF will not be changed\n")
-                                                  PMAtable <- computePMAtable(rawData,userParameters$customAnnotation)
+                                                  PMAtable <- computePMAtable(rawData,userParameters$useCustomAnnotation)
                                         }
                               } else {
-                                        PMAtable <- computePMAtable(rawData,userParameters$customAnnotation)
+                                        PMAtable <- computePMAtable(rawData,userParameters$useCustomAnnotation)
                               }
                               # Write the PMAtable
                               if(!is.null(PMAtable)) {
@@ -596,21 +596,21 @@ if(userParameters$normalize){
                     }
                     
                     if(userParameters$normMeth!="" && userParameters$normMeth!="none") {
-                              if(userParameters$customAnnotation) {         
+                              if(userParameters$useCustomAnnotation) {         
                                         if(userParameters$species!=""){
                                                   normData <- normalizeData(rawData,userParameters$normMeth,perGroup=(normOption1=="group"), 
-                                                                            experimentFactor, aType=aType, userParameters$CustomAnnotation, userParameters$species, userParameters$CDFtype,
+                                                                            experimentFactor, aType=aType, userParameters$useCustomAnnotation, userParameters$species, userParameters$CDFtype,
                                                                             WIDTH=userParameters$img.width,HEIGHT=userParameters$img.height)
                                         }else{
                                                   warning("\nCould not define species; the CDF will not be changed\n")
                                                   normData <- normalizeData(rawData,userParameters$normMeth,perGroup=(normOption1=="group"), 
-                                                                            experimentFactor, aType=aType, userParameters$CustomAnnotation,
+                                                                            experimentFactor, aType=aType, userParameters$useCustomAnnotation,
                                                                             WIDTH=userParameters$img.width,HEIGHT=userParameters$img.height)
                                         }
                                         
                               } else {
                                         normData <- normalizeData(rawData,userParameters$normMeth,perGroup=(normOption1=="group"), 
-                                                                  experimentFactor, aType=aType, userParameters$CustomAnnotation,
+                                                                  experimentFactor, aType=aType, userParameters$useCustomAnnotation,
                                                                   WIDTH=userParameters$img.width,HEIGHT=userParameters$img.height)
                               }
                     }         

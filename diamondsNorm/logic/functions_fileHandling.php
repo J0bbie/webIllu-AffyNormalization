@@ -485,4 +485,97 @@
 			echo "<p><font color=orange>$folderName already exists. Skipping mkdir of this folder.</font></p>";
 		}
 	}
+	
+	///////////////////////////////////////////////////////////////////
+	// 		Function to create a description file (clustergroups)	///
+	///////////////////////////////////////////////////////////////////
+	
+	//Make a tab-delimited description file (arrayName|sampleName|Group), the group is based on the user selected attributes.
+	//If $skipNoArrayName == "on", it skips all the samples  from the study without a sampleName.
+	function makeDescriptionFile($connection, $normFolder, $groupAttributes, $idStudy, $idJob, $skipNoArrayName, $oldNorm, $subsetNormSamples){
+		echo "<p><font color=orange>Making description file.</font></p>";
+	
+		//Open a file + fileHandler to make the description file, save the file in the Normfolder also.
+		$fileHandler = fopen($normFolder."/descriptionFile.txt", "w");
+		if(!$fileHandler){
+			$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Could not make/write a description file in folder: ".$normFolder."' WHERE idJob = '$idJob'");
+			exit("<p><font color=red>Could not make/write a description file in folder: $normFolder.</font></p>");
+		}
+	
+		//Write the headers
+		fwrite($fileHandler, "ArrayDataFile\tSourceName\tFactorValue\n");
+	
+		//Query to select the samples
+		if($skipNoArrayName != "on"){
+			$query = ("SELECT idSample, arrayName, name FROM tSamples WHERE idStudy = $idStudy AND arrayName != NULL ");
+		}
+		else{
+			$query = ("SELECT idSample, arrayName, name FROM tSamples WHERE idStudy = $idStudy ");
+		}
+	
+		//If a subset of samples to normalize over is selected, only select those samples
+		if($subsetNormSamples != 0){
+			foreach(explode(",",$subsetNormSamples) as $idNormSample){
+				$query += " AND idSample = '$idNormSample'";
+			}
+		}
+	
+		// Select the samples
+		if ($samples = $connection->query($query)){
+			while ($row = mysqli_fetch_assoc($samples)) {
+				$idSample = rtrim($row['idSample']);
+				$arrayName = rtrim($row['arrayName']);
+				$sampleName = rtrim($row['name']);
+	
+				if($arrayName == "" && $skipNoArrayName != "on"){
+					$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Sample $sampleName (id: $idSample) has no arrayName and user selected no sampels should be skipped!' WHERE idJob = '$idJob'");
+					fclose($fileHandler);
+					exit("<p><font color=red>Failed: Sample $sampleName (id: $idSample) has no arrayName!</font></p>");
+				}
+				//Get all the attributes selected to cluster on of a given sample
+				$groupOnLine = "";
+				foreach($groupAttributes as $attr){
+					if($attr == "compound"){
+						$queryCompound = ("SELECT compoundName FROM vSamplesWithInfoNames WHERE idSample =$idSample");
+						if ($result =  mysqli_query($connection, $queryCompound)) {
+							while ($row = mysqli_fetch_assoc($result)) {
+								$groupOnLine.=rtrim($row['compoundName']).'_';
+							}
+						}
+					}
+					else if($attr == "sampleType"){
+						$querySampleType = ("SELECT typeName FROM vSamplesWithInfoNames WHERE idSample =$idSample");
+						if ($result =  mysqli_query($connection, $querySampleType)) {
+							while ($row = mysqli_fetch_assoc($result)) {
+								$groupOnLine.=rtrim($row['typeName']).'_';
+							}
+						}
+					}
+					else if($attr != "compound" && $attr != "sampleType"){
+						$queryAttributes = ("SELECT value FROM tAttributes WHERE idDataType = $attr AND idSample = $idSample");
+						if ($dataTypeRes =  mysqli_query($connection, $queryAttributes)) {
+							while ($row = mysqli_fetch_assoc($dataTypeRes)) {
+								$groupOnLine.=rtrim($row['value']).'_';
+							}
+						}
+					}//End local Else Loop
+				}//End loop dataTypes
+				//Cut of the last _ symbol
+				$groupOnLine = substr($groupOnLine, 0, -1);
+				if($groupOnLine=="") $groupOnLine = "noGroup";
+				//Write the line (arrayName|sampleName|Group) to the descriptionFile.txt
+				if($arrayName != ""){
+					//If normalized data has already been provided, the unique names are the sampleNames and not the arrayNames
+					if($oldNorm == TRUE){
+						fwrite($fileHandler, $sampleName."\t".$sampleName."\t".$groupOnLine."\n");
+					}else{
+						fwrite($fileHandler, $arrayName."\t".$sampleName."\t".$groupOnLine."\n");
+					}
+				}
+			}
+		}//End loop samples
+		//Close the fileHandler of descriptionFile.txt
+		fclose($fileHandler);
+		echo "<p><font color=green>$normFolder/descriptionFile.txt has succesfully been written!</font></p>";
+	}//End function makeDescriptionFile()
 ?>

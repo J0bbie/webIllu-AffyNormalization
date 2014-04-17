@@ -104,24 +104,24 @@
 		
 		//If file not in DB
 		if(!isset($controlProbeProfilePath)){
-			$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Could not find the Control Probe Profile in the DB! WHERE idJob = '$idJob'");
+			$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Could not find the Control Probe Profile in the DB!' WHERE idJob = '$idJob'");
 			exit("<p><font color=red>Could not find the Control Probe Profile in the DB!</font></p>");
 		}
 		//If file not on fileserver
 		elseif(!file_exists($controlProbeProfilePath)){
-			$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Could not find the Control Probe Profile on the fileserver on: $controlProbeProfilePath! WHERE idJob = '$idJob'");
+			$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Could not find the Control Probe Profile on the fileserver on: $controlProbeProfilePath!' WHERE idJob = '$idJob'");
 			exit("<p><font color=red>Could not find the Control Probe Profile on the fileserver on: $controlProbeProfilePath!</font></p>");
 		}else{
 			echo "<p><font color=green>Control Probe Profile can be found in both the DB and fileserver!</font></p>";
 		}
 		//If file not in DB
 		if(!isset($sampleProbeProfilePath)){
-			$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Could not find the Sample Probe Profile on the fileserver on: $sampleProbeProfilePath! WHERE idJob = '$idJob'");
+			$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Could not find the Sample Probe Profile on the fileserver on: $sampleProbeProfilePath!' WHERE idJob = '$idJob'");
 			exit("<p><font color=red>Could not find the Sample Probe Profile in the DB!</font></p>");
 		}
 		//If file not on fileserver
 		elseif(!file_exists($sampleProbeProfilePath)){
-			$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Could not find the Sample Probe Profile on the fileserver on: $sampleProbeProfilePath! WHERE idJob = '$idJob'");
+			$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Could not find the Sample Probe Profile on the fileserver on: $sampleProbeProfilePath!' WHERE idJob = '$idJob'");
 			exit("<p><font color=red>Could not find the Sample Probe Profile on the fileserver on: $sampleProbeProfilePath!</font></p>");
 		}else{
 			echo "<p><font color=green>Sample Probe Profile can be found in both the DB and fileserver!</font></p>";
@@ -156,7 +156,7 @@
 		///////////////////////////////////////////////////////////////////
 		
 		//Make a description file
-		makeDescriptionFile($connection ,$normFolder, $groupAttributes, $idStudy, $idJob, (isset($GET['skipNoArrayName']) ? $GET['skipNoArrayName'] : 'off') , FALSE);
+		makeDescriptionFile($connection ,$normFolder, $groupAttributes, $idStudy, $idJob, (isset($GET['skipNoArrayName']) ? $GET['skipNoArrayName'] : 'off') , FALSE, (isset($GET['selectedNormalizationSamples']) ? $GET['selectedNormalizationSamples'] : '0'));
 		
 		///////////////////////////////////////////////////////////////////
 		// 	Build all the arguments which are supplied to pipeline		///
@@ -181,7 +181,7 @@
 		}
 			
 		//Make a string of all the possible arguments a user can manipulate.
-		$scriptFolder = CONFIG_MAINFOLDER."/R/";
+		$scriptFolder = CONFIG_MAINFOLDER."/R/illuminaNorm/";
 		
 		//Check if some of the options should not be performed.
 		//Should background correction be skipped?
@@ -230,11 +230,12 @@
 		
 		//Check if statistics should only be performed on a smaller subset of samples, if so, create a statFile.txt containing these sampleNames.
 		$statSubset = "FALSE";
+		
 		//Should subsetting be skipped?	
-		if(isset($GET['selectedSamples']) && $GET['selectedSamples'] != "0"){
+		if(isset($GET['selectedStatisticsSamples']) && $GET['selectedStatisticsSamples'] != "0"){
 			$statSubset = "TRUE";
 			echo "<p><font color=orange>Creating statSubsetFile.txt.</font><p>";
-			$sampleIDList = explode(",", $GET['selectedSamples']);
+			$sampleIDList = explode(",", $GET['selectedStatisticsSamples']);
 			
 			//Open a file + fileHandler to make the statSubsetFile, save the file in the statistics folder and DB also.
 			$statFile = "statSubsetFile.txt";
@@ -271,7 +272,7 @@
 		$arguments = ("--inputDir $inputFolder
 				--outputDir $normFolder
 				--scriptDir $scriptFolder
-				--statisticsDir ". (isset($statFolder) ? $statFolder : '/noFolder/')."
+				--statisticsDir ". (isset($statFolder) ? $statFolder : '/normFolder/')."
 				--species $species
 				--arrayType $arrayType
 				--annoType $annoType
@@ -293,6 +294,7 @@
 				--variance.stabilize $varStab
 				--variance.m ".$GET['variance_Stab_m']."
 				--normalization.m ".$GET['normalization_m']."
+				--normSubset ".(($GET['selectedNormalizationSamples'] != 0) ? 'TRUE' : 'FALSE')."
 				--filtering $filtering
 				--filter.Th ".$GET['filter_Th']."
 				--filter.dp ".$GET['filter_dp']."
@@ -330,10 +332,10 @@
 		//Print or exec the pipeline arguments
 		if(CONFIG_RUNPIPELINES){
 			echo("<p>Debugging is on, printing the exec statement and NOT actually running the statement! <br>Change this in the config.php<p>");
-			echo("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/runIlluminaNormalization.R ".$arguments." > ".CONFIG_MAINFOLDER."/log &");
+			echo("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/illuminaNorm/runIlluminaNormalization.R ".$arguments." > ".CONFIG_MAINFOLDER."/log &");
 		}
 		else{
-			exec("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/runIlluminaNormalization.R ".$arguments." > ".CONFIG_MAINFOLDER."/log &");
+			exec("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/illuminaNorm/runIlluminaNormalization.R ".$arguments." > ".CONFIG_MAINFOLDER."/log &");
 		}
 	}
 	
@@ -483,10 +485,10 @@
 		///////////////////////////////////////////////////////////////////
 		
 		//Make a description file
-		makeDescriptionFile($connection ,$statFolder, $groupAttributes, $idStudy, $idJob, "on", TRUE);
+		makeDescriptionFile($connection ,$statFolder, $groupAttributes, $idStudy, $idJob, "on", TRUE, 0);
 		
 		//Make a string of all the possible arguments a user can manipulate.
-		$scriptFolder = CONFIG_MAINFOLDER."/R/";
+		$scriptFolder = CONFIG_MAINFOLDER."/R/illuminaNorm/";
 		
 		$arguments = ("--inputDir $inputFolder
 				--outputDir $statFolder
@@ -530,94 +532,11 @@
 		//Print or exec the pipeline arguments
 		if(CONFIG_RUNPIPELINES){
 			echo("<p>Debugging is on, printing the exec statement and NOT actually running the statement! <br>Change this in the config.php<p>");
-			echo("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/runIlluminaNormalization.R ".$arguments." > ".CONFIG_MAINFOLDER."/log &");
+			echo("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/illuminaNorm/runIlluminaNormalization.R ".$arguments." > ".CONFIG_MAINFOLDER."/log &");
 		}
 		else{
-			exec("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/runIlluminaNormalization.R ".$arguments." > ".CONFIG_MAINFOLDER."/log &");
+			exec("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/illuminaNorm/runIlluminaNormalization.R ".$arguments." > ".CONFIG_MAINFOLDER."/log &");
 		}
 	} //End function illuNormalization
-	
-	///////////////////////////////////////////////////////////////////
-	// 		Function to create a description file (clustergroups)	///
-	///////////////////////////////////////////////////////////////////
-	
-	//Make a tab-delimited description file (arrayName|sampleName|Group), the group is based on the user selected attributes.
-	//If $skipNoArrayName == "on", it skips all the samples  from the study without a sampleName.
-	function makeDescriptionFile($connection, $normFolder, $groupAttributes, $idStudy, $idJob, $skipNoArrayName, $oldNorm){
-		echo "<p><font color=orange>Making description file.</font></p>";
-	
-		//Open a file + fileHandler to make the description file, save the file in the Normfolder also.
-		$fileHandler = fopen($normFolder."/descriptionFile.txt", "w");
-		if(!$fileHandler){
-			$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Could not make/write a description file in folder: ".$normFolder."' WHERE idJob = '$idJob'");
-			exit("<p><font color=red>Could not make/write a description file in folder: $normFolder.</font></p>");
-		}
-		
-		//Write the headers
-		fwrite($fileHandler, "ArrayDataFile\tSourceName\tFactorValue\n");
-		
-		//Loop over all the samples in a given study
-		if($skipNoArrayName != "on"){
-			$query = ("SELECT idSample, arrayName, name FROM tSamples WHERE idStudy = 1 AND arrayName != NULL;");
-		}
-		else{
-			$query = ("SELECT idSample, arrayName, name FROM tSamples WHERE idStudy = 1;");
-		}
-		if ($samples = $connection->query("SELECT * FROM tSamples WHERE idStudy = $idStudy")){
-			while ($row = mysqli_fetch_assoc($samples)) {
-				$idSample = rtrim($row['idSample']);
-				$arrayName = rtrim($row['arrayName']);
-				$sampleName = rtrim($row['name']);
-				
-				if($arrayName == "" && $skipNoArrayName != "on"){
-					$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Sample $sampleName (id: $idSample) has no arrayName and user selected no sampels should be skipped!' WHERE idJob = '$idJob'");
-					fclose($fileHandler);
-					exit("<p><font color=red>Failed: Sample $sampleName (id: $idSample) has no arrayName!</font></p>");
-				}
-				//Get all the attributes selected to cluster on of a given sample
-				$groupOnLine = "";
-				foreach($groupAttributes as $attr){
-					if($attr == "compound"){
-						$queryCompound = ("SELECT compoundName FROM vSamplesWithInfoNames WHERE idSample =$idSample");
-						if ($result =  mysqli_query($connection, $queryCompound)) {
-							while ($row = mysqli_fetch_assoc($result)) {
-								$groupOnLine.=rtrim($row['compoundName']).'_';
-							}
-						}
-					}
-					else if($attr == "sampleType"){
-						$querySampleType = ("SELECT typeName FROM vSamplesWithInfoNames WHERE idSample =$idSample");
-						if ($result =  mysqli_query($connection, $querySampleType)) {
-							while ($row = mysqli_fetch_assoc($result)) {
-								$groupOnLine.=rtrim($row['typeName']).'_';
-							}
-						}
-					}
-					else if($attr != "compound" && $attr != "sampleType"){
-						$queryAttributes = ("SELECT value FROM tAttributes WHERE idDataType = $attr AND idSample = $idSample");
-						if ($dataTypeRes =  mysqli_query($connection, $queryAttributes)) {
-							while ($row = mysqli_fetch_assoc($dataTypeRes)) {
-								$groupOnLine.=rtrim($row['value']).'_';
-							}
-						}
-					}//End local Else Loop
-				}//End loop dataTypes
-				//Cut of the last _ symbol
-				$groupOnLine = substr($groupOnLine, 0, -1);
-				if($groupOnLine=="") $groupOnLine = "noGroup";
-				//Write the line (arrayName|sampleName|Group) to the descriptionFile.txt
-				if($arrayName != ""){
-					//If normalized data has already been provided, the unique names are the sampleNames and not the arrayNames
-					if($oldNorm == TRUE){
-						fwrite($fileHandler, $sampleName."\t".$sampleName."\t".$groupOnLine."\n");
-					}else{
-						fwrite($fileHandler, $arrayName."\t".$sampleName."\t".$groupOnLine."\n");
-					}
-				}
-			}
-		}//End loop samples
-		//Close the fileHandler of descriptionFile.txt
-		fclose($fileHandler);
-		echo "<p><font color=green>$normFolder/descriptionFile.txt has succesfully been written!</font></p>";
-	}//End function makeDescriptionFile()
+
 ?>
