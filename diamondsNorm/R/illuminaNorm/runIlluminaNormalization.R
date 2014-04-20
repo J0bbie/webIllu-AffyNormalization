@@ -20,8 +20,11 @@
 #Keep track of the running time of this script.
 ptm <- proc.time()
 
+#Set working directory to path of execute
+#setwd(dirname(sys.frame(1)$ofile))
+
 #Get the configuration options
-source("../config.R")
+source("/var/www/normdb/R/config.R")
 
 #Path to folder where the R scripts are found for the normalization of Illumina expression data.
 #The main folder is defined in the config.R file
@@ -39,7 +42,7 @@ source(paste(SCRIPT.DIR,"getArguments.R",sep="/"))
 #Get the command-line parameters that were given to this script (Parameters defined in getArguments.R)
 #Also check the validity of these parameters and directories
 userParameters <- getArguments(commandArgs(trailingOnly = TRUE))
-#userParameters <- getArguments(c("--statSubset", FALSE, "--statFile", "statSubsetFile.txt",  "--studyName", "AIMT2_LiverKidney", "-O", "/var/www/normdb/data/1_AIMT2_LiverKidney/statistics/1/", "-S", "1", "-j", "3", "-o", "/var/www/normdb/data/1_AIMT2_LiverKidney/expressionData/normed/1", "-i","/var/www/normdb/data/1_AIMT2_LiverKidney/expressionData/raw/","-s","Sample_Probe_Profile_102259-2.txt","-c", "Control_Probe_Profile_102259-2.txt","-d","descriptionFile.txt"))
+#userParameters <- getArguments(c("--createLog", TRUE, "--normSubset", TRUE, "--statSubset", TRUE, "--statFile", "statSubsetFile.txt", "--studyName", "AIMT2_LiverKidney", "-O", "/var/www/normdb/data/1_AIMT2_LiverKidney/statistics/4/", "-S", "4", "-j", "18", "--idNorm","21", "-o", "/var/www/normdb/data/1_AIMT2_LiverKidney/expressionData/normed/21", "-i","/var/www/normdb/data/1_AIMT2_LiverKidney/expressionData/raw/","-s","Sample_Probe_Profile_102259-2.txt","-c", "Control_Probe_Profile_102259-2.txt","-d","descriptionFile.txt"))
 
 #Function to install missing libraries
 source(paste(userParameters$scriptDir,"functions_loadPackages.R",sep="/"))
@@ -110,6 +113,25 @@ if(userParameters$normalize){
   cat("\nSuccesfully loaded the Sample Probe Profile.\n")
   
   ##################################################################################
+  ##                Make a subset of the samples for normalization                ##
+  ##################################################################################
+  
+  # If subsetting is not enabled, all samples from the sample_Probe_Profile are used
+  # Else ony select the samples found in the descriptionFile
+  if(userParameters$normSubset){
+    
+    cat("\nMaking a subset for the normalization based on the samples in the descriptionFile\n")
+    
+    #Match sampleNames from datafile with first column from description file
+    subsetSamples <- match(description[,4],sampleNames(rawData))
+    
+    #Make subset of samples
+    rawData <- rawData[,subsetSamples]
+    
+    cat("\nSuccesfully made subset of samples to normalize!\n")
+  }
+  
+  ##################################################################################
   ##                            Check description file                            ##
   ##################################################################################
   
@@ -154,25 +176,6 @@ if(userParameters$normalize){
   cat("\nDescription data is valid.\n")   
   
   ##################################################################################
-  ##                Make a subset of the samples for normalization                ##
-  ##################################################################################
-  
-  # If subsetting is not enabled, all samples from the sample_Probe_Profile are used
-  # Else ony select the samples found in the descriptionFile
-  if(userParameters$normSubset){
-    
-    cat("\nMaking a subset for the normalization based on the samples in the descriptionFile\n")
-    
-    #Match sampleNames from datafile with first column from description file
-    subsetSamples <- match(description2[,4],sampleNames(rawData))
-    
-    #Make subset of samples
-    rawData <- rawData[,subsetSamples]
-    
-    cat("\nSuccesfully made subset of samples to normalize!\n")
-  }
-  
-  ##################################################################################
   ##        Reorder rawData lumibatch file on Group and sampleNames               ##
   ##################################################################################
   
@@ -199,10 +202,11 @@ if(userParameters$normalize){
     sampleNames(rawData)<- as.character(description2[,2]) 
     
     cat("\nRe-ordering succesfull.\n")
-  }else {
-    #Change sampleNames into loaded description file
-    sampleNames(rawData)<- as.character(description[,2])
-    cat("\nSample names have been given to the arrays.\n")
+    }else {
+      #Change sampleNames into loaded description file
+      sampleNames(rawData)<- as.character(description[,2])
+      cat("\nSample names have been given to the arrays.\n")
+    }
   }
   
   ##################################################################################
@@ -479,15 +483,15 @@ if(userParameters$performStatistics){
       matchedSamples <- match(description2[,4],sampleNames(normData))
       
       #If not all the array have a sample name
-      if(sum(is.na(file_order2)) > 0) {
-        message <- ("Error: File names in old normalized data and file names in description file do not match!")
+      if(sum(is.na(matchedSamples)) > 0) {
+        message <- ("Error: File names in old normalized data and file names in description file do not match! Statistics cannot be run on samples not taken in with the original normalization.")
         cat(message)
         changeJobStatus(con, userParameters$idJob, 2, message)
         if(userParameters$createLog) sink()
         stop(message)
       }
       #Reorder the normed expression data
-      normData <- normData[,file_order2]
+      normData <- normData[,matchedSamples]
       
       #Change sampleNames into reordered description file
       sampleNames(normData) <- as.character(description2[,2]) 
@@ -495,7 +499,11 @@ if(userParameters$performStatistics){
       cat("\nRe-ordering succesfull.\n")
     }
     
-    #Make subset of normed data if needed
+    #################################################################################
+    #                           Make subset for statistics                          #
+    #################################################################################
+    
+    #
     if(userParameters$normDataQC && userParameters$statSubset){
       cat("\nMaking subset of samples in raw data.!\n")
       
@@ -610,6 +618,8 @@ if(userParameters$createAnno){
   
   write.table(eset.anno.rawData, file = fileName, quote= FALSE, sep='\t', row.names= F, col.names= T )
   
+  addNormFile( userParameters$idStudy, 72, userParameters$idNorm ,paste(userParameters$studyName,"_summary_rawData.txt", sep=""))
+  
   cat("\nSaving merged raw data completed.\n")
   
   cat("\nMerging annotation file with the normalized expression data\n")
@@ -621,6 +631,8 @@ if(userParameters$createAnno){
   fileName <- paste(userParameters$outputDir,  userParameters$studyName, "_normData_", userParameters$normType, ".txt", sep="")
   
   write.table(eset.anno.normData, file = fileName, quote= FALSE, sep='\t', row.names= F, col.names= T )
+  
+  addNormFile( userParameters$idStudy, 15, userParameters$idNorm ,paste(userParameters$studyName, "_normData_", userParameters$normType, ".txt", sep=""))
   
   cat("\nSaving merged normalized data to the fileserver completed.\n")
   
@@ -638,6 +650,8 @@ if(userParameters$createAnno && userParameters$filtering) {
   fileName <- paste(userParameters$outputDir, userParameters$studyName, "_normData_Filtered_", userParameters$normType, ".txt", sep="")
   
   write.table(eset.anno.filtData, file = fileName, quote= FALSE, sep='\t', row.names= F, col.names= T )
+  
+  addNormFile( userParameters$idStudy, 18, userParameters$idNorm ,paste(userParameters$studyName, "_normData_Filtered_", userParameters$normType, ".txt", sep=""))
   
   cat("\nSaving merged filtered normalized data completed.\n")
 }else{

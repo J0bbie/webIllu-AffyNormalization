@@ -124,5 +124,5 @@ getCreateProbe <- function (con, probeData){
 
 #Update tNormAnalysis and show that this normalisation is complete.
 updateNormDescription <- function(con, idNorm, message){
-          dbSendQuery(con, paste("UPDATE tNormAnalysis SET description = '", message ,"' WHERE idNormAnalysis = ", idNorm, sep=""))  
+          dbSendQuery(con, paste("UPDATE tNormAnalysis SET description = concat(description, ' - ", message ,"') WHERE idNormAnalysis = ", idNorm, sep=""))  
 }

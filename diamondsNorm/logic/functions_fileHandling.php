@@ -478,7 +478,7 @@
 				exit("<p><font color=red>Could not create folder: $baseName</font></p>");
 			}
 			else{
-				echo "<p><font color=green>The folder $baseName was successfully created.</font></p>";
+				echo "<p><font color=green>The folder $folderName was successfully created.</font></p>";
 			}
 		}
 		else{
@@ -512,13 +512,19 @@
 		else{
 			$query = ("SELECT idSample, arrayName, name FROM tSamples WHERE idStudy = $idStudy ");
 		}
-	
+			
 		//If a subset of samples to normalize over is selected, only select those samples
 		if($subsetNormSamples != 0){
+			$firstSample = TRUE;
 			foreach(explode(",",$subsetNormSamples) as $idNormSample){
-				$query += " AND idSample = '$idNormSample'";
+				if($firstSample){
+					$query = $query." AND idSample = '$idNormSample'";
+					$firstSample = FALSE;
+				}else{
+					$query = $query." OR idSample = '$idNormSample'";
+				}
 			}
-		}
+		}		
 	
 		// Select the samples
 		if ($samples = $connection->query($query)){

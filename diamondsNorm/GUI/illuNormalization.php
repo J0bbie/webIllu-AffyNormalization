@@ -459,6 +459,9 @@ function getSampleStatisticsSelection(){
 							<small> Choose the normalization options.</small>
 						</p>
 					</div>
+					<!-- Input field for the description of the normalization run -->
+					<label class="description" for="description">Provide a description for the normalization:</label>
+					<input id="descNorm" name="descNorm" class="element textarea large" type="text"  value="" />
 				</li>
 				<!-- End option Pre-processing -->
 				<li>

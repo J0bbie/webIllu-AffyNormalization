@@ -34,7 +34,7 @@ INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchO
 INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('ServiceXS RNAsample submission', 'Information about the RNA submission to SXS', 3, 'ServiceXS_RNAsample_submission');
 INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('QC Report', 'QC report from SXS', 3, 'QC_Report');
 INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Data Inspection Summary', 'Data inspection summary (SXS)', 3, 'Data_Inspection_Summary');
-INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Raw Illumina Data LumiBatch Object', 'Raw Illumina data from this pipeline in a LumiBatch R Object.', 3, 'rawData.Rdata');
+INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Raw Illumina Data LumiBatch Object', 'Raw Illumina data from this pipeline in a LumiBatch R Object.', 4, 'rawData.Rdata');
 INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('customAnnotationFile', 'File containing the custom layout of the array.', 3, 'customAnnotation');
 INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('affyCelFile', 'File containing the gene expressions from an Affymetrix run in .CEL format.', 3, '.cel');
 
@@ -64,7 +64,7 @@ INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchO
 
 # Output of affy normalization
 INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Normalized Affymetrix Data', 'Normalized Affymetrix data from this pipeline.', 4, 'NormData');
-INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Log Affymetrix pipeline', 'Log of the Affymetrix pipeline', 4, 'log_affy');
+INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Log pipeline', 'Log of pipeline', 4, 'log_pipeline');
 INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Normalized Affymetrix Data LumiBatch Object', 'Normalized Affymetrix data from this pipeline in a LumiBatch R Object.', 4, 'normData.Rdata');
 
 # Affy total report
@@ -111,6 +111,9 @@ INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchO
 # Used for defining the subset on which statistics are run
 INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('StatSubsetFile', 'File containing the sampleNames used in the statistics if a subset was used.', 5, 'statSubsetFile');
 
+#Raw data illumina merged
+INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Raw Illumina Data', 'Raw Illumina merged data from this pipeline.', 4, '_rawData');
+
 #Sample types
 INSERT INTO `normdb`.`tSampleType` (`name`, `description`) VALUES ('posControl', 'Positive control');
 INSERT INTO `normdb`.`tSampleType` (`name`, `description`) VALUES ('negControl', 'Negative control');
@@ -155,4 +158,4 @@ INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('Cluster', 'Gro
 INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('concentrationCompound_mM', 'Concentration of the compound in mM.');
 
 #Read in a tab-delimited file with compounds + cas + name
-LOAD DATA LOCAL INFILE '<location of compoundList.txt>' INTO TABLE tCompound (casNumber, name, abbreviation);
+LOAD DATA LOCAL INFILE '/home/jobbie/Desktop/TNO/Project/compoundList.txt' INTO TABLE tCompound (casNumber, name, abbreviation);

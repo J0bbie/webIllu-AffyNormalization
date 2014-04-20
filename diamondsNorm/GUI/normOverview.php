@@ -26,7 +26,6 @@ Function:				This page will present an overview of files uploaded to a study. It
 	if (isset ( $_SESSION ['idStudy'] )) {
 		$idStudy = $_SESSION ['idStudy'];
 		$studyTitle = $_SESSION ['studyTitle'];
-		$idNorm = 1;
 	} else {
 		// Redirect to studyOverview of this study
 		header('Location: chooseStudy');
@@ -76,12 +75,15 @@ function getNormOverview(){
 	if(<?php echo (isset($_GET['normSelect']) ? '1' : '0') ?> == '1'){
 		var selection = <?php echo (isset($_GET['normSelect']) ? $_GET['normSelect'] : '0') ?>;
 		$('#expressionTableContainer').show();
+		$('#filesTableContainer').show();
 		$('#normChoser').hide();
 		showNormOverviewTable(selection);
 		showExpressionTable(selection);
+		showFilesTable(selection);
 	}else{
 		$('#normChoser').show();
 		$('#expressionTableContainer').hide();
+		$('#filesTableContainer').hide();
 	}
 };
 </script>
@@ -103,7 +105,7 @@ function getNormOverview(){
 							<label class="description" for="normSelect">Choose a normalization run:</label>
 							<select data-placeholder="Choose a normalization run." style="width:100%" class="chosen-select" name="normSelect" id="normSelect">
 								<?php
-								if ($result =  mysqli_query($connection, "SELECT * FROM tNormAnalysis WHERE idStudy =". $idStudy )) {
+								if ($result =  mysqli_query($connection, "SELECT idNormAnalysis, description FROM tNormAnalysis WHERE idStudy =". $idStudy )) {
 									while ($row = mysqli_fetch_assoc($result)) {
 										echo "<option value=".$row['idNormAnalysis'].">".$row['idNormAnalysis']." - ".$row['description']."</option>";										
 									}
@@ -115,7 +117,7 @@ function getNormOverview(){
 						</li>
 					</ol>
 			</form>
-			<!-- End form filesInfo-->
+			<!-- End form normChoser-->
 		</div>
 	</div>
 
@@ -124,6 +126,9 @@ function getNormOverview(){
 	
 	<!--CRUD Table containing the overview of the normalisation-->
 	<div id="normOverviewContainer"></div>
+	
+	<!--CRUD Table containing the files-->
+	<div id="filesTableContainer"></div>
 	
 	<!--CRUD Table containing the expression values-->
 	<div id="expressionTableContainer">
@@ -146,7 +151,7 @@ function getNormOverview(){
 						</li>
 						<li>
 							<a href="statOverview?normSelect=<?php echo (isset($_GET['normSelect']) ? $_GET['normSelect'] : '0') ?>">Show plots of normalization.</a> <br>
-							<a href="doStatistics?normSelect=<?php echo (isset($_GET['normSelect']) ? $_GET['normSelect'] : '0') ?>">Perform new statistics on this normalization.</a>
+							<a href="doIlluStatistics?normSelect=<?php echo (isset($_GET['normSelect']) ? $_GET['normSelect'] : '0') ?>">Perform new statistics on this normalization.</a>
 						</li>
 					</ol>
 			</form>
@@ -163,6 +168,77 @@ function getNormOverview(){
         });
     });
 
+    function showFilesTable(idNormSelect) {
+		//Prepare jTable
+		$('#filesTableContainer').jtable({
+			title: 'Files of study',
+			paging: true,
+			pageSize: 10,
+			sorting: true,
+			defaultSorting: 'idFile ASC',
+			actions: {
+				listAction: '../logic/optionsCRUD.php?action=list_tFilesNorm',
+				createAction: '../logic/optionsCRUD.php?action=create_tFiles',
+				updateAction: '../logic/optionsCRUD.php?action=update_tFiles',
+				deleteAction: '../logic/optionsCRUD.php?action=delete_tFiles'
+			},
+			fields: {
+				idFile: {
+					key: true,
+					title: 'idFile',
+					create: false,
+					edit: false,
+					list: false
+				},
+				folderName: {
+					title: 'folderName',
+					create:false,
+					edit: false
+				},
+				fileName: {
+					title: 'fileName',
+					edit: true,
+					display: function (data) {
+				    	link = '<a href="../data/<?php echo $idStudy."_".$studyTitle."/"; ?>'+data.record.folderName+'/';
+						if(data.record.idNorm){
+							link = link+data.record.idNorm+"/";
+						}
+						if(data.record.idStatistics){
+							link = link+data.record.idStatistics+"/";
+						}
+						link = link+data.record.fileName+'">'+data.record.fileName+'</a>';
+						return link;
+					}
+				},
+				idFileType:{
+				  title: 'FileTypes',
+				  options:  '../logic/optionsCRUD.php?action=getFileTypes',
+				  list: false
+				},
+				idDirectory:{
+				  title: 'idDirectory',
+				  options:  '../logic/optionsCRUD.php?action=getDirectories',
+				  create:false,
+				  list: false,
+				  edit:false
+				},
+				name: {
+					title: 'Short description',
+					create: false,
+					edit: false
+				},
+				description: {
+					title: 'Description',
+					create: false,
+					edit: false
+				}
+			}
+		});
+
+		//Load person list from server
+		$('#filesTableContainer').jtable('load',{ idNormAnalysis: idNormSelect});
+	}; //End function
+	
 	function showNormOverviewTable(idNormSelect) {
 		//Prepare jTable
 		$('#normOverviewContainer').jtable({
@@ -185,10 +261,6 @@ function getNormOverview(){
 				},
 				description: {
 					title: 'Description',
-					edit: true
-				},
-				groupedOn: {
-					title: 'Grouped on:',
 					edit: true
 				},
 				normType: {
@@ -241,7 +313,7 @@ function getNormOverview(){
 					title: 'Sample Name',
 					edit: false
 				},
-				expression: {
+				expressionValue: {
 					title: 'Value of expression'
 				},
 				geneName: {
@@ -252,9 +324,6 @@ function getNormOverview(){
 					display: function (data) {
 				    	return'<a href="http://www.ncbi.nlm.nih.gov/gene/'+data.record.entrezGeneID+'">'+data.record.entrezGeneID+'</a>';
 					}
-				},
-				nuID: {
-					title: 'nuID',
 				}
 			}
 		});

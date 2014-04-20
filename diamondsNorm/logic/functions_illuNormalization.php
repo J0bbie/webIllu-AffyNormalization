@@ -69,7 +69,7 @@
 		
 		//Make a normAnalysis record in the DB
 		$connection->query("INSERT INTO tNormAnalysis (`idStudy`, `description`, normType, bgCorrectionMethod, varStabMethod, normMethod, filterThreshold) 
-				VALUES ($idStudy, 'Normalization is running, see idJob: $idJob', '".$GET['normType'] ."', '". (isset($GET['performBackgroundCorrection']) ? $GET['bgCorrect_m'] : 'None') ."', '".(isset($GET['performVarianceStabilization']) ? $GET['variance_Stab_m'] : 'None') ."', '".$GET['normalization_m'] ."', '".(isset($GET['filtering']) ? $GET['detectionTh'] : 'None') ."');");
+				VALUES ($idStudy, '".$GET['descNorm'] ."', '".$GET['normType'] ."', '". (isset($GET['performBackgroundCorrection']) ? $GET['bgCorrect_m'] : 'None') ."', '".(isset($GET['performVarianceStabilization']) ? $GET['variance_Stab_m'] : 'None') ."', '".$GET['normalization_m'] ."', '".(isset($GET['filtering']) ? $GET['detectionTh'] : 'None') ."');");
 		
 		$idNorm = mysqli_insert_id($connection);
 		
@@ -207,6 +207,7 @@
 	
 		//Should statistics be skipped?
 		if(isset($GET['performStatistics']) && $GET['performStatistics'] == "on"){
+			$performStat = "TRUE";
 			$connection->query("INSERT INTO tStatistics (`idNormAnalysis`, `groupedOn`, description) VALUES ($idNorm, '$groupedOn', '".$GET['descStat']."');");		
 			$idStat = mysqli_insert_id($connection);
 		
@@ -269,7 +270,7 @@
 			$reOrderGroup = "TRUE";
 		}
 		
-		$arguments = ("--inputDir $inputFolder
+		$arguments = ("--inputDir $inputFolder 
 				--outputDir $normFolder
 				--scriptDir $scriptFolder
 				--statisticsDir ". (isset($statFolder) ? $statFolder : '/normFolder/')."
@@ -282,7 +283,7 @@
 				--idNorm $idNorm
 				--statSubset $statSubset
 				--statFile ". (isset($statFile) ? $statFile : 'none')."
-				--createLog FALSE
+				--createLog TRUE
 				-S ". (isset($idStat) ? $idStat : '0')."
 				-s $sampleProbeProfileName
 				-c $controlProbeProfileName
@@ -314,7 +315,7 @@
 				--norm.correl ".(isset($GET['norm_correl']) ? 'TRUE' : 'FALSE')."
 				--clusterOption1 ".$GET['clustoption1']."
 				--clusterOption2 ".$GET['clustoption2']."
-				--saveToDB ".CONFIG_SAVENORMEDEXPRESSIONS."
+				--saveToDB ".((CONFIG_SAVENORMEDEXPRESSIONS) ? 'TRUE' : 'FALSE')."
 				");
 		
 		///////////////////////////////////////////////////////////////////
@@ -328,17 +329,21 @@
 		if(!CONFIG_SAVENORMEDEXPRESSIONS){
 			echo("<p>Debugging is on, not saving the normalized expressions into the DB! <br>Change this in the config.php<p>");
 		}
-		
+				
 		//Print or exec the pipeline arguments
-		if(CONFIG_RUNPIPELINES){
-			echo("<p>Debugging is on, printing the exec statement and NOT actually running the statement! <br>Change this in the config.php<p>");
-			echo("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/illuminaNorm/runIlluminaNormalization.R ".$arguments." > ".CONFIG_MAINFOLDER."/log &");
+		if(CONFIG_RUNPIPELINES){		
+			$execString = "nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/illuminaNorm/runIlluminaNormalization.R ".$arguments." > /dev/null 2>/dev/null &";
+			$execString = str_replace("\n", " ", $execString);
+			shell_exec($execString);
 		}
 		else{
-			exec("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/illuminaNorm/runIlluminaNormalization.R ".$arguments." > ".CONFIG_MAINFOLDER."/log &");
+			echo("<p>Debugging is on, printing the exec statement and NOT actually running the statement! <br>Change this in the config.php<p>");
+			echo("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/illuminaNorm/runIlluminaNormalization.R ".$arguments." > /dev/null 2>/dev/null &");
 		}
 	}
 	
+	
+		
 	///////////////////////////////////////////////////////////////////
 	// 	Function to perform statistics only (using normalized data)	///
 	///////////////////////////////////////////////////////////////////
@@ -383,8 +388,8 @@
 		// 	Check if the required normed R file is present on server	///
 		///////////////////////////////////////////////////////////////////
 		
-		//Get the correct folder in which the rawdata R object has been stored
-		$queryFiles = ("SELECT idFileType, folderName, fileName, idNorm FROM vFilesWithInfo WHERE idStudy = $idStudy AND idNorm = ".$GET['normSelect']." AND idFileType = 12;");
+		//Get the correct folder in which the normData R object has been stored
+		$queryFiles = ("SELECT idFileType, folderName, fileName, idNorm FROM vFilesWithInfo WHERE idStudy = $idStudy AND idNorm = ".$GET['normSelect']." AND idFileType = 16;");
 		
 		$normObjectPath;
 		
@@ -393,10 +398,11 @@
 				$dataFolder = CONFIG_MAINFOLDER."/data/";
 				$mainFolder = $dataFolder.$idStudy."_".$studyTitle;
 				$inputFolder = $mainFolder."/".$row['folderName']."/".$row['idNorm'];
-				$fileLocation = $row['fileName'];
+				$fileLocation = $inputFolder."/".$row['fileName'];
 				//rawData R object
-				if($row['idFileType'] == 12){
+				if($row['idFileType'] == 16){
 					$normObjectPath = $fileLocation;
+					$normFileName = $row['fileName'];
 				}
 			}
 		}
@@ -501,7 +507,7 @@
 				--statSubset $statSubset
 				--statFile $statFile
 				--createLog FALSE
-				--normData $normObjectPath
+				--normData $normFileName
 				--loadOldNorm TRUE
 				-d descriptionFile.txt
 				--performStatistics $performStat
@@ -530,12 +536,15 @@
 		echo ("<p><font color=orange>Running normalization on samples using a background process and using a limited amount of CPU power.</font></p>");
 		
 		//Print or exec the pipeline arguments
-		if(CONFIG_RUNPIPELINES){
-			echo("<p>Debugging is on, printing the exec statement and NOT actually running the statement! <br>Change this in the config.php<p>");
-			echo("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/illuminaNorm/runIlluminaNormalization.R ".$arguments." > ".CONFIG_MAINFOLDER."/log &");
+		if(CONFIG_RUNPIPELINES){		
+			$execString = "nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/illuminaNorm/runIlluminaNormalization.R ".$arguments." > /dev/null 2>/dev/null &";
+			$execString = str_replace("\n", " ", $execString);
+			print $execString;
+			shell_exec($execString);
 		}
 		else{
-			exec("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/illuminaNorm/runIlluminaNormalization.R ".$arguments." > ".CONFIG_MAINFOLDER."/log &");
+			echo("<p>Debugging is on, printing the exec statement and NOT actually running the statement! <br>Change this in the config.php<p>");
+			echo("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/illuminaNorm/runIlluminaNormalization.R ".$arguments." > /dev/null 2>/dev/null &");
 		}
 	} //End function illuNormalization
 

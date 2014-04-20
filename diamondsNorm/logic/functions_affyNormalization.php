@@ -68,7 +68,7 @@
 		
 		//Make a normAnalysis record in the DB
 		$connection->query("INSERT INTO tNormAnalysis (`idStudy`, `description`, normType, bgCorrectionMethod, varStabMethod, normMethod)
-				VALUES ($idStudy, 'Normalization is running, see idJob: $idJob', 'affyMetrix', 'PMM', 'None', '".$GET['normMethod'] ."');");
+				VALUES ($idStudy, '".$GET['descNorm'] ."', 'affyMetrix', 'PMM', 'None', '".$GET['normMethod'] ."');");
 
 		$idNorm = mysqli_insert_id($connection);
 
@@ -277,7 +277,6 @@
 				--PCARaw ".(isset($GET['plotRawPCA']) ? 'TRUE' : 'FALSE')."
 				--PCANorm ".(isset($GET['plotNormPCA']) ? 'TRUE' : 'FALSE')."
 				--PMAcalls ".(isset($GET['plotCalls']) ? 'TRUE' : 'FALSE')."
-						
 				--saveToDB ".CONFIG_SAVENORMEDEXPRESSIONS."
 		");
 		
@@ -295,11 +294,13 @@
 		
 		// Print or exec the pipeline arguments
 		if(CONFIG_RUNPIPELINES){
-			echo("<p>Debugging is on, printing the exec statement and NOT actually running the statement! <br>Change this in the config.php<p>");
-			echo("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/affymetrixNorm/runAffymetrixNormalization.R ".$arguments." > ".CONFIG_MAINFOLDER."/log &");
+			exec("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/affymetrixNorm/runAffymetrixNormalization.R ".$arguments." > /dev/null 2>/dev/null &");
+			$execString = str_replace("\n", " ", $execString);
+			shell_exec($execString);
 		}
 		else{
-			exec("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/affymetrixNorm/runAffymetrixNormalization.R ".$arguments." > ".CONFIG_MAINFOLDER."/log &");
+			echo("<p>Debugging is on, printing the exec statement and NOT actually running the statement! <br>Change this in the config.php<p>");
+			echo("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/affymetrixNorm/runAffymetrixNormalization.R ".$arguments." > /dev/null 2>/dev/null &");
 		}
 	}
 

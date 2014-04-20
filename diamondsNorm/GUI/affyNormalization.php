@@ -840,6 +840,9 @@ Function:				This page will present the user with options to perform a normilaza
 								Also select the plots that need to be made of the normalized intensities and array correlations.
 								</small>
 							</p>
+								<!-- Input field for the description of the normalization run -->
+								<label class="description" for="description">Provide a description for the normalization:</label>
+								<input id="descNorm" name="descNorm" class="element textarea large" type="text"  value="" />
 						</div>
 						<!-- Input field for the description of the statistics run -->
 						<div id = descStatDiv>

@@ -303,6 +303,8 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
     sink(fileName)
     sink(fileName, type="message")
     cat("Creating log file in: ", paste(userParameters$outputDir, userParameters$studyName, "_log.txt", sep = "") ,"\n")
+    addNormFile( userParameters$idStudy, 34, userParameters$idNorm ,paste(userParameters$outputDir, userParameters$studyName, "_log.txt", sep = ""))
+    
   }          
   
   #Dont check arguments if only the statistics is being done
@@ -323,12 +325,15 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
     } 
     else {
       print("Combination of species, arrayType and annoType is OK.") 
-    }       
-    
+    }
+        
     #Add correct library for mapping based on species
     userParameters$lib.mapping = paste( "lumi", userParameters$species, "IDMapping", sep="");
     userParameters$lib.All.mapping = paste( "lumi", userParameters$species, "All.db", sep="");
+    
   }
+  
+  
   if (file.info(userParameters$scriptDir)$isdir == FALSE){
     message <- paste("\nThe script directory does not exist:",userParameters$scriptDir, sep="")
     cat(message)
@@ -355,7 +360,7 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
       stop(message)
     }        
   }
-  
+      
   #Make output directory if not yet exist
   if (file.info(userParameters$outputDir)$isdir == FALSE){
     dir.create(userParameters$outputDir)
@@ -368,6 +373,7 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
       stop(message)
     }
   }
+    
   if(!userParameters$loadOldNorm){
     #Check if the paths to the input files are all valid
     if (file.exists(paste(userParameters$inputDir, userParameters$sampleProbeProfilePath, sep="")) == FALSE){
@@ -400,6 +406,7 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
       stop(message)
     }         
   }
+  
   return(userParameters)
 }
 

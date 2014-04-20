@@ -213,9 +213,9 @@ function showSampleSelection() {
 		<div id="form_container">
 			<h1>Perform Normalization</h1>
 			<!--Form to normalize samples-->
-			<form action="getForm.php" method="GET" onsubmit="checkAttributes()" name="statisticsForm" id="statisticsForm">
+			<form action="getForm.php" method="GET" onsubmit="checkAttributes()" name="statisticsForm" id="doAffyStatistics">
 				<!--Add hidden value to keep track of which form this is-->
-				<input id="formType" name="formType" class="element text large" type="hidden" value="statisticsForm" />
+				<input id="formType" name="formType" class="element text large" type="hidden" value="doAffyStatistics" />
 				<input id="selectedAttributes" name="selectedAttributes" class="element text large"	type="hidden" />
 				<input id="selectedSamples" name="selectedSamples" value=0 type="hidden" />
 				<input id="normSelect" name="normSelect" value=<?php echo $_GET['normSelect']; ?> class="element text large" type="hidden" />

@@ -645,6 +645,70 @@ try
 	}
 	
 	/*
+	###########################
+	#### CRUD tStatistics 	###
+	###########################
+	*/
+	
+	//Getting records (listAction)
+	if($_GET["action"] == "list_tStatistics")
+	{
+		$idStatistics = $_POST['idStatistics'];
+	
+		//Get record count
+		$result = mysql_query("SELECT COUNT(*) AS RecordCount FROM tStatistics WHERE idStatistics = $idStatistics;");
+		$row = mysql_fetch_array($result);
+		$recordCount = $row['RecordCount'];
+	
+		//Get records from database
+		$result = mysql_query("SELECT * FROM tStatistics WHERE idStatistics = $idStatistics ORDER BY " . $_GET["jtSorting"] . " LIMIT " . $_GET["jtStartIndex"] . "," . $_GET["jtPageSize"] . ";");
+	
+		//Add all records to an array
+		$rows = array();
+		while($row = mysql_fetch_array($result))
+		{
+			$rows[] = $row;
+		}
+	
+		//Return result to jTable
+		$jTableResult = array();
+		$jTableResult['Result'] = "OK";
+		$jTableResult['TotalRecordCount'] = $recordCount;
+		$jTableResult['Records'] = $rows;
+		print json_encode($jTableResult);
+	}
+	
+	//Updating a record (updateAction)
+	else if($_GET["action"] == "update_tStatistics")
+	{
+		$idStatistics = $_POST['idStatistics'];
+		$description = $_POST['description'];
+		$groupedOn = $_POST['groupedOn'];
+	
+		//Update record in database
+		$result = mysql_query("UPDATE tStatistics SET description = '$description', groupedOn= '$groupedOn' WHERE idStatistics = $idStatistics");
+	
+		//Return result to jTable
+		$jTableResult = array();
+		$jTableResult['Result'] = "OK";
+		print json_encode($jTableResult);
+	}
+	
+	//Deleting a record (deleteAction)
+	else if($_GET["action"] == "delete_tStatistics")
+	{
+		$idStatistics = $_POST['idStatistics'];
+			
+		//Delete from database
+		$result = mysql_query("DELETE FROM tStatistics WHERE idStatistics = $idStatistics ;");
+	
+		//Return result to jTable
+		$jTableResult = array();
+		$jTableResult['Result'] = "OK";
+		print json_encode($jTableResult);
+	}
+	
+	/*
 	 ######################
 	#### CRUD tNormAnalysis ###
 	######################
@@ -683,10 +747,9 @@ try
 	{
 		$idNorm = $_POST['idNormAnalysis'];
 		$description = $_POST['description'];
-		$groupedOn = $_POST['groupedOn'];
 	
 		//Update record in database
-		$result = mysql_query("UPDATE tNormAnalysis SET description = '$description', groupedOn= '$groupedOn' WHERE idNormAnalysis = $idNorm");
+		$result = mysql_query("UPDATE tNormAnalysis SET description = '$description' WHERE idNormAnalysis = $idNorm");
 	
 		//Return result to jTable
 		$jTableResult = array();
@@ -708,13 +771,13 @@ try
 		$sampleName = $_POST['sampleName'];
 	
 		//Get record count
-		$result = mysql_query("SELECT COUNT(*) AS RecordCount FROM vNormWithExpressions WHERE idNormAnalysis = $idNorm;");
+		$result = mysql_query("SELECT COUNT(*) AS RecordCount FROM vExpressionWithInfo WHERE idNormAnalysis = $idNorm ".(isset($geneName) ? "AND geneName LIKE '%$geneName%'" : '')." ".(isset($sampleName) ? "AND sampleName LIKE '%$sampleName%'" : '').";");
 		$row = mysql_fetch_array($result);
 		$recordCount = $row['RecordCount'];
 		
 		//Get records from database
-		$result = mysql_query("SELECT * FROM vNormWithExpressions WHERE idNormAnalysis = $idNorm ".(isset($geneName) ? "AND geneName LIKE '%$geneName%'" : '')." ".(isset($sampleName) ? "AND sampleName LIKE '%$sampleName%'" : '')." ORDER BY " . $_GET["jtSorting"] . " LIMIT " . $_GET["jtStartIndex"] . "," . $_GET["jtPageSize"] . ";");
-	
+		$result = mysql_query("SELECT * FROM vExpressionWithInfo WHERE idNormAnalysis = $idNorm ".(isset($geneName) ? "AND geneName LIKE '%$geneName%'" : '')." ".(isset($sampleName) ? "AND sampleName LIKE '%$sampleName%'" : '')." ORDER BY " . $_GET["jtSorting"] . " LIMIT " . $_GET["jtStartIndex"] . "," . $_GET["jtPageSize"] . ";");
+		
 		//Add all records to an array
 		$rows = array();
 		while($row = mysql_fetch_array($result))
@@ -923,6 +986,34 @@ try
 	
 		//Get records from database
 		$result = mysql_query("SELECT * FROM vFilesWithInfo WHERE idStatistics = $idStat ORDER BY " . $_GET["jtSorting"] . " LIMIT " . $_GET["jtStartIndex"] . "," . $_GET["jtPageSize"] . ";");
+	
+		//Add all records to an array
+		$rows = array();
+		while($row = mysql_fetch_array($result))
+		{
+			$rows[] = $row;
+		}
+	
+		//Return result to jTable
+		$jTableResult = array();
+		$jTableResult['Result'] = "OK";
+		$jTableResult['TotalRecordCount'] = $recordCount;
+		$jTableResult['Records'] = $rows;
+		print json_encode($jTableResult);
+	}
+	
+	//Getting records (listAction)
+	if($_GET["action"] == "list_tFilesNorm")
+	{
+		$idNorm = $_POST['idNormAnalysis'];
+	
+		//Get record count
+		$result = mysql_query("SELECT COUNT(*) AS RecordCount FROM vFilesWithInfo WHERE idNorm = $idNorm;");
+		$row = mysql_fetch_array($result);
+		$recordCount = $row['RecordCount'];
+	
+		//Get records from database
+		$result = mysql_query("SELECT * FROM vFilesWithInfo WHERE idNorm = $idNorm ORDER BY " . $_GET["jtSorting"] . " LIMIT " . $_GET["jtStartIndex"] . "," . $_GET["jtPageSize"] . ";");
 	
 		//Add all records to an array
 		$rows = array();

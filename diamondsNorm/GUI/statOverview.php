@@ -72,11 +72,14 @@ function getPlots(){
 	if(<?php echo (isset($_GET['statSelect']) ? '1' : '0') ?> == '1'){
 		var selection = <?php echo (isset($_GET['statSelect']) ? $_GET['statSelect'] : '0') ?>;
 		$('#filesTableContainer').show();
+		$('#statOverviewContainer').show();
 		$('#statChoser').hide();
 		getFiles(selection);
+		showStatOverviewTable(selection);
 	}else{
 		$('#statChoser').show();
 		$('#filesTableContainer').hide();
+		$('#statOverviewContainer').hide();
 	}
 };
 </script>
@@ -117,17 +120,53 @@ function getPlots(){
 	<!--End div form-container-->
 	<img id="bottom" src="../img/bottom.png" alt="">
 	
+	<!--CRUD Table for overview of statistics-->
+	<div id="statOverviewContainer"></div>
+	
 	<!--CRUD Table containing the files-->
 	<div id="filesTableContainer"></div>
 
 	<script type="text/javascript">
-
-		$('#SearchFileNames').click(function () {
-	        $('#filesTableContainer').jtable('load', {
-	            fileName: $('#fileName').val(),
-	            idStudy: <?php echo $idStudy; ?>
-	        });
-	    });
+		function showStatOverviewTable(idStat) {
+			//Prepare jTable
+			$('#statOverviewContainer').jtable({
+				title: 'Overview of the statistics tun',
+				paging: true,
+				pageSize: 10,
+				sorting: true,
+				defaultSorting: 'idStatistics ASC',
+				actions: {
+					listAction: '../logic/optionsCRUD.php?action=list_tStatistics',
+					updateAction: '../logic/optionsCRUD.php?action=update_tStatistics',
+					deleteAction: '../logic/optionsCRUD.php?action=delete_tStatistics'
+				},
+				fields: {
+					idStatistics: {
+						key: true,
+						title: 'idStatistics',
+						create: false,
+						edit: false,
+						list: false
+					},
+					groupedOn: {
+						title: 'groupedOn',
+						edit: true
+					},
+					submissionDate: {
+						title: 'Date of submission',
+						edit: false
+					},
+					description: {
+						title: 'Description',
+						edit: true
+					}
+				}
+			});
+			
+			//Load person list from server
+			$('#statOverviewContainer').jtable('load',{ idStatistics: idStat});
+		};
+	    
 		function getFiles(idStat) {
 			//Prepare jTable
 			$('#filesTableContainer').jtable({

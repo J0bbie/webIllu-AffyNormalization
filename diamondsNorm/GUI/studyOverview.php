@@ -248,7 +248,7 @@ Function:				This page will present an overview of the study and also allows for
 						//			Check statistics runs		/
 						/////////////////////////////////////////
 						
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tFiles WHERE idStudy = $idStudy AND idStatistics != NULL;")) {
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tFiles WHERE idStudy = $idStudy AND idStatistics is not null;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
 									echo "<input type='checkbox' checked disabled /><font color='green'>QC been run on normalized data?</font> <br>";
