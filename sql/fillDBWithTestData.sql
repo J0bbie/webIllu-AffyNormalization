@@ -156,6 +156,7 @@ INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('TNO Sample ID'
 INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('Replicate #', 'Number of the biological/technical replicate.');
 INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('Cluster', 'Groups in which the samples are to be clustered.');
 INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('concentrationCompound_mM', 'Concentration of the compound in mM.');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('chemicalAbbreviation', 'Abbr. given to a chemical compound');
 
 #Read in a tab-delimited file with compounds + cas + name
 LOAD DATA LOCAL INFILE '/home/jobbie/Desktop/TNO/Project/compoundList.txt' INTO TABLE tCompound (casNumber, name, abbreviation);

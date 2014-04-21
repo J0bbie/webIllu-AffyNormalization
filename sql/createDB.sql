@@ -259,12 +259,12 @@ DROP TABLE IF EXISTS `normdb`.`tProbes` ;
 CREATE  TABLE IF NOT EXISTS `normdb`.`tProbes` (
   `idProbe` INT NOT NULL AUTO_INCREMENT ,
   `nuID` VARCHAR(75) NOT NULL ,
-  `ilmnGene` VARCHAR(45) NULL ,
-  `probeID` VARCHAR(45) NULL ,
-  `entrezGeneID` VARCHAR(45) NULL ,
+  `ilmnGene` VARCHAR(75) NULL ,
+  `probeID` VARCHAR(75) NULL ,
+  `entrezGeneID` VARCHAR(75) NULL ,
   `geneSymbol` VARCHAR(45) NULL ,
-  `geneName` VARCHAR(45) NULL ,
-  `accessionName` VARCHAR(45) NULL ,
+  `geneName` VARCHAR(100) NULL ,
+  `accessionName` VARCHAR(75) NULL ,
   PRIMARY KEY (`idProbe`) ,
   UNIQUE INDEX `nuID_UNIQUE` (`nuID` ASC) )
 ENGINE = InnoDB;
