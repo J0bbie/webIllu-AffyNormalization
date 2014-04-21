@@ -507,7 +507,7 @@
 	
 		//Query to select the samples
 		if($skipNoArrayName != "on"){
-			$query = ("SELECT idSample, arrayName, name FROM tSamples WHERE idStudy = $idStudy AND arrayName != NULL ");
+			$query = ("SELECT idSample, arrayName, name FROM tSamples WHERE idStudy = $idStudy AND arrayName IS NOT NULL ");
 		}
 		else{
 			$query = ("SELECT idSample, arrayName, name FROM tSamples WHERE idStudy = $idStudy ");

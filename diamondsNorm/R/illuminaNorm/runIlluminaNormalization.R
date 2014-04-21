@@ -42,7 +42,7 @@ source(paste(SCRIPT.DIR,"getArguments.R",sep="/"))
 #Get the command-line parameters that were given to this script (Parameters defined in getArguments.R)
 #Also check the validity of these parameters and directories
 userParameters <- getArguments(commandArgs(trailingOnly = TRUE))
-#userParameters <- getArguments(c("--createLog", TRUE, "--normSubset", TRUE, "--statSubset", TRUE, "--statFile", "statSubsetFile.txt", "--studyName", "AIMT2_LiverKidney", "-O", "/var/www/normdb/data/1_AIMT2_LiverKidney/statistics/4/", "-S", "4", "-j", "18", "--idNorm","21", "-o", "/var/www/normdb/data/1_AIMT2_LiverKidney/expressionData/normed/21", "-i","/var/www/normdb/data/1_AIMT2_LiverKidney/expressionData/raw/","-s","Sample_Probe_Profile_102259-2.txt","-c", "Control_Probe_Profile_102259-2.txt","-d","descriptionFile.txt"))
+#userParameters <- getArguments(c("--rawDataQC" ,FALSE ,  "--normData", "AIMT2_normData.Rdata", "--loadOldNorm", TRUE, "--normalize", FALSE, "--createLog", FALSE, "--normSubset", FALSE, "--statSubset", FALSE, "--statFile", "statSubsetFile.txt", "--studyName", "AIMT2_LiverKidney", "-O", "/var/www/normdb/data/1_AIMT2/statistics/8/", "-S", "8", "-j", "14", "--idNorm","21", "-o", "/var/www/normdb//data/1_AIMT2/statistics//8/", "-i","/var/www/normdb//data/1_AIMT2/expressionData/normed/1/","-s","Sample_Probe_Profile_102259-2.txt","-c", "Control_Probe_Profile_102259-2.txt","-d","descriptionFile.txt", "--saveToDB", FALSE))
 
 #Function to install missing libraries
 source(paste(userParameters$scriptDir,"functions_loadPackages.R",sep="/"))
@@ -194,6 +194,7 @@ if(userParameters$normalize){
       changeJobStatus(con, userParameters$idJob, 2, message)
       if(userParameters$createLog) sink()
       stop(message)
+    }
     
     #Reorder the raw expression data
     rawData <- rawData[,file_order2]
@@ -202,11 +203,6 @@ if(userParameters$normalize){
     sampleNames(rawData)<- as.character(description2[,2]) 
     
     cat("\nRe-ordering succesfull.\n")
-    }else {
-      #Change sampleNames into loaded description file
-      sampleNames(rawData)<- as.character(description[,2])
-      cat("\nSample names have been given to the arrays.\n")
-    }
   }
   
   ##################################################################################
@@ -482,20 +478,9 @@ if(userParameters$performStatistics){
       #Match sampleNames from datafile with first column from description file
       matchedSamples <- match(description2[,4],sampleNames(normData))
       
-      #If not all the array have a sample name
-      if(sum(is.na(matchedSamples)) > 0) {
-        message <- ("Error: File names in old normalized data and file names in description file do not match! Statistics cannot be run on samples not taken in with the original normalization.")
-        cat(message)
-        changeJobStatus(con, userParameters$idJob, 2, message)
-        if(userParameters$createLog) sink()
-        stop(message)
-      }
       #Reorder the normed expression data
-      normData <- normData[,matchedSamples]
-      
-      #Change sampleNames into reordered description file
-      sampleNames(normData) <- as.character(description2[,2]) 
-      
+      normData <- normData[,na.omit(matchedSamples)]
+        
       cat("\nRe-ordering succesfull.\n")
     }
     

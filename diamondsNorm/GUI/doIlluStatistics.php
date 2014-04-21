@@ -379,7 +379,7 @@ function showSampleSelection() {
 				</li>
 				<!-- End Clustering options -->
 				<li>
-					<button type="button" onclick="checkAttributes()">Normalize study-samples. </button>
+					<button type="button" onclick="checkAttributes()">Perform statistics</button>
 				</li>
 			</ol>
 			</form>

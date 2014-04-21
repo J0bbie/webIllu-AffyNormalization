@@ -247,13 +247,13 @@ pcaFun <- function(x.lumi, normalized=FALSE, experimentFactor=NULL,
       if(namesInPlot) {
         if(groupsAdded) { 
           legend("topright",levels(experimentFactor),
-                 pch=legendSymbols,col=legendColors,cex=cex.legend)
+                 pch=legendSymbols,col=legendColors,cex=cex.legend, ncol=3)
         }
       } else {
         par(mar=c(0,0,0,0))	
         plot(1,type="n",xaxt="n",yaxt="n",xlab="",ylab="",bty="n")
         if(groupsAdded) {
-          legend("topleft",c(levels(experimentFactor),"",sampleNames(x.lumi), ncol=3),
+          legend("topleft",c(levels(experimentFactor),"",sampleNames(x.lumi)), ncol=3,
                  #             pch=c(rep(20,length(unique(experimentFactor))+1),plotSymbols,
                  pch=c(legendSymbols,20,plotSymbols),
                  col=c(legendColors,"white",plotColors),cex=(cex.legend+0.1)
@@ -336,19 +336,12 @@ correlFun <- function(x.lumi, normalized=FALSE,
     #in order to create some space to put colored symbols as well
     #sampleNames(x.lumi) <- paste(sampleNames(x.lumi)," ")
     
-    sideColors <- legendColors[as.numeric(experimentFactor)]
-    
+    sideColors <- legendColors[as.numeric(crp)]
+        
     #cols = colorRampPalette(c("red", "yellow", "white"))(20)
     heatmap.2(crp, distfun=my.dist, hclustfun=my.hclust, trace="none", symm=TRUE, density.info="density",
-              main=text1, dendrogram="row", ColSideColors=sideColors, ncol=3)
+              main=text1, dendrogram="row", ColSideColors=sideColors, ncol=length(unique(sideColors)))
     
-    #correlationPlot(x.lumi)    
-    #axis(1,side=3,at=seq(from=0.5, to=(length(sampleNames(Data)))-0.5,by=1),
-    #    labels=substr(as.character(sampleNames(x.lumi)),1,subval),las=2)
-    #par(srt=0) 
-    #plot(c(0,2), type = 'n', ann = FALSE, axes = FALSE, 
-    #    frame.plot = FALSE, xlim = c(0, 2), ylim = c(0,2))
-    #text(1,1,text1,cex=1)  
     x <- dev.off()
   }
 }

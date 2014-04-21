@@ -303,7 +303,7 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
     sink(fileName)
     sink(fileName, type="message")
     cat("Creating log file in: ", paste(userParameters$outputDir, userParameters$studyName, "_log.txt", sep = "") ,"\n")
-    addNormFile( userParameters$idStudy, 34, userParameters$idNorm ,paste(userParameters$outputDir, userParameters$studyName, "_log.txt", sep = ""))
+    addNormFile( userParameters$idStudy, 34, userParameters$idNorm ,paste(userParameters$studyName, "_log.txt", sep=''))
     
   }          
   

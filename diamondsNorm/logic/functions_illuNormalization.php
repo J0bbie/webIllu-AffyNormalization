@@ -334,6 +334,7 @@
 		if(CONFIG_RUNPIPELINES){		
 			$execString = "nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/illuminaNorm/runIlluminaNormalization.R ".$arguments." > /dev/null 2>/dev/null &";
 			$execString = str_replace("\n", " ", $execString);
+			//print $execString;
 			shell_exec($execString);
 		}
 		else{
@@ -491,7 +492,11 @@
 		///////////////////////////////////////////////////////////////////
 		
 		//Make a description file
-		makeDescriptionFile($connection ,$statFolder, $groupAttributes, $idStudy, $idJob, "on", TRUE, 0);
+		makeDescriptionFile($connection ,$statFolder, $groupAttributes, $idStudy, $idJob, (isset($GET['skipNoArrayName']) ? $GET['skipNoArrayName'] : 'off') , TRUE, 0);
+		
+		///////////////////////////////////////////////////////////////////
+		// 					Make the arguments and exec					///
+		///////////////////////////////////////////////////////////////////
 		
 		//Make a string of all the possible arguments a user can manipulate.
 		$scriptFolder = CONFIG_MAINFOLDER."/R/illuminaNorm/";
@@ -533,13 +538,13 @@
 		///////////////////////////////////////////////////////////////////
 		
 		//Perform the R script with a CPU limitation and in as a background deamon/thread.
-		echo ("<p><font color=orange>Running normalization on samples using a background process and using a limited amount of CPU power.</font></p>");
+		echo ("<p><font color=orange>Running statistics on samples using a background process and using a limited amount of CPU power.</font></p>");
 		
 		//Print or exec the pipeline arguments
 		if(CONFIG_RUNPIPELINES){		
 			$execString = "nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/illuminaNorm/runIlluminaNormalization.R ".$arguments." > /dev/null 2>/dev/null &";
 			$execString = str_replace("\n", " ", $execString);
-			print $execString;
+			//print $execString;
 			shell_exec($execString);
 		}
 		else{

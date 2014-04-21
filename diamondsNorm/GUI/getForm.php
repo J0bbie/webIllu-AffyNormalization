@@ -81,7 +81,7 @@ Function:				This page gets called each time a form is submitted. It will then c
 						normalizeIlluStudy($_GET, $_SESSION['idStudy'], $_SESSION['studyTitle']);
 						echo "<font color=green><p>Samples from study are being normalized!</p>";
 						echo "<h3>Showing job overview, when it is done it will be displayed in this overview.</h3>";
-						//header('Refresh: 5; URL=jobOverview');
+						header('Refresh: 5; URL=jobOverview');
 						break; //End normalization
 					case "normalizeAffyStudy":
 						normalizeAffyStudy($_GET, $_SESSION['idStudy'], $_SESSION['studyTitle']);
