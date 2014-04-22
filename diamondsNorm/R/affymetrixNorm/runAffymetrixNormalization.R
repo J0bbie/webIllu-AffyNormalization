@@ -35,11 +35,14 @@ source("../config.R")
 #The main folder is defined in the config.R file
 SCRIPT.DIR <- paste(configMainFolder,"R","affymetrixNorm",sep="/")
 
+#Set working directory to path of execute
+SCRIPT.DIR <- setwd(dirname(sys.frame(1)$ofile))
+
 #Functions to access the normDB/DIAMONDS
-#source(paste(SCRIPT.DIR,"functions_myDB.R",sep="/"))
+source(paste(SCRIPT.DIR,"functions_myDB.R",sep="/"))
 
 #Make a connection to the DB
-#con <- makeConnection()
+con <- makeConnection()
 
 #Functions to get the passed parameters and set the default values of all parameters used in this pipeline
 source(paste(SCRIPT.DIR,"getArguments.R",sep="/"))
@@ -47,7 +50,7 @@ source(paste(SCRIPT.DIR,"getArguments.R",sep="/"))
 #Get the command-line parameters that were given to this script (Parameters defined in getArguments.R)
 #Also check the validity of these parameters and directories
 #userParameters <- getArguments(commandArgs(trailingOnly = TRUE))
-userParameters <- getArguments(c("--samplePrep", TRUE, "--inputDir", "C:/Users/rietjv/AppData/Local/My Local Documents/Affymetrix_testdata1", "--outputDir", "C:/Users/rietjv/AppData/Local/My Local Documents/Affymetrix_testdata1"))
+userParameters <- getArguments(c("-h", "--samplePrep", TRUE, "--inputDir", "C:/Users/rietjv/AppData/Local/My Local Documents/Affymetrix_testdata1", "--outputDir", "C:/Users/rietjv/AppData/Local/My Local Documents/Affymetrix_testdata1"))
 
 #Function to install missing libraries
 source(paste(userParameters$scriptDir,"functions_loadPackages.R",sep="/"))
@@ -128,11 +131,30 @@ if(userParameters$normalize){
           if(!exists("refName")) refName <- ""
           
           ##################################################################################
+          ##                Make a subset of the samples for normalization                ##
+          ##################################################################################
+          
+          # If subsetting is not enabled, all samples from the sample_Probe_Profile are used
+          # Else ony select the samples found in the descriptionFile
+          if(userParameters$normSubset){
+                    
+                    cat("\nMaking a subset for the normalization based on the samples in the descriptionFile\n")
+                    
+                    #Match sampleNames from datafile with first column from description file
+                    subsetSamples <- match(description[,4],sampleNames(rawData))
+                    
+                    #Make subset of samples
+                    rawData <- rawData[,subsetSamples]
+                    
+                    cat("\nSuccesfully made subset of samples to normalize!\n")
+          }
+          
+          ##################################################################################
           ##                            Check description file                            ##
           ##################################################################################
           
           cat("\nChecking if description data is valid for the given CEL files.\n")
-           
+          
           # Check if the first column contains the .CEL files present in the input directory
           if(length(grep(".CEL",toupper(colnames(description)[1]), ignore.case = TRUE))>0) {
                     stop(paste("The description file may not contain a header, as the first", "column header seems to be a CEL file name"))
@@ -159,7 +181,7 @@ if(userParameters$normalize){
           rawData <- rawData[,file_order]
           
           cat("\nDescription data is valid.\n") 
-
+          
           ##################################################################################
           ##        Reorder rawData affyBatch file on Group and sampleNames               ##
           ##################################################################################
@@ -254,7 +276,7 @@ if(userParameters$normalize){
                               try(yack <- yaqc(rawData),TRUE)
                               if(exists("yack")) {
                                         spnames<-rownames(yack@morespikes[grep("(lys|phe|thr|dap).*3", # only 3' 
-                                        rownames(yack@morespikes), ignore.case = TRUE),])
+                                                                               rownames(yack@morespikes), ignore.case = TRUE),])
                                         sprep<-t(yack@morespikes[spnames,])
                               } else {
                                         sprep <- NULL
@@ -295,8 +317,8 @@ if(userParameters$normalize){
                               
                               cat("\nSuccesfully made subset of samples in raw data!\n")   
                     }
-          
-          
+                    
+                    
                     cat("\nCreating QC plots for the raw data.\n")
                     
                     fileNamePrefix <- paste(userParameters$statisticsDir, "/",  userParameters$studyName , "_RAW" ,sep="")
@@ -401,7 +423,7 @@ if(userParameters$normalize){
                     #################################################################################
                     #                   affx control profiles and boxplot                           #
                     #################################################################################
-                              
+                    
                     if(userParameters$controlPlot) {
                               print ("\nPlot control profiles and/or boxplots\n")
                               controlPlots(rawData,plotColors,experimentFactor,legendColors,
@@ -411,7 +433,7 @@ if(userParameters$normalize){
                     #################################################################################
                     #                   Scale factor - only for PM-MM arrays                        #
                     #################################################################################
-                              
+                    
                     if(userParameters$scaleFact && !is.null(quality)) {
                               print ("\nPlot scale factors\n")
                               scaleFactPlot(rawData,quality=quality,experimentFactor,plotColors,
@@ -473,7 +495,7 @@ if(userParameters$normalize){
                     #################################################################################
                     #                   3.3.3.1 Create PLM object                                   #
                     #################################################################################
-                              
+                    
                     # fit a probe level model on the raw data, used by nuse and rle plot as well
                     rawData.pset <- NULL
                     if(userParameters$spatialImage || userParameters$PLMimage || userParameters$Nuse || userParameters$Rle) {
@@ -488,8 +510,8 @@ if(userParameters$normalize){
                     if(userParameters$spatialImage) {  
                               cat ("\n2D virtual images\n")
                               valtry<-try(userParameters$spatialImages(rawData, Data.pset=rawData.pset, TRUE,FALSE,FALSE,FALSE, 
-                                                            WIDTH=userParameters$img.width,HEIGHT=userParameters$img.height,POINTSIZE=userParameters$img.pointSize),
-                                                            silent=TRUE)
+                                                                       WIDTH=userParameters$img.width,HEIGHT=userParameters$img.height,POINTSIZE=userParameters$img.pointSize),
+                                          silent=TRUE)
                               if(class(valtry)=="try-error") {
                                         cat("\nUse array.image instead of spatialImages function\n")
                                         if(length(sampleNames(rawData))>6){
@@ -542,7 +564,7 @@ if(userParameters$normalize){
                     #################################################################################
                     #                             4.1 Correlation Plot  of raw data                 #
                     #################################################################################
-                              
+                    
                     if(userParameters$correlRaw){
                               print ("\nCorrelation plot of raw data\n")
                               correlFun(Data=rawData, experimentFactor=experimentFactor, legendColors=legendColors,
@@ -559,7 +581,7 @@ if(userParameters$normalize){
                                      plotColors=plotColors, legendColors=legendColors, plotSymbols=plotSymbols,
                                      legendSymbols=legendSymbols, namesInPlot=((max(nchar(sampleNames(rawData)))<=10)&&
                                                                                          (length(sampleNames(rawData))<=(maxArray/2))),
-                                                                                          WIDTH=userParameters$img.width,HEIGHT=userParameters$img.height ,POINTSIZE=userParameters$img.pointSize)
+                                     WIDTH=userParameters$img.width,HEIGHT=userParameters$img.height ,POINTSIZE=userParameters$img.pointSize)
                     }
                     
                     #################################################################################
@@ -583,7 +605,7 @@ if(userParameters$normalize){
           ##################################################################################
           
           if(userParameters$normalize){
-          
+                    
                     if (aType == "PMonly") {
                               if (userParameters$normMeth == "MAS5") {
                                         warning("\nMAS5 cannot be applied to PMonly arrays. Changed MAS5 to PLIER\n")
@@ -592,7 +614,7 @@ if(userParameters$normalize){
                               if (userParameters$normMeth == "GCRMA") {
                                         warning("\nGCRMA cannot be applied to PMonly arrays. Changed GCRMA to RMA\n")
                                         userParameters$normMeth <- "RMA"
-                               }  
+                              }  
                     }
                     
                     if(userParameters$normMeth!="" && userParameters$normMeth!="none") {
@@ -615,11 +637,11 @@ if(userParameters$normalize){
                               }
                     }         
           }else{
-                 cat("\nSkipping normalization!\n")   
+                    cat("\nSkipping normalization!\n")   
           }
           
           if(userParameters$normDataQC){
-          
+                    
                     #################################################################################
                     #                   Perform statistics on old normalized data                   #
                     #################################################################################
@@ -667,7 +689,7 @@ if(userParameters$normalize){
                               
                               cat("\nSuccesfully made subset of samples in raw data!\n")   
                     }
-          
+                    
                     #################################################################################
                     #                             Make boxplot of normalized data                   #
                     #################################################################################
@@ -689,7 +711,7 @@ if(userParameters$normalize){
                                          WIDTH=userParameters$img.width,HEIGHT=userParameters$img.height ,POINTSIZE=userParameters$img.pointSize,MAXARRAY=userParameters$img.maxArray)
                     }
                     
-
+                    
                     #################################################################################
                     #         Make separate MA-plots for each group on normalized data              #
                     #################################################################################
@@ -719,7 +741,7 @@ if(userParameters$normalize){
                               pcaFun(Data=normData, experimentFactor=experimentFactor,normMeth=userParameters$normMeth, 
                                      plotColors=plotColors, legendColors=legendColors, plotSymbols=plotSymbols,
                                      legendSymbols=legendSymbols, namesInPlot=((max(nchar(sampleNames(rawData)))<=10) &&
-                                        (length(sampleNames(rawData))<=(maxArray/2))),
+                                                                                         (length(sampleNames(rawData))<=(maxArray/2))),
                                      WIDTH=userParameters$img.width,HEIGHT=userParameters$img.height ,POINTSIZE=userParameters$img.pointSize)
                     }
                     
@@ -738,7 +760,7 @@ if(userParameters$normalize){
           }else{
                     cat("\nSkipping QC plots of normed data\n")
           }
-
+          
           #################################################################################
           #                             Output the data                                   #
           #################################################################################
