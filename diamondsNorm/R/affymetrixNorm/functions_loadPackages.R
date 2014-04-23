@@ -54,13 +54,12 @@ checkInstalledPackages <- function(man) {
                               print( paste("Ok, required packages are installed and loaded: ", man, sep=" ") )
                     } 
                     else{
-                              res <- ( paste("!!!Check if followwing package:", notInst2, 
+                              print( paste("!!!Check if followwing package:", notInst2, 
                                  "is available in the repository.",
                                  "And try a manual install of the package", sep= " ") )
                     }
           } 
           else{
-                    res <-( paste("Ok, required package installed:" , man, sep=" ") )
+                    print( paste("Ok, required package installed:" , man, sep=" ") )
           }
-          return(res)
 }

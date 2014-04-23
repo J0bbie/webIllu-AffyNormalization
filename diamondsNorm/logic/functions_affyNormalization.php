@@ -77,7 +77,7 @@
 		///////////////////////////////////////////////////////////////////
 		
 		// Get the correct folder in which the raw output has been stored
-		$queryFiles = ("SELECT idFileType, folderName FROM vFilesWithInfo WHERE idStudy = $idStudy AND idFileType = 13;");
+		$queryFiles = ("SELECT idFileType, folderName FROM vFilesWithInfo WHERE idStudy = $idStudy AND idFileType = 14;");
 		
 		if ($resultFiles =  mysqli_query($connection, $queryFiles)) {
 			while ($row = mysqli_fetch_assoc($resultFiles)) {
@@ -129,7 +129,7 @@
 		///////////////////////////////////////////////////////////////////
 		
 		//Make a description file
-		makeDescriptionFile($connection ,$normFolder, $groupAttributes, $idStudy, $idJob, (isset($GET['skipNoArrayName']) ? $GET['skipNoArrayName'] : 'off') , FALSE, (isset($GET['selectedNormalizationSamples']) ? $GET['selectedNormalizationSamples'] : '0'));
+		makeDescriptionFile($connection ,$normFolder, $groupAttributes, $idStudy, $idJob, (isset($GET['skipNoArrayName']) ? $GET['skipNoArrayName'] : 'off') , FALSE, (isset($GET['selectedNormalizationSamples']) AND $GET['selectedNormalizationSamples'] != 0  ? $GET['selectedNormalizationSamples'] : '0'));
 				
 		///////////////////////////////////////////////////////////////////
 		// 	Build all the arguments which are supplied to pipeline		///
@@ -219,7 +219,7 @@
 			$reOrderGroup = "TRUE";
 		}
 		
-		$arguments = ("--inputDir $inputFolder
+		$arguments = ("--inputDir $inputCELLFolder
 				--outputDir $normFolder
 				--scriptDir $scriptFolder
 				--statisticsDir ". (isset($statFolder) ? $statFolder : '/normFolder/')."
@@ -237,7 +237,7 @@
 				--normMeth ".$GET['normMethod']."
 				--normSubset ".(($GET['selectedNormalizationSamples'] != 0) ? 'TRUE' : 'FALSE')."
 				
-				--normOption1 ".(isset($GET['normPerGroup']) ? 'TRUE' : 'FALSE')."
+				--normOption1 ".(isset($GET['normPerGroup']) ? 'group' : 'dataset')."
 				--CDFtype ".(isset($GET['annotationType']) ? 'TRUE' : 'FALSE')."
 				
 				--performStatistics $performStat
@@ -262,7 +262,7 @@
 				--densityNorm ".(isset($GET['plotDensityRawLogIntensity']) ? 'TRUE' : 'FALSE')."
 				--MARaw ".(isset($GET['plotRawMA']) ? 'TRUE' : 'FALSE')."
 				--MANorm ".(isset($GET['plotNormMA']) ? 'TRUE' : 'FALSE')."
-				--MAOption1 ".$perGroup."
+				--MAOption1 ".(isset($GET['normPerGroup']) ? 'group' : 'dataset')."
 				--spatialImage ".(isset($GET['plot2DImages']) ? 'TRUE' : 'FALSE')."
 				--PLMimage ".(isset($GET['plotPLM']) ? 'TRUE' : 'FALSE')."
 				--posnegCOI ".(isset($GET['plotPosNegCenterOfIntensity']) ? 'TRUE' : 'FALSE')."
@@ -277,7 +277,7 @@
 				--PCARaw ".(isset($GET['plotRawPCA']) ? 'TRUE' : 'FALSE')."
 				--PCANorm ".(isset($GET['plotNormPCA']) ? 'TRUE' : 'FALSE')."
 				--PMAcalls ".(isset($GET['plotCalls']) ? 'TRUE' : 'FALSE')."
-				--saveToDB ".CONFIG_SAVENORMEDEXPRESSIONS."
+				--saveToDB ".((CONFIG_SAVENORMEDEXPRESSIONS) ? 'TRUE' : 'FALSE')."
 		");
 		
 		///////////////////////////////////////////////////////////////////
@@ -294,9 +294,10 @@
 		
 		// Print or exec the pipeline arguments
 		if(CONFIG_RUNPIPELINES){
-			exec("nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/affymetrixNorm/runAffymetrixNormalization.R ".$arguments." > /dev/null 2>/dev/null &");
+			$execString = "nice -n 19 Rscript ".CONFIG_MAINFOLDER."/R/affymetrixNorm/runAffymetrixNormalization.R ".$arguments." > /dev/null 2>/dev/null &";
 			$execString = str_replace("\n", " ", $execString);
-			shell_exec($execString);
+			print $execString;
+			//shell_exec($execString);
 		}
 		else{
 			echo("<p>Debugging is on, printing the exec statement and NOT actually running the statement! <br>Change this in the config.php<p>");

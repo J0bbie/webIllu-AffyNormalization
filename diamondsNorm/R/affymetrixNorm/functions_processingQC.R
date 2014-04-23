@@ -341,13 +341,13 @@ normalizeData <- function(Data, normMeth="", perGroup=FALSE, experimentFactor=NU
   }
 
   #create an 'inter sheet'  
-  png(file="Cover_2.png", width=WIDTH, height=HEIGHT)
-  plot(c(0,2), type = 'n', ann = FALSE, axes = FALSE, 
-     frame.plot = TRUE, xlim = c(0, 2), ylim = c(0,2))
-  text(1,1,"Pre-processing of Raw Data\n\n\n",cex=3)
-  text(1,1,paste("\n\nMethod: ",normMeth,"\nAnnotation: ",Data.copy@cdfName),cex=2.5)
-  if(perGroup) text(1,1,paste("\n\n\n\n\nNormalization per experimental group"),cex=2.5)
-  dev.off()
+#   png(file="Cover_2.png", width=WIDTH, height=HEIGHT)
+#   plot(c(0,2), type = 'n', ann = FALSE, axes = FALSE, 
+#      frame.plot = TRUE, xlim = c(0, 2), ylim = c(0,2))
+#   text(1,1,"Pre-processing of Raw Data\n\n\n",cex=3)
+#   text(1,1,paste("\n\nMethod: ",normMeth,"\nAnnotation: ",Data.copy@cdfName),cex=2.5)
+#   if(perGroup) text(1,1,paste("\n\n\n\n\nNormalization per experimental group"),cex=2.5)
+#   dev.off()
   
 	rm(Data.copy)
 	return(normData)

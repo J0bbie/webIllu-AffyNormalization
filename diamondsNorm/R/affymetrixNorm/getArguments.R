@@ -65,7 +65,7 @@ getArguments <- function(commandArguments, con){
     make_option(c("-x","--idStudy"),  type="integer", default=1,
                 help="idStudy, keeps track of what study this is. \ndefault = [%default] "),
     
-    make_option(c("-D","--saveToDB"),  type="logical", default=TRUE,
+    make_option(c("-D","--saveToDB"),  type="logical", default=FALSE,
                 help="Whether to save data to DB. \ndefault = [%default] "),
     
     make_option(c("-S","--idStatistics"),  type="integer", default=1,
@@ -260,10 +260,10 @@ getArguments <- function(commandArguments, con){
     #                             Display parameters for the images                                     #
     #####################################################################################################
     
-    make_option("--img.width", type="numeric", default=1920,
+    make_option("--img.width", type="numeric", default=1000,
                 help="The max. width of the plots. \ndefault = [%default] "), 
     
-    make_option("--img.heigth", type="numeric", default=1080,
+    make_option("--img.height", type="numeric", default=1414,
                 help="The max. heigth of the plots. \ndefault = [%default] "), 
     
     make_option("--img.pointSize", type="numeric", default=24,
@@ -289,7 +289,10 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
   #Check if the directories exist, also clean their path if not properly closed of with last /
   userParameters$scriptDir      <- correctDirectory(userParameters$scriptDir)
   userParameters$inputDir       <- correctDirectory(userParameters$inputDir)
-  userParameters$outputDir      <- correctDirectory(userParameters$outputDir)   
+  userParameters$outputDir      <- correctDirectory(userParameters$outputDir)
+  if(userParameters$performStatistics){
+    userParameters$statisticsDir      <- correctDirectory(userParameters$statisticsDir)
+  }
   
   print(userParameters$inputDir)
 
@@ -334,7 +337,7 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
   }
   if(!userParameters$loadOldNorm){
     # Check for any .CEL file
-    if (list.celfiles(userParameters$inputDir, full.names = TRUE) == 0){
+    if (is.null(list.files(path= userParameters$inputDir, full.names = TRUE, pattern = "\\.cel", ignore.case=TRUE) )){
       message <- paste("\nNo .CEL files in path:", userParameters$inputDir, sep=" ")
       cat(message)
       changeJobStatus(con, userParameters$idJob, 2, message)

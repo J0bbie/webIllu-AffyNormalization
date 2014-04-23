@@ -287,10 +287,10 @@
 			foreach ($fileTypeList as $fileType){
 				$foundFiletype = 0;
 				
-				if (strpos($file->name,$fileType['searchOn']) !== false) {
+				if (stripos($file->name,$fileType['searchOn']) !== false) {
 					$foundFiletype = 1;
 					//Delete old file in DB
-					$connection->query("DELETE FROM tFiles WHERE idStudy = $idStudy AND idFileType = ".$fileType['id']);
+					$connection->query("DELETE FROM tFiles WHERE idStudy = $idStudy AND fileName = '".$file->name."'AND idFileType = ".$fileType['id']);
 					//Add new file
 					$connection->query("INSERT INTO tFiles (`idStudy`, `idFileType`, `fileName`) VALUES ($idStudy, ".$fileType['id'].", '$file->name');");
 					return true;

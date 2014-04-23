@@ -66,6 +66,7 @@ INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchO
 INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Normalized Affymetrix Data', 'Normalized Affymetrix data from this pipeline.', 4, 'NormData');
 INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Log pipeline', 'Log of pipeline', 4, 'log_pipeline');
 INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Normalized Affymetrix Data LumiBatch Object', 'Normalized Affymetrix data from this pipeline in a LumiBatch R Object.', 4, 'normData.Rdata');
+INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Raw Affymetrix Data LumiBatch Object', 'Raw Affymetrix data from this pipeline in a LumiBatch R Object.', 4, 'rawData.Rdata');
 
 # Affy total report
 INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Report normalization and QC Affymetrix pipeline', 'Report containing the plots of the Affymetrix normalization pipeline', 5, 'REPORT_Affy');

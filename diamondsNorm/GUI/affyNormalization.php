@@ -217,7 +217,8 @@ Function:				This page will present the user with options to perform a normilaza
 			<!--Add hidden value to keep track of which form this is-->
 			<input id="formType" name="formType" type="hidden" value="normalizeAffyStudy" /> 
 			<input id="selectedAttributes" name="selectedAttributes" type="hidden" /> 
-			<input id="selectedSamples"	name="selectedSamples" value=0 type="hidden" />
+			<input id="selectedNormalizationSamples"	name="selectedNormalizationSamples" value=0 type="hidden" />
+			<input id="selectedStatisticsSamples"	name="selectedStatisticsSamples" value=0 type="hidden" />
 			<div class="form_description">
 				<h2>Normalize the Affymetrix samples from this study.</h2>
 				<p>This form can be used to normalize the Affymetrix omics data from the samples originating from this study.</p>
@@ -351,7 +352,7 @@ Function:				This page will present the user with options to perform a normilaza
 						/////////////////////////////////////////
 						//	Check array names given to samples	/
 						/////////////////////////////////////////
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND arrayName != 0 ;")) {
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND arrayName is not null ;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
 									echo "<input type='checkbox' checked disabled /><font color='green'>Samples have array names? (".$row['count']." samples) </font> <br>";
@@ -733,7 +734,7 @@ Function:				This page will present the user with options to perform a normilaza
 
 														<td width='33%' style='text-align: center'>
 															Species <br>
-															<select id="species" disabled name="species" onchange="" size="1">
+															<select id="species" name="species" onchange="" size="1">
 																<option value="Ag" <?php if($idSpecies == 2) echo "selected"; ?>>
 																	Anopheles gambiae
 																</option>

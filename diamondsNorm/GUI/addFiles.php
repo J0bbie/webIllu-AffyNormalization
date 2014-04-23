@@ -288,7 +288,7 @@ function checkFields(){
 						<?php 
 						
 						//Check if samples have arrayName attached
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND arrayName != 0 ;")) {
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND arrayName is not null ;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
 									echo "<input type='checkbox' checked disabled /><font color='green'>Samples already have array names? (".$row['count']." samples) </font> <br>";
@@ -337,7 +337,7 @@ function checkFields(){
 						<?php 
 						
 						//Check if samples have arrayName number attached
-						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND arrayName != 0 ;")) {
+						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy AND arrayName is not null ;")) {
 							while ($row = mysqli_fetch_assoc($result)) {
 								if($row['count'] != 0){
 									echo "<input type='checkbox' checked disabled /><font color='green'>Samples already have array names? (".$row['count']." samples) </font> <br>";
