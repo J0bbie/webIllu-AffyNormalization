@@ -59,7 +59,7 @@ Shows only a few pages of the web-interface.
 ##Flowchart of Illumina pipeline
 ![Flow Illumina Pipeline](Documentation/flowIlluPipeline.png)
 
-##Flowchart of Illumina pipeline
+##Flowchart of Affymetrix pipeline
 ![Flow Affymetrix Pipeline](Documentation/flowAffyPipeline.png)
 
 ##File structure
