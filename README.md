@@ -1,17 +1,17 @@
-webIlluminaNormalization
+webIlly-AffyNormalization
 ========================
 
-Pipeline and back-/front-end web interface for Illumina normalization.
+Pipeline and back-/front-end web interface for Illumina and Affymetrix normalization.
 
-Interface, pipeline and database for background correction, normalization, variance stabilization, quality assessment and statistics of Illumina Beadchip data using the methods found in the limma and lumi packages using a web interface in which samples/Illumina omics data can be uploaded, stored and analyzed.
+Interface, pipeline and database for background correction, normalization, variance stabilization, quality assessment and statistics of Illumina Beadchip and Affymetrix data using the methods found in the affy and lumi R packages using a web interface in which samples/gene expression data can be uploaded, stored and analysed.
 
 **Pipeline based on [ArrayAnalysis](http://www.arrayanalysis.org/) developed by: Department of Bioinformatics - BiGCaT Bioinformatics and Systems Biology Research Group Maastricht University - The Netherlands**
 
 ##Description
 
-This is a complete web-front-/back-end application used in the normalization of Illumina gene-expression data.
+This is a complete web-front-/back-end application used in the normalization of Illumina and Affymetrixgene-expression data.
 
-A web-interface has been designed to allow for easier implementations of the Illumina normalization pipeline and the subsequent storing and viewing of data. This has been designed in conjunction with a MySQL database.
+A web-interface has been designed to allow for easier implementations of the Illumina and Affymetrix normalization pipeline and the subsequent storing and viewing of data. This has been designed in conjunction with a MySQL database.
 
 The general process-flow of this interface is designed as thus:
 
@@ -39,7 +39,7 @@ All plots, files, jobs, samples and additional information from a specific study
 - Create the database using the SQL code provided in the /sql/ folder. (Change the username/password)
 - *(Optional) Use the provided sample data to fill the database with options from the /sql/sampleData.sql file.*
 - Change the security usernames/password and other logins and paths in the /logic/config.php file.
-- Change the MySQL user/password for the RMySQL functions in R in /R/functions_myDB.R file.
+- Change the security usernames/password and other logins and paths in the /R/config.R file.
 
 ##Examples
 
@@ -56,8 +56,11 @@ Shows only a few pages of the web-interface.
 ##Flowchart of interface design
 ![Flow Pipeline](Documentation/flowInterface.png)
 
-##Flowchart of pipeline
-![Flow Pipeline](Documentation/flowPipeline.png)
+##Flowchart of Illumina pipeline
+![Flow Illumina Pipeline](Documentation/flowIlluPipeline.png)
+
+##Flowchart of Illumina pipeline
+![Flow Affymetrix Pipeline](Documentation/flowAffyPipeline.png)
 
 ##File structure
 This is the file structure which is used on the fileserver.
