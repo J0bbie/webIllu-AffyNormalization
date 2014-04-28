@@ -158,6 +158,28 @@ INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('Replicate #', 
 INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('Cluster', 'Groups in which the samples are to be clustered.');
 INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('concentrationCompound_mM', 'Concentration of the compound in mM.');
 INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('chemicalAbbreviation', 'Abbr. given to a chemical compound');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('description', 'Description');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('studyNoAel', 'studyNoAel');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('noAel_1', 'noAel_1');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('noAel_2', 'noAel_2');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('noAel_3', 'noAel_3');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('minNoel', 'Minimum range of noAel');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('maxNoel', 'Maximum range of noAel');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('methodSampling', 'Method of sampling');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('extraIdentifier1', 'Extra identifier');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('extraIdentifier2', 'Extra identifier');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('extraIdentifier3', 'Extra identifier');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('researchPartner', 'Name of the research partner where samples originate from');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('ic10', 'Value where 10% percent of cells have died due to treatment');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('columnPurification', 'Method of column purification');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('nucAcidConcentration_ng/ul', 'Concentration of nucleic acid in ng/ul');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('A260', 'Nucleic Acid Measurement of DNA/RNA');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('A280', 'Nucleic Acid Measurement of DNA/RNA');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('A260/A280', 'Fraction A260/A280');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('A260/A230', 'Fraction A260/A230');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('measureType', 'What is measured, RNA/DNA etc');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('volume_ml', 'Volume of measurement in ml');
+INSERT INTO `normdb`.`tDataType` (`name`, `description`) VALUES ('totalAmountRNA', 'Total amount of RNA');
 
 #Read in a tab-delimited file with compounds + cas + name
 LOAD DATA LOCAL INFILE '/home/jobbie/Desktop/TNO/Project/compoundList.txt' INTO TABLE tCompound (casNumber, name, abbreviation);
