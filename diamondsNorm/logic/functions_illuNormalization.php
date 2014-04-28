@@ -158,6 +158,8 @@
 		//Make a description file
 		makeDescriptionFile($connection ,$normFolder, $groupAttributes, $idStudy, $idJob, (isset($GET['skipNoArrayName']) ? $GET['skipNoArrayName'] : 'off') , FALSE, (isset($GET['selectedNormalizationSamples']) ? $GET['selectedNormalizationSamples'] : '0'));
 		
+		$connection->query("INSERT INTO tFiles (`idStudy`, `idFileType`, `fileName`, idStatistics) VALUES ($idStudy, '74', 'descriptionFile.txt', $idNorm);");
+		
 		///////////////////////////////////////////////////////////////////
 		// 	Build all the arguments which are supplied to pipeline		///
 		///////////////////////////////////////////////////////////////////
@@ -421,7 +423,7 @@
 		}
 		
 		///////////////////////////////////////////////////////////////////
-		// 	Check if the required normed R file is present on server	///
+		// 						Make a statistics run					///
 		///////////////////////////////////////////////////////////////////
 		
 		//Make a record in the tStatistics table
@@ -493,6 +495,7 @@
 		
 		//Make a description file
 		makeDescriptionFile($connection ,$statFolder, $groupAttributes, $idStudy, $idJob, (isset($GET['skipNoArrayName']) ? $GET['skipNoArrayName'] : 'off') , TRUE, 0);
+		$connection->query("INSERT INTO tFiles (`idStudy`, `idFileType`, `fileName`, idStatistics) VALUES ($idStudy, '75', 'descriptionFile.txt', $idStat);");
 		
 		///////////////////////////////////////////////////////////////////
 		// 					Make the arguments and exec					///

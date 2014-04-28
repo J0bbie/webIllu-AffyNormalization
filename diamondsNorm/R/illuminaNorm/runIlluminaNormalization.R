@@ -42,7 +42,7 @@ source(paste(SCRIPT.DIR,"getArguments.R",sep="/"))
 #Get the command-line parameters that were given to this script (Parameters defined in getArguments.R)
 #Also check the validity of these parameters and directories
 userParameters <- getArguments(commandArgs(trailingOnly = TRUE))
-#userParameters <- getArguments(c("--rawDataQC" ,FALSE ,  "--normData", "AIMT2_normData.Rdata", "--loadOldNorm", TRUE, "--normalize", FALSE, "--createLog", FALSE, "--normSubset", FALSE, "--statSubset", FALSE, "--statFile", "statSubsetFile.txt", "--studyName", "AIMT2_LiverKidney", "-O", "/var/www/normdb/data/1_AIMT2/statistics/8/", "-S", "8", "-j", "14", "--idNorm","21", "-o", "/var/www/normdb//data/1_AIMT2/statistics//8/", "-i","/var/www/normdb//data/1_AIMT2/expressionData/normed/1/","-s","Sample_Probe_Profile_102259-2.txt","-c", "Control_Probe_Profile_102259-2.txt","-d","descriptionFile.txt", "--saveToDB", FALSE))
+#userParameters <- getArguments(c("--rawDataQC" ,FALSE ,  "--performStatistics", FALSE, "--normalize", TRUE, "--createLog", FALSE, "--normSubset", FALSE, "--statSubset", FALSE, "--statFile", "statSubsetFile.txt", "--studyName", "AIMT2_LiverKidney", "-O", "/var/www/normdb/data/1_AIMT2/statistics/8/", "-S", "8", "-j", "4", "--idNorm","2", "-o", "/var/www/normdb//data/1_asd/expressionData/normed/2", "-i","/var/www/normdb//data/1_asd/expressionData/raw/","-s","Sample_Probe_Profile_102259-2.txt","-c", "Control_Probe_Profile_102259-2.txt","-d","descriptionFile.txt", "--saveToDB", FALSE))
 
 #Function to install missing libraries
 source(paste(userParameters$scriptDir,"functions_loadPackages.R",sep="/"))
@@ -150,7 +150,7 @@ if(userParameters$normalize){
   }
   
   #Match sampleNames from datafile with first column from description file
-  file_order <- match(description[,4],sampleNames(rawData))
+  file_order <- match(description$arraySampleNames,sampleNames(rawData))
   
   #Check on NA values in file_order; if na in file_order stop
   if(sum(is.na(file_order)) > 0){
@@ -603,7 +603,7 @@ if(userParameters$createAnno){
   
   write.table(eset.anno.rawData, file = fileName, quote= FALSE, sep='\t', row.names= F, col.names= T )
   
-  addNormFile( userParameters$idStudy, 72, userParameters$idNorm ,paste(userParameters$studyName,"_summary_rawData.txt", sep=""))
+  addNormFile( userParameters$idStudy, 73, userParameters$idNorm , paste(userParameters$studyName,"_rawData.txt", sep=""))
   
   cat("\nSaving merged raw data completed.\n")
   

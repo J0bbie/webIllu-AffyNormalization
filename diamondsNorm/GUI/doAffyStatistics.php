@@ -218,7 +218,6 @@ function showSampleSelection() {
 				<input id="formType" name="formType" class="element text large" type="hidden" value="doAffyStatistics" />
 				<input id="selectedAttributes" name="selectedAttributes" class="element text large"	type="hidden" />
 				<input id="selectedSamples" name="selectedSamples" value=0 type="hidden" />
-				<input id="normSelect" name="normSelect" value=<?php echo $_GET['normSelect']; ?> class="element text large" type="hidden" />
 				<div class="form_description">
 					<h2>Perform statistics on available normalized data.</h2>
 					<p>
@@ -295,7 +294,7 @@ function showSampleSelection() {
 							
 							?>
 							<p class="guidelines" id="guide_2">
-								<small>Is the data background-substracted? Also, is there even expression data added to this study and has there already been a normalization done?</small>
+								<small>Is there a normalized AffyBatch R object available for this study?</small>
 							</p>
 						</div> <!-- End checkboxes -->
 					</li>
@@ -303,175 +302,6 @@ function showSampleSelection() {
 					
 				<!-- Start plotting options (From ArrayAnalysis.org)-->
 				<ul id = qcPlots>
-					
-					<!-- Options sample Quality plots -->
-					<li>
-						<h3 style="text-align: center;">Select the plots of the raw data</h3>
-						<div>
-							<table class="form" style="border: solid 1px #80FF80; background: #D9FFD9; width: 100%;">
-								<tbody>
-									<tr>
-										<td colspan="3" class="sectionTitle" style="text-align:center">Sample Quality</td>
-									</tr>
-									<tr>
-										<td width='33%' style='text-align: center'>
-											Plot sample prep controls <br>
-											<input type="checkbox" name="plotSampleQuality" checked style="margin: 0 auto;">
-										</td>
-										<td width='33%' style='text-align: center'>
-											Plot 3'/5' ratio <br>
-											<input type="checkbox" name="plot35Ratio" checked style="margin: 0 auto;">
-										</td>
-										<td width='33%' style='text-align: center'>
-											Plot RNA degradation <br>
-											<input type="checkbox" name="plotRnaDegradation" style="margin: 0 auto;">
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							<p class="guidelines" id="guide_1">
-								<small>
-								If the (Dap, Phe, Lys, Trp) controls were spiked on your arrays, check the sample prep control box<br>
-								<br>If the 3'/5' ratio for beta-actin and GAPDH gene controls should be plotted, check the 3'/5' ratio box<br>
-								<br>Note: RNA degradation plot is not relevant for new generation PM-only arrays as there is no more 3' bias for probe design
-								</small>
-							</p>
-						</div>
-					</li>
-					<!-- End option sample Quality plots -->
-					
-					<!-- Options signal quality plots -->
-					<li>
-						<div>
-							<table class="form" style="border: solid 1px #FFCC80; background: #FFE6BF; width:100%;">
-								<tbody>
-									<tr>
-										<td colspan="2" class="sectionTitle" style="text-align:center">Hybridization and overall signal quality</td>
-									</tr>
-									<tr style='text-align: center'>
-										<td>Hybridization controls <input name="plotHybrid" checked style="float:right" type="checkbox"></td>
-										<td>Background intensity <input name="plotBackIntens" checked style="float:right" type="checkbox"></td>
-									</tr>
-									<tr style='text-align: center'>
-										<td>Percent present <input name="plotPercPresPlot" checked style="float:right" type="checkbox"></td>
-										<td>Present/Marginal/Absent calls <input name="plotCalls" checked style="float:right" type="checkbox"></td>
-									</tr>
-									<tr style='text-align: center'>
-										<td>Pos/Neg controls <input name="plotPosNegControls" checked style="float:right" type="checkbox"></td>
-										<td>Profile & boxplot of all controls <input name="plotAllControls" checked style="float:right" type="checkbox"></td>
-									</tr>
-								</tbody>
-							</table>
-							<p class="guidelines" id="guide_2">
-								<small>
-								If the hybridization (bioB, bioC, bioD, creX) controls were spiked on your arrays, check the <b>hybridization controls</b> box<br>
-								<br>If the minimal, maximal and average background intensity should be plotted, check the <b>background intensity</b> box<br>
-								<br>If the percent of present calls should be plotted, check the <b>percent present</b> box<br>
-								<br>If the percent of Marginal/Absent calls should be plotted, check the <b>Marginal/Absent calls</b> box<br>
-								<br>If the pos/neg control intensity distribution should be plotted, check the <b>Pos/Neg control </b> box<br>
-								<br>If the expression of all controls (and exon/intron controls) should be plotted, check the <b>Profile & boxplot of all controls </b> box<br>
-								</small>
-							</p>
-						</div>
-					</li>
-					<!-- End Options signal quality plots -->
-					
-					<!-- Start signal comparability and bias diagnostic plots -->
-					<li>
-						<div>
-						    <table class="form" style="border: solid 1px #80D9FF; background: #BFECFF; width:100%;">
-						        <tbody>
-						            <tr>
-						                <td class="sectionTitle" colspan="3" style="text-align:center">Signal comparability and bias diagnostic</td>
-						            </tr>
-						            <!--  Signal distribution plots -->
-						           	<tr>
-						                <td>
-						                    <table style="border: solid 1px #80D9FF; background: #E6F7FF; width:100%; ">
-						                        <tbody>
-						                            <tr>
-														<td colspan="3" class="sectionTitle" style="text-align:center">Signal distribution</td>
-						                            </tr>
-						                            <tr style='text-align: center'>
-														<td width="33%">Plot scale Factors<br> <input name="plotScaleFactors" checked type="checkbox" style="margin: 0 auto;"></td>
-														<td width="33%">Plot boxplot Raw Log Intensity<br> <input name="plotBoxRawLogIntensity" checked type="checkbox" style="margin: 0 auto;"></td>
-														<td width="33%">Plot density Raw Log Intensity<br> <input name="plotDensityRawLogIntensity" checked type="checkbox" style="margin: 0 auto;"></td>
-						                            </tr>
-						                        </tbody>
-						                    </table>
-						                </td>
-						            </tr>
-						       		<!-- End Signal distribution plots -->
-						       		
-						            <!--  Intensity-dependent bias plots -->
-						           	<tr>
-						                <td>
-						                    <table style="border: solid 1px #80D9FF; background: #E6F7FF; width:100%; ">
-						                        <tbody>
-						                            <tr>
-														<td colspan="3" class="sectionTitle" style="text-align:center">Intensity-dependent bias</td>
-						                            </tr>
-						                            <tr style='text-align: center'>
-														<td width="50%">Plot MA-plot raw-log intensities<br> <input name="plotRawMA" checked type="checkbox" style="margin: 0 auto;"></td>
-														<td width="50%">Plot MA per experimental group (if given), else on all arrays<br> <input name="plotRawMAOnGroup" checked type="checkbox" style="margin: 0 auto;">
-						                            </tr>
-						                        </tbody>
-						                    </table>
-						                </td>
-						            </tr>
-						       		<!-- End Intensity-dependent bias plots -->
-						       		
-						            <!--  Spatial bias plots -->
-						           	<tr>
-						                <td>
-						                    <table style="border: solid 1px #80D9FF; background: #E6F7FF; width:100%; ">
-						                        <tbody>
-						                            <tr>
-														<td colspan="2" class="sectionTitle" style="text-align:center">Spatial bias</td>
-						                            </tr>
-						                            <tr style='text-align: center'>
-														<td width="50%">Plot array reference layout <br> <input name="plotArrayReferceLayout" checked type="checkbox" style="margin: 0 auto;"></td>
-														<td width="50%">Plot Pos/Neg Center of Intensity<br> <input name="plotPosNegCenterOfIntensity" checked type="checkbox" style="margin: 0 auto;"></td>
-													</tr>
-													<tr style='text-align: center'>
-														<td width="50%">Plot 2D images <br> <input name="plot2DImages" checked type="checkbox" style="margin: 0 auto;"></td>
-														<td width="50%">Plot all PLM-based images  <br> <input name="plotPLM" checked type="checkbox" style="margin: 0 auto;"></td>
-													</tr>
-						                        </tbody>
-						                    </table>
-						                </td>
-						            </tr>
-						       		<!-- End Spatial bias plots -->
-						       		
-						            <!--  Probe-set homogeneity plots -->
-						           	<tr>
-						                <td>
-						                    <table style="border: solid 1px #80D9FF; background: #E6F7FF; width:100%; ">
-						                        <tbody>
-						                            <tr>
-														<td colspan="2" class="sectionTitle" style="text-align:center">Probe-set homogeneity</td>
-						                            </tr>
-													<tr style='text-align: center'>
-														<td width="50%">Plot NUSE <br> <input name="plotNUSE" checked type="checkbox" style="margin: 0 auto;"></td>
-														<td width="50%">Plot RLE <br> <input name="plotRLE" checked type="checkbox" style="margin: 0 auto;"></td>
-													</tr>
-						                        </tbody>
-						                    </table>
-						                </td>
-						            </tr>
-						       		<!-- End Probe-set homogeneity plots -->
-						       		
-						  		</tbody>
-						    </table>
-						    <!-- End signal comparability and bias diagnostic table -->
-							<p class="guidelines" id="guide_3">
-								<small>
-								Select the plots that needs to be run for signal comparability and bias diagnostic.
-								</small>
-							</p>
-						</div>
-					</li>
-					<!-- End signal comparability and bias diagnostic plots -->	
 					
 					<!-- Options Clustering -->
 					<li id="clusterTable">
@@ -481,11 +311,6 @@ function showSampleSelection() {
 									<tr>
 										<td colspan="3" class="sectionTitle" style="text-align:center">Clustering options</td>
 									</tr>
-									<tr style='text-align: center'>
-										<td width="33%">Plot raw array-array correlation<br> <input name="plotRawArrayCorrelation" checked type="checkbox" style="margin: 0 auto;"></td>
-										<td width="33%">Plot raw two-axes PCA<br> <input name="plotRawPCA" checked type="checkbox" style="margin: 0 auto;"></td>
-										<td width="33%">Plot raw hierarchical clustering<br> <input name="plotDensityRawLogIntensity" checked type="checkbox" style="margin: 0 auto;"></td>
-		                            </tr>
 									<tr style='text-align: center'>
 										<td>
 											Distance calculation method<br>

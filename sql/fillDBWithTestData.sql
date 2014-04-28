@@ -115,6 +115,10 @@ INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchO
 #Raw data illumina merged
 INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Raw Illumina Data', 'Raw Illumina merged data from this pipeline.', 4, '_rawData');
 
+#Description files
+INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Description File Norm', 'Description file for normalization.', 4, 'descriptionFile');
+INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Description File Stat', 'Description file for statistics only.', 5, 'descriptionFile');
+
 #Sample types
 INSERT INTO `normdb`.`tSampleType` (`name`, `description`) VALUES ('posControl', 'Positive control');
 INSERT INTO `normdb`.`tSampleType` (`name`, `description`) VALUES ('negControl', 'Negative control');

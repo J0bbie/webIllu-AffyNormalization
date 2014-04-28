@@ -64,31 +64,36 @@
 		$numberOfHeaders = count($headerArray);
 		$i = 0;
 		foreach ($headerArray as $dataType){
-			//First translate the dataTypeID to its name
-			$dataTypeInfo = getDataType($connection, $dataType);
-			//Check if all the required headers are there (Must correspond to the name for each dataType in the DB)
-			switch($dataTypeInfo['name']){
-				case "sampleName":
-					$sampleNameIndex = $i;
-					$requiredColumns--;
-					break;
-				case "compoundName":
-					$compoundNameIndex = $i;
-					$requiredColumns--;
-					break;
-				case "compoundCAS":
-					$compoundCASIndex = $i;
-					$requiredColumns--;
-					break;
-				case "sampleType":
-					$sampleTypeIndex = $i;
-					$requiredColumns--;
-					break;
-				case "arrayName":
-					$arrayNameIndex = $i;
-					break;
+			
+			if($dataType == "arrayName"){
+				$arrayNameIndex = $i;
+				$i++;
 			}
-			$i++;
+			else{
+				//First translate the dataTypeID to its name
+				$dataTypeInfo = getDataType($connection, $dataType);
+				
+				//Check if all the required headers are there (Must correspond to the name for each dataType in the DB)
+				switch($dataTypeInfo['name']){
+					case "sampleName":
+						$sampleNameIndex = $i;
+						$requiredColumns--;
+						break;
+					case "compoundName":
+						$compoundNameIndex = $i;
+						$requiredColumns--;
+						break;
+					case "compoundCAS":
+						$compoundCASIndex = $i;
+						$requiredColumns--;
+						break;
+					case "sampleType":
+						$sampleTypeIndex = $i;
+						$requiredColumns--;
+						break;
+				}
+				$i++;
+			}
 		}
 		if($requiredColumns != 0){
 			$connection->query("UPDATE tJobStatus SET status = 2, statusMessage = 'Failed: Not all the required columns are given!' WHERE idJob = '$idJob'");
@@ -175,21 +180,22 @@
 					$idCompound = getCreateCompound(array('name'=>$compoundName, 'casNumber'=>$compoundCas));
 					//Make a sample with the newly created/retrieved idCompound and the column containing the sampleName and sampleType
 					$idSample = getCreateSample(array('idStudy'=>$idStudy, 'name'=>$sampleName, 'idCompound'=>$idCompound, 'idArrayPlatform'=>$idArray, 'idSampleType' => $idSampleType, 'overwrite'=>$overwrite));
+					
 					//If the arrayName was also supplied, update the record and add tis number
 					if(isset($arrayNameIndex)){
 						$arrayName = $lineSplit[$arrayNameIndex];
-						$connection = $mysqli->prepare("UPDATE tSamples SET arrayName = ? WHERE idSample = ?");
-						$connection->bind_param('si',
+						$prepStat = $connection->prepare("UPDATE tSamples SET arrayName = ? WHERE idSample = ?");
+						$prepStat->bind_param('si',
 								$arrayName,
 								$idSample);
-						$connection->execute();
+						$prepStat->execute();
 					}
 		
 					//Add all the extra provided attributes to the sample in tAttributes based on the provided dataType through the user specified headers
 					$x = 0;
 					foreach($lineSplit as $data){
 						//If the column has not already been handled
-						if($x != $compoundNameIndex && $x != $compoundCASIndex && $x != $sampleNameIndex && $x != $sampleTypeIndex){
+						if($x != $compoundNameIndex && $x != $compoundCASIndex && $x != $sampleNameIndex && $x != $sampleTypeIndex && $x != (isset($arrayNameIndex) ? $arrayNameIndex : '') ){
 							$dataType = $headerArray[$x];
 							$value = $lineSplit[$x];
 							insertSampleAttribute($connection, $idSample, $dataType, $value);

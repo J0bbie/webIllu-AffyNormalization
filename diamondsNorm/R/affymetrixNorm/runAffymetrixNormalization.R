@@ -50,11 +50,7 @@ source(paste(SCRIPT.DIR,"getArguments.R",sep="/"))
 #Get the command-line parameters that were given to this script (Parameters defined in getArguments.R)
 #Also check the validity of these parameters and directories
 #userParameters <- getArguments(commandArgs(trailingOnly = TRUE))
-<<<<<<< HEAD
 userParameters <- getArguments(c("--statisticsDir", "/var/www/normdb/data/2_affyStudy/statistics/9", "--idStudy", 2, "--samplePrep", TRUE, "--inputDir", "/var/www/normdb//data/2_affyStudy/expressionData/raw/", "--outputDir", "/var/www/normdb//data/2_affyStudy/expressionData/normed/10"))
-=======
-userParameters <- getArguments(c("-h", "--samplePrep", TRUE, "--inputDir", "C:/Users/rietjv/AppData/Local/My Local Documents/Affymetrix_testdata1", "--outputDir", "C:/Users/rietjv/AppData/Local/My Local Documents/Affymetrix_testdata1"))
->>>>>>> d37529623457ec2c860be89ef2bb45795785c711
 
 #Function to install missing libraries
 source(paste(userParameters$scriptDir,"functions_loadPackages.R",sep="/"))
@@ -106,7 +102,6 @@ cat("\nDescription file loaded succesfully.\n")
 
 #If normalization is true:
 if(userParameters$normalize){
-<<<<<<< HEAD
   ##################################################################################
   ##                  Load the .CEL files from the input directory                ##
   ##################################################################################
@@ -1639,5 +1634,4 @@ if(userParameters$normalize){
           #close the connection to the DB
           x <- closeConnection(con)
           
->>>>>>> d37529623457ec2c860be89ef2bb45795785c711
 } #End normalization
