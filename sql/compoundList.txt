@@ -9,7 +9,6 @@
 123-30-8	4-Aminophenol	Aph
 80-07-9	Bis-(4-chlorophenyl)sulfone	B(4CP)S
  110-65-6	Butynediol	BD
- 110-65-6	Butynediol	BD
 57-74-9	Chlordane	C
 1897-45-6	Chlorothalonil	Chlt
 0	Control (Nothing)	Con
