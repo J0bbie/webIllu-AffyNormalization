@@ -111,6 +111,9 @@ getArguments <- function(commandArguments, con){
     make_option(c("-X","--normSubset"),  type="logical", default=FALSE,
                 help="Whether normalization should be done on a subset of samples. (defined in --descriptionFile) \ndefault = [%default] "),
     
+    make_option(c("--createLog"),  type="logical", default=FALSE,
+                help="Create a log file in the output directory. Captures ALL messages from stdout and stderr. \ndefault = [%default] "),
+    
     
     #####################################################################################################
     #                                     Parameters normalization                                      #
@@ -270,7 +273,10 @@ getArguments <- function(commandArguments, con){
                 help="The size of the points on plots. \ndefault = [%default] "), 
     
     make_option("--img.maxArray", type="numeric", default=41,
-                help="The maximum datapoint on each plot per page. \ndefault = [%default] ")
+                help="The maximum datapoint on each plot per page. \ndefault = [%default] "),
+    
+    make_option("--img.nameInPCA", type="logical", default=FALSE,
+                help="Whether to show the name of the sample in the PCA plots as label to the points. \ndefault = [%default] ")
 )
   
   #Get a list of the named parameters that were given when running this script
@@ -283,7 +289,7 @@ getArguments <- function(commandArguments, con){
   return(userParameters)
 }
 
-#Check if the required parameters are all valid. Create a log file is createLog == TRUE
+#Check if the required parameters are all valid. 
 #Also check if the given species, array type and array annotation combi is valid.
 checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
   #Check if the directories exist, also clean their path if not properly closed of with last /
@@ -294,7 +300,20 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
     userParameters$statisticsDir      <- correctDirectory(userParameters$statisticsDir)
   }
   
-  print(userParameters$inputDir)
+  #Create a logFile in the outputdirectory
+  if(userParameters$createLog){
+    if(userParameters$loadOldNorm){    
+      fileName <- file(paste(userParameters$statisticsDir, userParameters$studyName, "_log.txt", sep = ""))
+      addStatFile( userParameters$idStudy, 76, userParameters$idStat ,paste(userParameters$studyName, "_log.txt", sep=''))
+    }else{
+      fileName <- file(paste(userParameters$outputDir, userParameters$studyName, "_log.txt", sep = ""))
+      addNormFile( userParameters$idStudy, 34, userParameters$idNorm ,paste(userParameters$studyName, "_log.txt", sep=''))
+    }
+    
+    sink(fileName)
+    sink(fileName, type="message")
+    cat(paste("\nCreating log file in: ", fileName, "\n", sep = ""))
+  }
 
   if (file.info(userParameters$scriptDir)$isdir == FALSE){
     message <- paste("\nThe script directory does not exist:",userParameters$scriptDir, sep="")
@@ -327,7 +346,6 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
   if (file.info(userParameters$outputDir)$isdir == FALSE){
     dir.create(userParameters$outputDir)
     if(!file.info(userParameters$outputDir)$isdir){
-      if(userParameters$createLog) sink()
       message <- paste("\nThe output directory does not exist and cannot be created:",userParameters$outputDir, sep="")
       cat(message)
       changeJobStatus(con, userParameters$idJob, 2, message)
@@ -341,7 +359,6 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
       message <- paste("\nNo .CEL files in path:", userParameters$inputDir, sep=" ")
       cat(message)
       changeJobStatus(con, userParameters$idJob, 2, message)
-      if(userParameters$createLog) sink()
       stop(message)
     }
   }else{

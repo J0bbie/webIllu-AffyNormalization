@@ -331,7 +331,8 @@ Function:				This page will present the user with options to perform a normilaza
 					<!-- Checkboxes for status of samples and statistics options -->
 					<div>
 						<input type="checkbox" id="performStatistics" name="performStatistics" checked onchange="showStatisticsOptions()"/>Perform statistics on raw/norm data? <small>(Define which, below)</small><br>
-															
+						<input type="checkbox" id="nameInPCA" name="nameInPCA" />Label the data points in the PCA plots? <br>
+																					
 						<?php
 												
 						/////////////////////////////////////////

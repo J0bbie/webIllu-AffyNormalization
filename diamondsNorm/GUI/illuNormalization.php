@@ -344,7 +344,8 @@ function getSampleStatisticsSelection(){
 						<input type="checkbox" id="performVarianceStabilization" name="performVarianceStabilization" checked onchange="showVarianceStabilizationOptions()"/>Perform variance stabilization?<br>
 						<input type="checkbox" id="performStatistics" name="performStatistics" checked onchange="showStatisticsOptions()"/>Perform statistics on raw/norm data? <small>(Define which, below)</small><br>
 						<input type="checkbox" id="reorderSamples" name="reorderSamples" checked/>Reorder samples by experimental group? <small>(Used for the order in plots)</small><br>
-															
+						<input type="checkbox" id="nameInPCA" name="nameInPCA" />Label the data points in the PCA plots? <br>
+																											
 						<?php
 						//Check if samples have been added
 						if ($result =  mysqli_query($connection, "SELECT count(idStudy) as count FROM tSamples WHERE idStudy = $idStudy;")) {

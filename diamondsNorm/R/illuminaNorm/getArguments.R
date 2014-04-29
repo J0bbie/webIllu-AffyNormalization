@@ -275,7 +275,10 @@ getArguments <- function(commandArguments, con){
                 help="The size of the points on plots. \ndefault = [%default] "), 
     
     make_option("--img.maxArray", type="numeric", default=41,
-                help="The maximum datapoint on each plot per page. \ndefault = [%default] ")
+                help="The maximum datapoint on each plot per page. \ndefault = [%default] "),
+    
+    make_option("--img.nameInPCA", type="logical", default=FALSE,
+                help="Whether to show the name of the sample in the PCA plots as label to the points. \ndefault = [%default] ")
   )
   
   
@@ -309,7 +312,7 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
   
   sink(fileName)
   sink(fileName, type="message")
-  cat("Creating log file in: ", fileName, sep = "") ,"\n")
+  cat(paste("\nCreating log file in: ", fileName, "\n", sep = ""))
   }          
   
   #Dont check arguments if only the statistics is being done

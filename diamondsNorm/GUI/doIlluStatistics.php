@@ -263,7 +263,8 @@ function showSampleSelection() {
 						<!-- Checkboxes for status of samples and background correction and statistics options -->
 						<div>
 							<input type="checkbox" id="reorderSamples" name="reorderSamples" checked />Reorder samples by experimental group? <small>(Used for the order in plots)</small><br>
-
+							<input type="checkbox" id="nameInPCA" name="nameInPCA" />Label the data points in the PCA plots? <br>
+							
 							<?php
 							//Check if the normed data is available
 							$checkFiles = 0;

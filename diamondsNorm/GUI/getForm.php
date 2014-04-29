@@ -87,7 +87,7 @@ Function:				This page gets called each time a form is submitted. It will then c
 						normalizeAffyStudy($_GET, $_SESSION['idStudy'], $_SESSION['studyTitle']);
 						echo "<font color=green><p>Samples from study are being normalized!</p>";
 						echo "<h3>Showing job overview, when it is done it will be displayed in this overview.</h3>";
-						//header('Refresh: 5; URL=jobOverview');
+						header('Refresh: 5; URL=jobOverview');
 						break; //End normalization
 					case "doIlluStatistics":
 						doIlluStatistics($_GET, $_SESSION['idStudy'], $_SESSION['studyTitle']);
@@ -95,11 +95,11 @@ Function:				This page gets called each time a form is submitted. It will then c
 						echo "<h3>Showing job overview, when it is done it will be displayed in this overview.</h3>";
 						header('Refresh: 5; URL=jobOverview');
 						break; //End statistics on pre-existing normalized data
-					case "doAffyStatics":
+					case "doAffyStatistics":
 						doAffyStatistics($_GET, $_SESSION['idStudy'], $_SESSION['studyTitle']);
 						echo "<font color=green><p>Statistics are running!</p>";
 						echo "<h3>Showing job overview, when it is done it will be displayed in this overview.</h3>";
-						//header('Refresh: 5; URL=jobOverview');
+						header('Refresh: 5; URL=jobOverview');
 						break; //End statistics on pre-existing normalized data
 				}
 			}

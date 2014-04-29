@@ -213,11 +213,13 @@ function showSampleSelection() {
 		<div id="form_container">
 			<h1>Perform Normalization</h1>
 			<!--Form to normalize samples-->
-			<form action="getForm.php" method="GET" onsubmit="checkAttributes()" name="statisticsForm" id="doAffyStatistics">
+			<form action="getForm.php" method="GET" onsubmit="checkAttributes()" name="statisticsForm" id="statisticsForm">
 				<!--Add hidden value to keep track of which form this is-->
 				<input id="formType" name="formType" class="element text large" type="hidden" value="doAffyStatistics" />
 				<input id="selectedAttributes" name="selectedAttributes" class="element text large"	type="hidden" />
 				<input id="selectedSamples" name="selectedSamples" value=0 type="hidden" />
+				<input id="normSelect" name="normSelect" value=<?php echo $_GET['normSelect']; ?> class="element text large" type="hidden" />
+				
 				<div class="form_description">
 					<h2>Perform statistics on available normalized data.</h2>
 					<p>
@@ -277,7 +279,8 @@ function showSampleSelection() {
 						<!-- Checkboxes for status of samples and background correction and statistics options -->
 						<div>
 							<input type="checkbox" id="reorderSamples" name="reorderSamples" checked />Reorder samples by experimental group? <small>(Used for the order in plots)</small><br>
-
+							<input type="checkbox" id="nameInPCA" name="nameInPCA" />Label the data points in the PCA plots? <br>
+														
 							<?php
 							//Check if the normed R object is available
 							$checkFiles = 0;

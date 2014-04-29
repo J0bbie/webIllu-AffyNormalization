@@ -393,7 +393,7 @@ QCtablePlot <- function(Data,quality=NULL,sprep=NULL,lys=NULL,
   
   #par(parStart)
   if(!is.null(rows)) {#and as such indicator and indicCol    
-    png(file=paste(outputDirectory,"QCtable.png", sep="/"),width=WIDTH, height=HEIGHT, pointsize=POINTSIZE)
+    png(file=paste(outputDirectory,"QCtable.png", sep="/") ,width=WIDTH, height=HEIGHT, pointsize=POINTSIZE)
     par(oma=c(2,4.5,0,0))
     plot(c(0,length(rows)), type = 'n', ann = FALSE, axes = FALSE, 
          frame.plot = FALSE, ylim = c(0, length(sampleNames(Data))), 
