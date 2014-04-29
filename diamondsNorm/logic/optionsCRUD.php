@@ -700,6 +700,11 @@ try
 		$idStatistics = $_POST['idStatistics'];
 			
 		//Delete from database
+		
+		//Files first
+		$result = mysql_query("DELETE FROM tFiles WHERE idStatistics = $idStatistics ;");
+		
+		//Statistics run next
 		$result = mysql_query("DELETE FROM tStatistics WHERE idStatistics = $idStatistics ;");
 	
 		//Return result to jTable
