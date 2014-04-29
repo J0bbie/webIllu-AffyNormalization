@@ -41,7 +41,7 @@ Function:				This page will present the user with options to perform statistics 
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Perform normalization: <?php echo $idStudy; ?></title>
+<title>Perform normalization on study: <?php echo $idStudy; ?></title>
 <!--Load CSS for form layout -->
 <link rel="stylesheet" type="text/css" href="../css/formLayout.css" media="all" />
 <link rel="stylesheet" type="text/css" href="../css/arrayAnalysisOptions" media="all" />

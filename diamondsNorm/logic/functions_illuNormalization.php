@@ -158,7 +158,7 @@
 		//Make a description file
 		makeDescriptionFile($connection ,$normFolder, $groupAttributes, $idStudy, $idJob, (isset($GET['skipNoArrayName']) ? $GET['skipNoArrayName'] : 'off') , FALSE, (isset($GET['selectedNormalizationSamples']) ? $GET['selectedNormalizationSamples'] : '0'));
 		
-		$connection->query("INSERT INTO tFiles (`idStudy`, `idFileType`, `fileName`, idStatistics) VALUES ($idStudy, '74', 'descriptionFile.txt', $idNorm);");
+		$connection->query("INSERT INTO tFiles (`idStudy`, `idFileType`, `fileName`, idNorm) VALUES ($idStudy, '74', 'descriptionFile.txt', $idNorm);");
 		
 		///////////////////////////////////////////////////////////////////
 		// 	Build all the arguments which are supplied to pipeline		///
