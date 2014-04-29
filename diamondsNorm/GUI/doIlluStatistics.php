@@ -285,32 +285,7 @@ function showSampleSelection() {
 						</div> <!-- End checkboxes -->
 					</li>
 					<!-- End basic info -->
-					<!-- Options Raw Plots -->
-				<li id="rawPlots">
-					<div>
-						<table class="form" style="border: solid 1px #80D9FF; background: #BFECFF; width:100%;">
-							<tbody>
-								<tr>
-									<td colspan="3" class="sectionTitle">Raw data plots</td>
-								</tr>
-								<tr>
-									<td>Create density plot <input name="raw_density" checked style="float:right" type="checkbox"></td>
-									<td>Create CV plot <input name="raw_cv" checked style="float:right" type="checkbox"></td>
-									<td>Create sample relation plot <input name="raw_sampleRelation" checked style="float:right" type="checkbox"></td>
-								</tr>
-								<tr>
-									<td>Create PCA plot <input name="raw_pca" checked style="float:right" type="checkbox"></td>
-									<td>Create boxplot <input name="raw_boxplot" checked style="float:right" type="checkbox"></td>
-									<td>Create correlation plot <input name="raw_correl" checked style="float:right" type="checkbox"></td>
-								</tr>
-							</tbody>
-						</table>
-						<p class="guidelines" id="guide_6">
-							<small>Choose which plots will be made from the raw data.</small>
-						</p>
-					</div>
-				</li>
-				<!-- End Options Raw Plots -->
+
 				<!-- Options Normed Plots -->
 				<li id="normPlots">
 					<div>
