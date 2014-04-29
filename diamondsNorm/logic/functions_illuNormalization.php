@@ -514,7 +514,7 @@
 				--idStatistics $idStat
 				--statSubset $statSubset
 				--statFile $statFile
-				--createLog FALSE
+				--createLog TRUE
 				--normData $normFileName
 				--loadOldNorm TRUE
 				-d descriptionFile.txt

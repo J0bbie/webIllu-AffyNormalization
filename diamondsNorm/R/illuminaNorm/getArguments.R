@@ -299,12 +299,17 @@ checkUserInput <-function(userParameters, arrayTypeList, arrayAnnoList) {
   
   #Create a logFile in the outputdirectory
   if(userParameters$createLog){
-    fileName <- file(paste(userParameters$outputDir, userParameters$studyName, "_log.txt", sep = ""))
-    sink(fileName)
-    sink(fileName, type="message")
-    cat("Creating log file in: ", paste(userParameters$outputDir, userParameters$studyName, "_log.txt", sep = "") ,"\n")
-    addNormFile( userParameters$idStudy, 34, userParameters$idNorm ,paste(userParameters$studyName, "_log.txt", sep=''))
-    
+    if(userParameters$loadOldNorm){    
+          fileName <- file(paste(userParameters$statisticsDir, userParameters$studyName, "_log.txt", sep = ""))
+          addStatFile( userParameters$idStudy, 76, userParameters$idStat ,paste(userParameters$studyName, "_log.txt", sep=''))
+  }else{
+          fileName <- file(paste(userParameters$outputDir, userParameters$studyName, "_log.txt", sep = ""))
+          addNormFile( userParameters$idStudy, 34, userParameters$idNorm ,paste(userParameters$studyName, "_log.txt", sep=''))
+  }
+  
+  sink(fileName)
+  sink(fileName, type="message")
+  cat("Creating log file in: ", fileName, sep = "") ,"\n")
   }          
   
   #Dont check arguments if only the statistics is being done
