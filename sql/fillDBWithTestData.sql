@@ -119,7 +119,7 @@ INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchO
 INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Description File Norm', 'Description file for normalization.', 4, 'descriptionFile');
 INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Description File Stat', 'Description file for statistics only.', 5, 'descriptionFile');
 
-INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Log File Stat', 'Description file for statistics only.', 5, 'descriptionFile');
+INSERT INTO `normdb`.`tFileType` (`name`, `description`, `idDirectory`, `searchOn`) VALUES ('Log File Stat', 'Log file for statistics only.', 5, '_log');
 
 #Sample types
 INSERT INTO `normdb`.`tSampleType` (`name`, `description`) VALUES ('posControl', 'Positive control');
