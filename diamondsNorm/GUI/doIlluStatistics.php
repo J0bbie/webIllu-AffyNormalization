@@ -403,13 +403,13 @@ function showSampleSelection() {
 			  $(selector).chosen(config[selector]);
 			}
 
-		  	//Function to load a CRUD table for tStudyTypes
+		  	//Function to load a CRUD table for tSamples
 			function showSampleSelectTable() {
 				//Prepare jTable
 				$('#sampleSelection').jtable({
 					title: 'Samples of this study',
 					paging: true,
-					pageSize: 20,
+					pageSize: 500,
 					sorting: true,
 					defaultSorting: 'idSample ASC',
 		            selecting: true, //Enable selecting
