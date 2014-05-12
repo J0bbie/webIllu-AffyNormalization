@@ -9,7 +9,7 @@ Interface, pipeline and database for background correction, normalization, varia
 
 ##Description
 
-This is a complete web-front-/back-end application used in the normalization of Illumina and Affymetrixgene-expression data.
+This is a complete web-front-/back-end application used in the normalization of Illumina and Affymetrix gene-expression data.
 
 A web-interface has been designed to allow for easier implementations of the Illumina and Affymetrix normalization pipeline and the subsequent storing and viewing of data. This has been designed in conjunction with a MySQL database.
 
@@ -40,6 +40,7 @@ All plots, files, jobs, samples and additional information from a specific study
 - *(Optional) Use the provided sample data to fill the database with options from the /sql/sampleData.sql file.*
 - Change the security usernames/password and other logins and paths in the /logic/config.php file.
 - Change the security usernames/password and other logins and paths in the /R/config.R file.
+- Change the path to the config.R file in both /R/illuminaNorm/runIlluminaNormalization.R and /R/affymetrixNorm/runAffymetrixNormalization.R
 
 ##Examples
 
