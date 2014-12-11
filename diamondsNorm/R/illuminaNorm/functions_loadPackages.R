@@ -62,5 +62,4 @@ checkInstalledPackages <- function(man) {
           else{
                     res <-( paste("Ok, required package installed:" , man, sep=" ") )
           }
-          return(res)
 }
